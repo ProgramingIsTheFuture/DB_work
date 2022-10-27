@@ -20,13 +20,13 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Add repository
-        run: add-apt-repository ppa:avsm/ppa
+        run: sudo add-apt-repository ppa:avsm/ppa
             
       - name: Update
-        run: apt update
+        run: sudo apt update
         
       - name: Opam install
-        run: apt install -y opam
+        run: sudo apt install -y opam
         
       - name: Opam init
         run: |
