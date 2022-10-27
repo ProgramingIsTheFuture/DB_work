@@ -1,0 +1,24 @@
+(lang dune 3.4)
+
+(name proj)
+
+(generate_opam_files true)
+
+(source
+ (github ProgramingIsTheFuture/DB_work))
+
+(authors "Francisco Santos" "Leonardo Santos")
+
+(license LICENSE)
+
+(documentation https://github.com/ProgramingIsTheFuture/DB_work)
+
+(package
+ (name proj)
+ (synopsis "DB Work")
+ (description "Work that we built for the practical classes of data bases")
+ (depends ocaml dune)
+ (tags
+  (topics "db" "ocaml" "mssql")))
+
+; See the complete stanza docs at https://dune.readthedocs.io/en/stable/dune-files.html#dune-project
