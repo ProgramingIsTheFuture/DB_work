@@ -19,10 +19,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Use OCaml ${{ matrix.ocaml-compiler }}
-        uses: ocaml/setup-ocaml@v2
-        with:
-          ocaml-compiler: ${{ matrix.ocaml-compiler }}
+      - name: Add repository
+        run: add-apt-repository ppa:avsm/ppa
+            
+      - name: Update
+        run: apt update
+        
+      - name: Opam install
+        run: apt install -y opam
+        
+      - name: Opam init
+        run: |
+          opam init
+          eval $(opam env)
+          opam switch create 4.12.0
+          eval $(opam env)
 
       - run: opam install . --deps-only --with-test
 
