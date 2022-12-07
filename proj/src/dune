@@ -1,4 +1,4 @@
 (executable
  (public_name proj)
  (name main)
- (libraries proj))
+ (libraries proj dream mssql))
