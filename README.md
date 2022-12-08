@@ -11,8 +11,8 @@
   - [ ] Mostrar os projetos envolvidos
   - [ ] Tempo de dedicação em cada projeto
   - [ ] Tempo total
-- [ ] Adicionar tabela de area e dominio cientifico (projeto, dominio: N:M, e dominio, area: 1:N) .
-      - [ ] Mostrar a área em que mais investigações são feitas.
+- [ ] Adicionar tabela de area e dominio cientifico (projeto, dominio: N:M, e dominio, area: 1:N).
+  - [ ] Mostrar a área em que mais investigações são feitas.
 - [ ] Mostrar o financiador que paga mais.
 - [ ] Procurar as entidades externas com mais financiamentos
 - [ ] Validar para não exceder o tempo maximo permitido, etc...
