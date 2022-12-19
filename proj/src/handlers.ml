@@ -1,7 +1,6 @@
 open Async_kernel
 open Async_unix
-
-type user = { id : string; name : string } [@@deriving yojson]
+open Users
 
 let conn =
   let host = "localhost" in
@@ -17,11 +16,15 @@ let query q =
   | [] -> []
   | rows -> List.map Mssql.Row.to_alist rows
 
-let () =
-  let data = query "SELECT * FROM users;" in
-  List.map (fun a -> yojson_of_list (fun (_, b2) -> yojson_of_string b2) a) data
-  |> List.map user_of_yojson
-  |> List.map (fun a -> Format.printf "%s %s" a.id a.name)
-  |> ignore
+let find_row nameval row =
+  List.find (fun (name, _) -> name = nameval) row |> snd
 
-let home _request = Dream.html (Format.sprintf "<h1>%d</h1>" 1)
+let user_of_row (row : (string * string) list) =
+  let id = find_row "id" row |> int_of_string in
+  let name = find_row "name" row in
+  { id; name }
+
+let users_of_row = List.map user_of_row
+
+let home _request =
+  Dream.html @@ Home.home @@ users_of_row (query "SELECT * FROM users;")
