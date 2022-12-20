@@ -27,4 +27,7 @@ let user_of_row (row : (string * string) list) =
 let users_of_row = List.map user_of_row
 
 let home _request =
-  Dream.html @@ Home.home @@ users_of_row (query "SELECT * FROM users;")
+  Dream.html @@ Home.home
+
+let serve url page =
+  Dream.get url page 
