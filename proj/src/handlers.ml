@@ -25,5 +25,4 @@ let user_of_row (row : (string * string) list) =
   { id; name }
 
 let users_of_row = List.map user_of_row
-let home _request = Dream.html @@ Home.base "Gestão de Projetos UBI" Home.home
-let serve url page = Dream.get url page
+let serve page name _request = Dream.html @@ Home.base name page
