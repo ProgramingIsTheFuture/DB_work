@@ -25,10 +25,10 @@ let base title bdy =
     </body>
   </html>
 
-let navbar =
+let navbar name =
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-      <span class="navbar-brand">Projetos</span>
+      <span class="navbar-brand"><%s name %></span>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -68,7 +68,7 @@ let home =
   </div>
 
 let projetos =
-  navbar ^
+  navbar "Projetos" ^
   <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
     <table class="table table-dark table-hover">
       <thead class="table-dark">
@@ -103,7 +103,7 @@ let projetos =
   </div>
 
 let investigadores =
-  navbar ^
+  navbar "Investigadores" ^
   <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
     <table class="table table-dark table-hover">
       <thead class="table-dark">
