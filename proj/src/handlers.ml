@@ -25,4 +25,7 @@ let user_of_row (row : (string * string) list) =
   { id; name }
 
 let users_of_row = List.map user_of_row
-let serve page name _request = Dream.html @@ Pages.base name page
+let home _request = Dream.html @@ Pages.base "Gestão de Projetos UBI" Pages.home
+let serve page name _request = Dream.html @@ Pages.base name page 
+
+

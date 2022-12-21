@@ -1,4 +1,4 @@
-(*open Users*)
+open Users
 
 let base title bdy =
   <html>
@@ -67,7 +67,8 @@ let home =
     </nav>
   </div>
 
-let projetos =
+
+let projetos _lst =
   navbar "Projetos" ^
   <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
     <table class="table table-dark table-hover">
@@ -75,29 +76,15 @@ let projetos =
         <tr>
           <th scope="col">#</th>
           <th scope="col">First</th>
-          <th scope="col">Last</th>
-          <th scope="col">Handle</th>
         </tr>
       </thead>
-      <tbody class="table-group-divider">
+      <tbody class="table-group-divider"> 
+        <% _lst |> List.iter begin fun x -> %> 
         <tr>
-          <th scope="row">1</th>
-          <td>Mark</td>
-          <td>Otto</td>
-          <td>@mdo</td>
+          <th scope="row"><%i x.id %></th>
+          <td><a href="/projetos/<%i x.id%>"><%s x.name %></a></td>
         </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>Jacob</td>
-          <td>Thornton</td>
-          <td>@fat</td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td>Larry</td>
-          <td>The Bird</td>
-          <td>@twitter</td>
-        </tr>
+        <% end; %>
       </tbody>
     </table>
   </div>
