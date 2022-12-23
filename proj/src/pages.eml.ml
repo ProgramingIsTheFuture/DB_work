@@ -35,7 +35,7 @@ let navbar name =
       <div class="collapse navbar-collapse" id="navbarText">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link" href="/">Voltar</a>
+            <a class="nav-link" href="javascript:history.back()">Voltar</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">Adicionar</a>
@@ -68,8 +68,8 @@ let home =
   </div>
 
 
-let projetos _lst =
-  navbar "Projetos" ^
+let projetos_contratos _lst =
+  navbar "Projetos / Contratos" ^
   <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
     <table class="table table-dark table-hover">
       <thead class="table-dark">
@@ -97,28 +97,20 @@ let investigadores =
         <tr>
           <th scope="col">#</th>
           <th scope="col">First</th>
-          <th scope="col">Last</th>
-          <th scope="col">Handle</th>
         </tr>
       </thead>
       <tbody class="table-group-divider">
         <tr>
           <th scope="row">1</th>
-          <td>Mark</td>
-          <td>Otto</td>
-          <td>@mdo</td>
+          <td><a href="/inves_teste">Mark</a></td>
         </tr>
         <tr>
           <th scope="row">2</th>
           <td>Jacob</td>
-          <td>Thornton</td>
-          <td>@fat</td>
         </tr>
         <tr>
           <th scope="row">3</th>
           <td>Larry</td>
-          <td>The Bird</td>
-          <td>@twitter</td>
         </tr>
       </tbody>
     </table>
@@ -130,4 +122,56 @@ let investigadores =
     </a>
   </div>
 
+let institutos =
+  navbar "Institutos" ^
+  <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
+    <table class="table table-dark table-hover">
+      <thead class="table-dark">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">First</th>
+        </tr>
+      </thead>
+      <tbody class="table-group-divider">
+        <tr>
+          <th scope="row">1</th>
+          <td><a href="./inst_template.html">Mark</a></td>
+        </tr>
+        <tr>
+          <th scope="row">2</th>
+          <td>Jacob</td>
+        </tr>
+        <tr>
+          <th scope="row">3</th>
+          <td>Larry</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
+let entidades =
+  navbar "Entidades" ^
+  <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
+    <table class="table table-dark table-hover">
+      <thead class="table-dark">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">First</th>
+        </tr>
+      </thead>
+      <tbody class="table-group-divider">
+        <tr>
+          <th scope="row">1</th>
+          <td><a href="./ent_template.html">Mark</a></td>
+        </tr>
+        <tr>
+          <th scope="row">2</th>
+          <td>Jacob</td>
+        </tr>
+        <tr>
+          <th scope="row">3</th>
+          <td>Larry</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
