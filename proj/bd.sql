@@ -32,6 +32,7 @@ CREATE TABLE [Investigador] (
 
 CREATE TABLE [Papel] (
   [id] INTEGER,
+  [designacao] varchar(255),
   PRIMARY KEY ([id])
 )
 
@@ -56,7 +57,8 @@ CREATE TABLE [Publicacao] (
 )
 
 CREATE TABLE [Status] (
-  [id] INTEGER
+  [id] INTEGER,
+  [designacao] varchar(255)
 )
 
 CREATE TABLE [HistoricoStatus] (
@@ -95,12 +97,14 @@ CREATE TABLE [Dometo] (
 )
 
 CREATE TABLE [Dominio] (
-  [id] INTEGER
+  [id] INTEGER,
+  [designacao] varchar(255)
 )
 
 CREATE TABLE [AreaCientifica] (
   [id] INTEGER,
-  [dominioId] INTEGER
+  [dominioId] INTEGER,
+  [designacao] varchar(255)
 )
 
 CREATE TABLE [Entigrama] (
@@ -110,11 +114,13 @@ CREATE TABLE [Entigrama] (
 )
 
 CREATE TABLE [Programa] (
-  [programId] INTEGER
+  [programId] INTEGER,
+  [designacao] varchar(255)
 )
 
 CREATE TABLE [Instituto] (
-  [id] INTEGER
+  [id] INTEGER,
+  [designacao] varchar(255)
 )
 
 CREATE TABLE [UnidadeInvestigador] (
