@@ -78,7 +78,7 @@ CREATE TABLE [HistoricoStatus] (
 
 CREATE TABLE [Entidade] (
   [id] INTEGER,
-  [nacional] boolean,
+  [nacional] BIT,
   [nome] varchar(255),
   [descricao] varchar(255),
   [email] varchar(255),
@@ -104,6 +104,7 @@ CREATE TABLE [UnidadeInvestigacao] (
 )
 
 CREATE TABLE [Dometo] (
+  [id] INTEGER,
   [projectId] INTEGER,
   [dominioId] INTEGER,
   PRIMARY KEY ([id])
@@ -130,6 +131,7 @@ CREATE TABLE [Entigrama] (
 )
 
 CREATE TABLE [Programa] (
+  [id] INTEGER,
   [programId] INTEGER,
   [designacao] varchar(255),
   PRIMARY KEY ([id])
