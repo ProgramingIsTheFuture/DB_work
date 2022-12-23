@@ -1,4 +1,4 @@
-open Users
+open Types
 
 let base title bdy =
   <html>
@@ -81,8 +81,8 @@ let projetos _lst =
       <tbody class="table-group-divider"> 
         <% _lst |> List.iter begin fun x -> %> 
         <tr>
-          <th scope="row"><%i x.id %></th>
-          <td><a href="/projetos/<%i x.id%>"><%s x.name %></a></td>
+          <th scope="row"><%s x<|"id" %></th>
+          <td><a href='/projetos/<%s x<|"id" %>'><%s x<|"name" %></a></td>
         </tr>
         <% end; %>
       </tbody>
