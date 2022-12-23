@@ -1,7 +1,4 @@
-<<<<<<< Updated upstream
-let inves_template =
-  <div></div>
-=======
+
 
 let navbar name =
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -607,5 +604,3 @@ let ent_template =
     </a>
   </div>
 
-
->>>>>>> Stashed changes

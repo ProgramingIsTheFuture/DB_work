@@ -57,12 +57,11 @@ let home =
     <h1 class="title" style="text-align: center; padding: 30px">Gestão de Projetos UBI</h1>
     <nav>
       <ul class="options">
-        <li><a href="/projetos">Projetos</a></li>
+        <li><a href="/projetos">Projetos / Contratos</a></li>
         <li><a href="/investigadores">Investigadores</a></li>
-        <li><a href="/departamentos">Departamentos</a></li>
-        <li><a href="#">Option 4</a></li>
+        <li><a href="/institutos">Institutos</a></li>
+        <li><a href="#">Entidades Financiadoras</a></li>
         <li><a href="#">Option 5</a></li>
-        <li><a href="#">Option 6</a></li>
       </ul>
     </nav>
   </div>
