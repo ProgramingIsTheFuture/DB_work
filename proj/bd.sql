@@ -38,7 +38,7 @@ CREATE TABLE [Entidade] (
   [nome] varchar(255) NOT NULL,
   [descricao] varchar(255),
   [email] varchar(255),
-  [telemovel] INTEGER,
+  [telemovel] BIGINT,
   [designacao] varchar(255),
   [morada] varchar(255),
   [url] varchar(255),
