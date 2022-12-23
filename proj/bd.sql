@@ -1,11 +1,11 @@
 CREATE TABLE [Projeto] (
-  [id] INTEGER,
-  [nome] varchar(255),
+  [id] INTEGER IDENTITY(1,1),
+  [nome] varchar(255) NOT NULL,
   [titulo] varchar(255),
   [descricao] varchar(255),
   [portugues] varchar(255),
   [ingles] varchar(255),
-  [data_ini] date,
+  [data_ini] date NOT NULL,
   [data_fim] date,
   [url] varchar(255),
   [doi] varchar(255),
@@ -14,7 +14,7 @@ CREATE TABLE [Projeto] (
 )
 
 CREATE TABLE [Contrato] (
-  [id] INTEGER,
+  [id] INTEGER IDENTITY(1,1),
   [projectId] INTEGER,
   [nome] varchar(255),
   [titulo] varchar(255),
@@ -24,62 +24,18 @@ CREATE TABLE [Contrato] (
 )
 
 CREATE TABLE [Investigador] (
-  [id] INTEGER,
+  [id] INTEGER IDENTITY(1,1),
   [institutoId] INTEGER,
-  [nome] varchar(255),
-  [idade] INTEGER,
-  [morada] varchar(255),
-  PRIMARY KEY ([id])
-)
-
-CREATE TABLE [Papel] (
-  [id] INTEGER,
-  [designacao] varchar(255),
-  PRIMARY KEY ([id])
-)
-
-CREATE TABLE [Participa] (
-  [id] INTEGER,
-  [projectId] INTEGER,
-  [InvestigadorId] INTEGER,
-  [papelId] INTEGER,
-  [tempoPerc] INTEGER,
-  PRIMARY KEY ([id])
-)
-
-CREATE TABLE [Keywords] (
-  [id] INTEGER,
-  [keyword] varchar(255),
-  [projectId] INTEGER,
-  PRIMARY KEY ([id])
-)
-
-CREATE TABLE [Publicacao] (
-  [id] INTEGER,
-  [indicador] BIT,
-  [projectId] INTEGER,
-  [url] varchar(255),
-  [doi] varchar(255),
-  PRIMARY KEY ([id])
-)
-
-CREATE TABLE [Status] (
-  [id] INTEGER,
-  [designacao] varchar(255),
-  PRIMARY KEY ([id])
-)
-
-CREATE TABLE [HistoricoStatus] (
-  [id] INTEGER,
-  [projectId] INTEGER,
-  [statusId] INTEGER,
+  [nome] varchar(255) NOT NULL,
+  [idade] INTEGER NOT NULL,
+  [morada] varchar(255) NOT NULL,
   PRIMARY KEY ([id])
 )
 
 CREATE TABLE [Entidade] (
-  [id] INTEGER,
+  [id] INTEGER IDENTITY(1,1),
   [nacional] BIT,
-  [nome] varchar(255),
+  [nome] varchar(255) NOT NULL,
   [descricao] varchar(255),
   [email] varchar(255),
   [telemovel] INTEGER,
@@ -90,64 +46,102 @@ CREATE TABLE [Entidade] (
   PRIMARY KEY ([id])
 )
 
-CREATE TABLE [Projama] (
-  [id] INTEGER,
-  [programId] INTEGER,
+CREATE TABLE [Instituto] (
+  [id] INTEGER IDENTITY(1,1),
+  [designacao] varchar(255) NOT NULL,
+  PRIMARY KEY ([id])
+)
+
+CREATE TABLE [Papel] (
+  [id] INTEGER IDENTITY(1,1),
+  [designacao] varchar(255) NOT NULL,
+  PRIMARY KEY ([id])
+)
+
+CREATE TABLE [Keywords] (
+  [id] INTEGER IDENTITY(1,1),
+  [keyword] varchar(255) NOT NULL,
   [projectId] INTEGER,
   PRIMARY KEY ([id])
 )
 
-CREATE TABLE [UnidadeInvestigacao] (
-  [id] INTEGER,
-  [investigadorId] INTEGER,
-  PRIMARY KEY ([id])
-)
-
-CREATE TABLE [Dometo] (
-  [id] INTEGER,
+CREATE TABLE [Publicacao] (
+  [id] INTEGER IDENTITY(1,1),
+  [indicador] BIT,
   [projectId] INTEGER,
-  [dominioId] INTEGER,
+  [url] varchar(255),
+  [doi] varchar(255),
   PRIMARY KEY ([id])
 )
 
 CREATE TABLE [Dominio] (
-  [id] INTEGER,
-  [designacao] varchar(255),
+  [id] INTEGER IDENTITY(1,1),
+  [designacao] varchar(255) NOT NULL,
   PRIMARY KEY ([id])
 )
 
 CREATE TABLE [AreaCientifica] (
-  [id] INTEGER,
+  [id] INTEGER IDENTITY(1,1),
   [dominioId] INTEGER,
-  [designacao] varchar(255),
+  [designacao] varchar(255) NOT NULL,
   PRIMARY KEY ([id])
 )
 
-CREATE TABLE [Entigrama] (
-  [id] INTEGER,
-  [programId] INTEGER,
-  [entidadeId] INTEGER,
+CREATE TABLE [Status] (
+  [id] INTEGER IDENTITY(1,1),
+  [designacao] varchar(255) NOT NULL,
+  PRIMARY KEY ([id])
+)
+
+CREATE TABLE [HistoricoStatus] (
+  [id] INTEGER IDENTITY(1,1),
+  [projectId] INTEGER,
+  [statusId] INTEGER,
+  PRIMARY KEY ([id])
+)
+
+CREATE TABLE [UnidadeInvestigacao] (
+  [id] INTEGER IDENTITY(1,1),
+  [investigadorId] INTEGER,
   PRIMARY KEY ([id])
 )
 
 CREATE TABLE [Programa] (
-  [id] INTEGER,
-  [programId] INTEGER,
-  [designacao] varchar(255),
+  [id] INTEGER IDENTITY(1,1),
+  [designacao] varchar(255) NOT NULL,
   PRIMARY KEY ([id])
 )
 
-CREATE TABLE [Instituto] (
-  [id] INTEGER,
-  [designacao] varchar(255),
-  PRIMARY KEY ([id])
+CREATE TABLE [Participa] (
+  [projectId] INTEGER,
+  [investigadorId] INTEGER,
+  [papelId] INTEGER,
+  [tempoPerc] INTEGER NOT NULL,
+  PRIMARY KEY ([projectId], [investigadorId])
+)
+
+CREATE TABLE [Dometo] (
+  [projectId] INTEGER,
+  [dominioId] INTEGER,
+  PRIMARY KEY ([projectId], [dominioId])
+)
+
+CREATE TABLE [Entigrama] (
+  [programId] INTEGER,
+  [entidadeId] INTEGER,
+  PRIMARY KEY ([programId], [entidadeId])
+)
+
+CREATE TABLE [Projama] (
+  [programId] INTEGER,
+  [projectId] INTEGER,
+  PRIMARY KEY ([programId], [projectId])
 )
 
 CREATE TABLE [UnidadeInvestigador] (
-  [id] INTEGER,
   [unidadeInvestigacaoId] INTEGER,
   [investigadorId] INTEGER,
-  PRIMARY KEY ([id])
+  PRIMARY KEY ([unidadeInvestigacaoId], [investigadorId])
 )
 
 ALTER TABLE [Projeto] ADD FOREIGN KEY ([statusId]) REFERENCES [Status] ([id])
@@ -166,17 +160,17 @@ ALTER TABLE [HistoricoStatus] ADD FOREIGN KEY ([projectId]) REFERENCES [Projeto]
 
 ALTER TABLE [HistoricoStatus] ADD FOREIGN KEY ([statusId]) REFERENCES [Status] ([id])
 
-ALTER TABLE [Projama] ADD FOREIGN KEY ([programId]) REFERENCES [Programa] ([programId])
+ALTER TABLE [Projama] ADD FOREIGN KEY ([programId]) REFERENCES [Programa] ([id])
 
 ALTER TABLE [Projama] ADD FOREIGN KEY ([projectId]) REFERENCES [Projeto] ([id])
 
 ALTER TABLE [Dometo] ADD FOREIGN KEY ([projectId]) REFERENCES [Projeto] ([id])
 
-ALTER TABLE [Dometo] ADD FOREIGN KEY ([dominioId]) REFERENCES [Dominio] ([dominioId])
+ALTER TABLE [Dometo] ADD FOREIGN KEY ([dominioId]) REFERENCES [Dominio] ([id])
 
-ALTER TABLE [AreaCientifica] ADD FOREIGN KEY ([dominioId]) REFERENCES [Dominio] ([dominioId])
+ALTER TABLE [AreaCientifica] ADD FOREIGN KEY ([dominioId]) REFERENCES [Dominio] ([id])
 
-ALTER TABLE [Entigrama] ADD FOREIGN KEY ([programId]) REFERENCES [Programa] ([programId])
+ALTER TABLE [Entigrama] ADD FOREIGN KEY ([programId]) REFERENCES [Programa] ([id])
 
 ALTER TABLE [Entigrama] ADD FOREIGN KEY ([entidadeId]) REFERENCES [Entidade] ([id])
 
@@ -186,8 +180,8 @@ ALTER TABLE [UnidadeInvestigador] ADD FOREIGN KEY ([investigadorId]) REFERENCES 
 
 ALTER TABLE [Participa] ADD FOREIGN KEY ([projectId]) REFERENCES [Projeto] ([id])
 
-ALTER TABLE [Participa] ADD FOREIGN KEY ([InvestigadorId]) REFERENCES [Investigador] ([id])
+ALTER TABLE [Participa] ADD FOREIGN KEY ([investigadorId]) REFERENCES [Investigador] ([id])
 
-ALTER TABLE [Papel] ADD FOREIGN KEY ([id]) REFERENCES [Participa] ([papelId])
+ALTER TABLE [Participa] ADD FOREIGN KEY ([papelId]) REFERENCES [Papel] ([id])
 
 GO
