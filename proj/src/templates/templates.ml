@@ -1,0 +1,10 @@
+let home = Home.home
+let project = Proj.proj_template
+let projects = Proj.projetos_contratos
+let contracts = Contratos.cont_template
+let entities = Ent.entidades
+let entity = Ent.ent_template
+let institutes = Institute.institutos
+let institute = Institute.inst_template
+let investigadores = Investigadores.investigadores
+let serve page name = Dream.html @@ General.base name page

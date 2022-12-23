@@ -156,7 +156,7 @@ ALTER TABLE [Contrato] ADD FOREIGN KEY ([projectId]) REFERENCES [Projeto] ([id])
 
 ALTER TABLE [Contrato] ADD FOREIGN KEY ([statusId]) REFERENCES [Status] ([id])
 
-ALTER TABLE [Investigador] ADD FOREIGN KEY ([idInstituto]) REFERENCES [Instituto] ([id])
+ALTER TABLE [Investigador] ADD FOREIGN KEY ([institutoId]) REFERENCES [Instituto] ([id])
 
 ALTER TABLE [Keywords] ADD FOREIGN KEY ([projectId]) REFERENCES [Projeto] ([id])
 

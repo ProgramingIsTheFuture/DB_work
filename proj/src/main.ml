@@ -3,19 +3,11 @@ let () =
   @@ Dream.router
        [
          Dream.get "/" @@ Handlers.home;
-         Dream.get "/projetos"
-         @@ Handlers.serve
-              (Pages.projetos_contratos (Handlers.query "SELECT * FROM users;"))
-              "Projetos / Contratos";
-         Dream.get "/investigadores"
-         @@ Handlers.serve Pages.investigadores "Investigadores";
-         Dream.get "/institutos"
-         @@ Handlers.serve Pages.institutos "Institutos";
-         Dream.get "/entidades"
-         @@ Handlers.serve Pages.entidades "Entidades";
-         ( Dream.get "/projetos/:id" @@
-         Handlers.serve Templates.proj_template "Projetos");
-         Dream.get "/inves_teste"
-         @@ Handlers.serve Templates.inves_template "Investigadores";
+         Dream.get "/projetos" @@ Handlers.projects;
+         Dream.get "/investigadores" @@ Handlers.investigators;
+         Dream.get "/institutos" @@ Handlers.institute;
+         Dream.get "/entidades" @@ Handlers.entities;
+         Dream.get "/projetos/:id" @@ Handlers.projects_id;
+         Dream.get "/inves_teste" @@ Handlers.inves_test;
          Dream.get "/assets/**" @@ Dream.static "./assets";
        ]

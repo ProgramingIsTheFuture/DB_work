@@ -1,14 +1,5 @@
 (executable
  (public_name proj)
  (name main)
- (libraries proj dream mssql))
+ (libraries proj dream mssql types templates))
 
-(rule
- (targets pages.ml)
- (deps pages.eml.ml)
- (action (run dream_eml %{deps} --workspace %{workspace_root})))
-
-(rule
- (targets templates.ml)
- (deps templates.eml.ml)
- (action (run dream_eml %{deps} --workspace %{workspace_root})))

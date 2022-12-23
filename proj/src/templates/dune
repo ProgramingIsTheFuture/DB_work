@@ -1,0 +1,39 @@
+(library
+ (name templates)
+ (package proj)
+ (libraries types dream))
+
+(rule
+ (targets proj.ml)
+ (deps proj.eml.ml)
+ (action (run dream_eml %{deps} --workspace %{workspace_root})))
+
+(rule
+ (targets general.ml)
+ (deps general.eml.ml)
+ (action (run dream_eml %{deps} --workspace %{workspace_root})))
+
+(rule
+ (targets contratos.ml)
+ (deps contratos.eml.ml)
+ (action (run dream_eml %{deps} --workspace %{workspace_root})))
+
+(rule
+ (targets ent.ml)
+ (deps ent.eml.ml)
+ (action (run dream_eml %{deps} --workspace %{workspace_root})))
+
+(rule
+ (targets institute.ml)
+ (deps institute.eml.ml)
+ (action (run dream_eml %{deps} --workspace %{workspace_root})))
+
+(rule
+ (targets home.ml)
+ (deps home.eml.ml)
+ (action (run dream_eml %{deps} --workspace %{workspace_root})))
+
+(rule
+ (targets investigadores.ml)
+ (deps investigadores.eml.ml)
+ (action (run dream_eml %{deps} --workspace %{workspace_root})))
