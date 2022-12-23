@@ -13,8 +13,8 @@ let () =
          @@ Handlers.serve Pages.institutos "Institutos";
          Dream.get "/entidades"
          @@ Handlers.serve Pages.entidades "Entidades";
-         ( Dream.get "/projetos/:id" @@ fun request ->
-           Dream.html (Dream.param request "id") );
+         ( Dream.get "/projetos/:id" @@
+         Handlers.serve Templates.proj_template "Projetos");
          Dream.get "/inves_teste"
          @@ Handlers.serve Templates.inves_template "Investigadores";
          Dream.get "/assets/**" @@ Dream.static "./assets";
