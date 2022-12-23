@@ -10,6 +10,7 @@ CREATE TABLE [Projeto] (
   [url] varchar(255),
   [doi] varchar(255),
   [statusId] INTEGER,
+  PRIMARY KEY ([id])
 )
 
 CREATE TABLE [Contrato] (
@@ -18,12 +19,13 @@ CREATE TABLE [Contrato] (
   [nome] varchar(255),
   [titulo] varchar(255),
   [descricao] varchar(255),
-  [statusId] INTEGER
+  [statusId] INTEGER,
+  PRIMARY KEY ([id])
 )
 
 CREATE TABLE [Investigador] (
   [id] INTEGER,
-  [idInstituto] INTEGER,
+  [institutoId] INTEGER,
   [nome] varchar(255),
   [idade] INTEGER,
   [morada] varchar(255),
@@ -48,23 +50,30 @@ CREATE TABLE [Participa] (
 CREATE TABLE [Keywords] (
   [id] INTEGER,
   [keyword] varchar(255),
-  [projectId] INTEGER
+  [projectId] INTEGER,
+  PRIMARY KEY ([id])
 )
 
 CREATE TABLE [Publicacao] (
   [id] INTEGER,
-  [projectId] INTEGER
+  [indicador] BIT,
+  [projectId] INTEGER,
+  [url] varchar(255),
+  [doi] varchar(255),
+  PRIMARY KEY ([id])
 )
 
 CREATE TABLE [Status] (
   [id] INTEGER,
-  [designacao] varchar(255)
+  [designacao] varchar(255),
+  PRIMARY KEY ([id])
 )
 
 CREATE TABLE [HistoricoStatus] (
   [id] INTEGER,
   [projectId] INTEGER,
-  [statusId] INTEGER
+  [statusId] INTEGER,
+  PRIMARY KEY ([id])
 )
 
 CREATE TABLE [Entidade] (
@@ -77,56 +86,66 @@ CREATE TABLE [Entidade] (
   [designacao] varchar(255),
   [morada] varchar(255),
   [url] varchar(255),
-  [pais] varchar(255)
+  [pais] varchar(255),
+  PRIMARY KEY ([id])
 )
 
 CREATE TABLE [Projama] (
   [id] INTEGER,
   [programId] INTEGER,
-  [projectId] INTEGER
+  [projectId] INTEGER,
+  PRIMARY KEY ([id])
 )
 
 CREATE TABLE [UnidadeInvestigacao] (
   [id] INTEGER,
-  [investigadorId] INTEGER
+  [investigadorId] INTEGER,
+  PRIMARY KEY ([id])
 )
 
 CREATE TABLE [Dometo] (
   [projectId] INTEGER,
-  [dominioId] INTEGER
+  [dominioId] INTEGER,
+  PRIMARY KEY ([id])
 )
 
 CREATE TABLE [Dominio] (
   [id] INTEGER,
-  [designacao] varchar(255)
+  [designacao] varchar(255),
+  PRIMARY KEY ([id])
 )
 
 CREATE TABLE [AreaCientifica] (
   [id] INTEGER,
   [dominioId] INTEGER,
-  [designacao] varchar(255)
+  [designacao] varchar(255),
+  PRIMARY KEY ([id])
 )
 
 CREATE TABLE [Entigrama] (
   [id] INTEGER,
   [programId] INTEGER,
-  [entidadeId] INTEGER
+  [entidadeId] INTEGER,
+  PRIMARY KEY ([id])
 )
 
 CREATE TABLE [Programa] (
   [programId] INTEGER,
-  [designacao] varchar(255)
+  [designacao] varchar(255),
+  PRIMARY KEY ([id])
 )
 
 CREATE TABLE [Instituto] (
   [id] INTEGER,
-  [designacao] varchar(255)
+  [designacao] varchar(255),
+  PRIMARY KEY ([id])
 )
 
 CREATE TABLE [UnidadeInvestigador] (
   [id] INTEGER,
   [unidadeInvestigacaoId] INTEGER,
-  [investigadorId] INTEGER
+  [investigadorId] INTEGER,
+  PRIMARY KEY ([id])
 )
 
 ALTER TABLE [Projeto] ADD FOREIGN KEY ([statusId]) REFERENCES [Status] ([id])
