@@ -395,7 +395,7 @@ VALUES
            ,'www.projetos.ubi.pt/doi/h2j401j2k'
            ,1),
 
-		   ('Psilocybin inside Tardigrades'
+	   ('Psilocybin inside Tardigrades'
            ,'Analisis of the possibility of Tardigrades having Psilobycin in their bloodstream'
            ,'Analyzing whether or not tardigrades, also known as water bears, have the psychedelic compound psilocybin in their bloodstream. The results of this project could provide new insights into the biology and evolution of tardigrades and the role of psychoactive compounds in the natural world.'
            ,'Análise da possibilidade de existir Psilobiscina na corrente sanguínea dos Tardígrados'
@@ -406,7 +406,7 @@ VALUES
            ,'www.projects.unesco.com/doi/rejected/jds92qsif0'
            ,2),
 
-		   ('Magnetic fields on turbulent fluids'
+	   ('Magnetic fields on turbulent fluids'
            ,'Examining the impact of a magnetic field on turbulent flow in a conducting fluid'
            ,'Studying the effect of an applied magnetic field on turbulent flow in a fluid that is capable of conducting electricity. Using computational fluid dynamics (CFD) simulations or experimental techniques to study the behavior of the flow and the characteristics of the magnetic field.'
            ,'Impacto de um campo magnético no fluxo turbulento de um fluido condutor'
