@@ -25,7 +25,7 @@ let query ?(params : Mssql.Param.t list = []) q =
 let home _request = serve home "Gestão de Projetos UBI"
 
 let projects _req =
-  serve (projects (query "SELECT * FROM users;")) "Projetos / Contratos"
+  serve (projects (query "SELECT id, nome FROM Projeto;")) "Projetos / Contratos"
 
 let investigators _req = serve investigadores "Investigadores"
 let institute _req = serve institutes "Institutos"
@@ -35,9 +35,16 @@ let projects_id req =
   let result =
     query
       ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
-      "SELECT * FROM projects WHERE id = $1;"
+      "SELECT * FROM projeto P WHERE id = $1"
     |> List.hd
   in
-  serve (project result) "Projetos"
+let result2 =
+    query
+      ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
+      "SELECT K.id, K.keyword FROM projeto P, keywords K WHERE P.id = $1 AND P.id \
+       = K.projectId;"
+  in
+
+  serve (project result result2) "Projetos"
 
 let inves_test _req = serve "" "Investigadores"

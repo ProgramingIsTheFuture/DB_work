@@ -1,3 +1,4 @@
+
 let navbar_home name =
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
@@ -9,6 +10,12 @@ let navbar_home name =
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
             <a class="nav-link" href="javascript:history.back()">Voltar</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Adicionar</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Remover</a>
           </li>
         </ul>
         <span class="navbar-text">
@@ -55,12 +62,6 @@ let navbar_inpage name =
           <li class="nav-item">
             <a class="nav-link" href="javascript:history.back()">Voltar</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Adicionar</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Remover</a>
-          </li>
         </ul>
         <span class="navbar-text">
           Gestão de Projetos UBI / Francisco Santos e Leonardo Santos
@@ -68,7 +69,7 @@ let navbar_inpage name =
       </div>
     </div>
   </nav>
-    
+
 let inves_template =
   navbar_inpage "Investigadores" ^
   <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">

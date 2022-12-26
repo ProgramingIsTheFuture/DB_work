@@ -1,41 +1,42 @@
 open Types
 
 let projetos_contratos _lst =
-  General.navbar_inpage "Projetos / Contratos" ^
+  General.navbar_home "Projetos / Contratos" ^
   <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
     <table class="table table-dark table-hover">
       <thead class="table-dark">
         <tr>
           <th scope="col">#</th>
-          <th scope="col">First</th>
+          <th scope="col">Projetos</th>
         </tr>
       </thead>
       <tbody class="table-group-divider"> 
         <% _lst |> List.iter begin fun x -> %> 
         <tr>
           <th scope="row"><%s x<|"id" %></th>
-          <td><a href='/projetos/<%s x<|"id" %>'><%s x<|"name" %></a></td>
+          <td><a href='/projetos/<%s x<|"id" %>'><%s x<|"nome" %></a></td>
         </tr>
         <% end; %>
       </tbody>
     </table>
   </div>
 
-let proj_template (_proj: data) =
+let proj_template (_proj: data) keywords =
   General.navbar_inpage "Projetos" ^
-  <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
-    <h1>Projeto Nome</h1>
-    <h5>Descrição</h5>
-
+  <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px; word-wrap: break-word;">
+    <h1><%s _proj <| "nome" %></h1>
+    
+    <div style="width: 30rem; word-wrap: normal; white-space:normal">
     <p style="margin-bottom: 2rem;"></p>
-    <p>Título:</p>
-    <p>Português:</p>
-    <p>Inglês:</p>
-    <p>Data de Início:</p>
-    <p>Data de Fim:</p>
-    <p>URL:</p>
-    <p>Digital Object Identifier:</p>
+    <p>Título: <%s _proj <| "titulo" %></p>
+    <p>Português: <%s _proj <| "portugues" %></p>
+    <p>Inglês: <%s _proj <| "ingles" %></p>
+    <p>Data de Início: <%s _proj <| "data_ini" %></p>
+    <p>Data de Fim: <%s _proj <| "data_fim" %></p>
+    <p>URL: <%s _proj <| "url" %></p>
+    <p>Digital Object Identifier: <%s _proj <| "doi" %></p>
     <p style="margin-bottom: 2rem;"></p>
+    </div>
 
     <h2 style="margin-bottom: 1rem;">Keywords</h2>
     <div style="width: 24rem" ;>
@@ -47,18 +48,12 @@ let proj_template (_proj: data) =
           </tr>
         </thead>
         <tbody class="table-group-divider">
+          <% keywords |> List.iter begin fun x -> %> 
           <tr>
-            <th scope="row">1</th>
-            <td>Keyword 1</td>
+            <th scope="row"><%s x<|"id" %></th>
+            <td><%s x<| "keyword" %></td>
           </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Keyword 2</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td>Keyword 3</td>
-          </tr>
+          <% end; %>
         </tbody>
       </table>
     </div>
@@ -93,6 +88,9 @@ let proj_template (_proj: data) =
         </tbody>
       </table>
     </div>
+
+    <p style="margin-bottom: 2rem;"></p>
+    <p style="margin-right: 20rem">Descrição: <%s _proj <| "descricao" %></p>
   </div>
 
   <div class="top-left2" style="position: absolute; top: 12em; left: 39em;">
