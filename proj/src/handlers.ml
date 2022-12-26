@@ -4,9 +4,9 @@ open Templates
 
 let conn =
   let host = "localhost" in
-  let db = "abc" in
+  let db = "bd" in
   let user = "sa" in
-  let password = "super(#)password" in
+  let password = "yourStrong(#)Password" in
   let port = Some 1433 in
   Mssql.with_conn ~host ~db ~user ~password ?port
 

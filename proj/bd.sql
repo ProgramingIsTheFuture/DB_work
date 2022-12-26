@@ -1,3 +1,8 @@
+CREATE DATABASE bd
+go
+use bd
+go
+
 CREATE TABLE [Projeto] (
   [id] int IDENTITY (1, 1),
   [nome] varchar(255) NOT NULL,
