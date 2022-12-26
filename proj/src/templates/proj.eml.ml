@@ -116,7 +116,7 @@ let proj_template (_proj: data) (id : int) keywords publicacoes investigadores a
           <% investigadores |> List.iter begin fun x -> %> 
           <tr>
             <th scope="row"><%s x <| "Iid" %></th>
-            <td><a href='/investigadores/<%s x<| "Iid" %>'><%s x<| "Inome" %></a></td>
+            <td><a href='/investigador/<%s x<| "Iid" %>'><%s x<| "Inome" %></a></td>
             <td><%s x <| "papel" %></td>
           </tr>
           <% end; %>
