@@ -34,15 +34,15 @@ CREATE TABLE [Investigador] (
 
 CREATE TABLE [Entidade] (
   [id] INT IDENTITY(1,1),
-  [nacional] BIT,
+  [nacional] BIT NOT NULL,
   [nome] varchar(255) NOT NULL,
   [descricao] varchar(255),
   [email] varchar(255),
   [telemovel] BIGINT,
-  [designacao] varchar(255),
+  [designacao] varchar(255) NOT NULL,
   [morada] varchar(255),
   [url] varchar(255),
-  [pais] varchar(255),
+  [pais] varchar(255) NOT NULL,
   PRIMARY KEY ([id])
 )
 
@@ -60,15 +60,16 @@ CREATE TABLE [Papel] (
 
 CREATE TABLE [Keywords] (
   [id] INT IDENTITY(1,1),
+  [projectId] INT NOT NULL,
   [keyword] varchar(255) NOT NULL,
-  [projectId] INT,
   PRIMARY KEY ([id])
 )
 
 CREATE TABLE [Publicacao] (
   [id] INT IDENTITY(1,1),
-  [indicador] BIT,
-  [projectId] INT,
+  [projectId] INT NOT NULL,
+  [indicador] BIT NOT NULL,
+  [nomeJornal] varchar(255),
   [url] varchar(255),
   [doi] varchar(255),
   PRIMARY KEY ([id])
@@ -97,6 +98,7 @@ CREATE TABLE [HistoricoStatus] (
   [id] INT IDENTITY(1,1),
   [projectId] INT,
   [statusId] INT,
+  [data] date,
   PRIMARY KEY ([id])
 )
 
@@ -127,15 +129,15 @@ CREATE TABLE [AreaProjeto] (
 )
 
 CREATE TABLE [Entigrama] (
-  [programId] INT,
   [entidadeId] INT,
-  PRIMARY KEY ([programId], [entidadeId])
+  [programId] INT,
+  PRIMARY KEY ([entidadeId], [programId])
 )
 
 CREATE TABLE [Projama] (
-  [programId] INT,
   [projectId] INT,
-  PRIMARY KEY ([programId], [projectId])
+  [programId] INT,
+  PRIMARY KEY ([projectId], [programId])
 )
 
 CREATE TABLE [UnidadeInvestigador] (
@@ -282,7 +284,51 @@ VALUES
 	'IFT', 
 	'University College London, Gower Street, London', 
 	'www.ucl.ac.uk', 
-	'Inglaterra')
+	'Inglaterra'),
+
+	(0,
+	'European Union Funding',
+	'Funding provided by the supranational political and economic union of 27 member states that are located primarily in Europe.',
+	'funding@eu.eu',
+	0080067891011,
+	'EUFP',
+	'Bruxels, Belgium',
+	'www.european-union.europa.eu/funding',
+	'Belgica'),
+
+	(0,
+	'UNESCO Funding',
+	'Funding provided by the Educational, Scientific and Cultural Organization of the United Nations',
+	'funding@unesco.org',
+	33145681729,
+	'UNFP',
+	'Paris, France',
+	'www.unesco.org/funding',
+	'United States')
+	
+-- PROGRAMAS
+INSERT INTO [dbo].[Programa]
+           ([designacao])
+     VALUES
+           ('Portugal 2020'),
+		   ('Concurso Projetos Portugueses'),
+		   ('European Best Computer Science Projects Contest'),
+		   ('Horizon 2020'),
+		   ('UNESCO Funding Program'),
+		   ('World Distinguished Project Funding Program')
+
+-- ENTIDADES <-> PROGRAMAS (Entigrama)
+INSERT INTO [dbo].[Entigrama]
+           ([entidadeId]
+           ,[programId])
+     VALUES
+           (1, 1), (1, 2), (1, 4), (1, 5),
+		   (2, 2),
+		   (3, 3),
+		   (4, 3), (4, 4), (4, 5),
+		   (5, 3), (5, 4), (5, 5), (5, 6),
+		   (6, 5), (6, 6)
+
 
 -- DOMINIOS
 INSERT INTO [dbo].[Dominio] ([designacao])
@@ -338,12 +384,12 @@ VALUES
 	('Unidade Matemática e Física UNESCO'),
 	('Unidade Bio UNESCO')
 
--- INVESTIGADORES <-> UNIDADES DE INVESTIGACAO
+-- INVESTIGADORES <-> UNIDADES DE INVESTIGACAO (UnidadeInvestigador)
 INSERT INTO [dbo].[UnidadeInvestigador]
            ([investigadorId]
            ,[unidadeInvestigacaoId])
 VALUES
-	(1, 1), (1, 2), (1, 3), (1, 8),
+	(1, 1), (1, 2), (1, 8),
 	(2, 1), (2, 4),
 	(3, 1), (3, 3), (3, 4),
 	(4, 1),
@@ -387,7 +433,7 @@ VALUES
            ('Blockchain: Contagem de votos'
            ,'Blockchain: Aplicações a elieições públicas transparentes e seguras'
            ,'Visa utilizar a tecnologia blockchain para criar um sistema de votação mais seguro e transparente. A blockchain permite que os votos sejam registrados de forma segura e imutável, garantindo a integridade do processo eleitoral.'
-           ,''
+           ,NULL
            ,'Blockchain-based voting system for transparent and secure elections'
            ,'2020-10-23'
            ,'2021-12-05'
@@ -399,7 +445,7 @@ VALUES
            ,'Analisis of the possibility of Tardigrades having Psilobycin in their bloodstream'
            ,'Analyzing whether or not tardigrades, also known as water bears, have the psychedelic compound psilocybin in their bloodstream. The results of this project could provide new insights into the biology and evolution of tardigrades and the role of psychoactive compounds in the natural world.'
            ,'Análise da possibilidade de existir Psilobiscina na corrente sanguínea dos Tardígrados'
-           ,''
+           ,NULL
            ,'2019-05-21'
            ,'2020-02-18'
            ,'www.projects.unesco.com/rejected/psilobycin-tardigrades'
@@ -410,14 +456,14 @@ VALUES
            ,'Examining the impact of a magnetic field on turbulent flow in a conducting fluid'
            ,'Studying the effect of an applied magnetic field on turbulent flow in a fluid that is capable of conducting electricity. Using computational fluid dynamics (CFD) simulations or experimental techniques to study the behavior of the flow and the characteristics of the magnetic field.'
            ,'Impacto de um campo magnético no fluxo turbulento de um fluido condutor'
-           ,''
+           ,NULL
            ,'2021-05-21'
            ,NULL
-           ,'www.projects.ue.com/magnetic-tubulence'
-           ,'www.projects.ue.com/doi/bajs82no12'
+           ,'www.projects.eu.org/magnetic-turbulence'
+           ,'www.projects.eu.org/doi/bajs82no12'
            ,4)
 
--- PROJETOS <-> AREAS CIENTIFICAS
+-- PROJETOS <-> AREAS CIENTIFICAS (AreaProjeto)
 INSERT INTO [dbo].[AreaProjeto]
            ([projectId]
            ,[areaCientificaId])
@@ -425,6 +471,71 @@ VALUES
         (1, 4), (1, 5),
 	(2, 1), (2, 3),
 	(3, 4), (3, 5), (3, 6)
+
+-- KEYWORDS
+INSERT INTO [dbo].[Keywords]
+           ([projectId]
+           ,[keyword])
+     VALUES
+           (1, 'Blockchain'), (1, 'Eleições'), (1, 'Votos'),
+		   (2, 'Psilobycin'), (2, 'Tardigrades'), (2, 'Bloodstream'),
+		   (3, 'Magnetitism'), (2, 'Fields'), (3, 'Fuilds'), (3, 'Turbulence'), (3, 'Electricity')
+
+-- PUBLICACOES
+INSERT INTO [dbo].[Publicacao]
+           ([projectId]
+           ,[indicador]
+		   ,[nomeJornal]
+           ,[url]
+           ,[doi])
+     VALUES
+           (1, 1, 'Jornal UBI', 'www.publicacoes.ubi.pt/blockchain-para-eleicoes', 'www.publicacoes.ubi.pt/doi/h2j401j2k'), 
+		   (1, 1, 'IEEE-Access', 'www.ieeeaccess.ieee.org/project/election-blockchain', 'www.ieeeaccess.ieee.org//doi/q2sjf928j'), 
+		   (3, 1, 'Jornal UBI', 'www.publicacoes.ubi.pt/turbulencia-magnetica', 'www.publicacoes.ubi.pt/doi/jdka2j4k'), 
+		   (3, 1, 'ACM Transactions on Graphics', 'www.dl.acm.org/tog/projects/magnetic-turbulence', 'www.dl.acm.org/tog/doi/ko10spd2'),
+		   (3, 1, 'Computational Geometry: Theory and Applications', 'www.dl.acm.org/coge/projects/magnetic-turbulence', 'www.dl.acm.org/coge/doi/aoqjd9481')
+
+-- HISTORICO STATUS
+INSERT INTO [dbo].[HistoricoStatus]
+           ([projectId]
+           ,[statusId]
+		   ,[data])
+     VALUES
+           (1, 1, '2020-10-23'), (1, 4, '2020-10-24'), (1, 7, '2021-11-12'), (1, 3, '2021-12-05'),
+		   (2, 1, '2019-05-21'), (2, 4, '2019-05-22'), (2, 7, '2019-12-30'), (2, 2, '2020-02-17'), (2, 5, '2020-02-18'),
+		   (3, 4, '2021-05-21'), (3, 4, '2021-05-23')
+
+-- PROJETOS <-> PROGRAMAS (Projama)
+INSERT INTO [dbo].[Projama]
+           ([projectId]
+           ,[programId])
+     VALUES
+           (1, 1), (1, 3), (1, 4),
+		   (2, 5),
+		   (3, 3), (3, 6)
+
+-- PROJETOS <-> INVESTIGADORES (Participa)
+INSERT INTO [dbo].[Participa]
+           ([projectId]
+           ,[investigadorId]
+           ,[papelId]
+           ,[tempoPerc])
+     VALUES
+           (1, 1, 4, 35),
+		   (1, 2, 3, 65),
+		   (1, 3, 1, 20),
+		   (1, 4, 2, 10),
+		   (2, 5, 3, 75),
+		   (2, 6, 4, 45),
+		   (2, 20, 1, 25),
+		   (3, 1, 3, 65),
+		   (3, 2, 4, 35),
+		   (3, 8, 4, 25),
+		   (3, 12, 2, 25),
+		   (3, 11, 2, 20),
+		   (3, 15, 1, 45),
+		   (3, 18, 4, 30),
+		   (3, 21, 4, 35)  
 GO
 
 --SELECT I.nome, U.nome FROM UnidadeInvestigador UI, Investigador I, UnidadeInvestigacao U
@@ -437,3 +548,8 @@ GO
 --  and AP.areaCientificaId = A.id
 --  and A.dominioId = D.id
 --ORDER BY P.id
+
+--SELECT E.id, E.nome, P.designacao FROM Entidade E, Entigrama EP, Programa P 
+--WHERE E.id = EP.entidadeId
+--  and P.id = EP.programId
+--ORDER BY E.id
