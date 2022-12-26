@@ -400,7 +400,7 @@ INSERT INTO [dbo].[Keywords] ([projectId]
   VALUES 
   (1, 'Blockchain'), (1, 'Eleições'), (1, 'Votos'),
   (2, 'Psilobycin'), (2, 'Tardigrades'), (2, 'Bloodstream'),
-  (3, 'Magnetitism'), (2, 'Fields'), (3, 'Fuilds'), (3, 'Turbulence'), (3, 'Electricity')
+  (3, 'Magnetitism'), (3, 'Fields'), (3, 'Fuilds'), (3, 'Turbulence'), (3, 'Electricity')
 
 -- PUBLICACOES
 INSERT INTO [dbo].[Publicacao] ([projectId]

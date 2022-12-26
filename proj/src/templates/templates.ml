@@ -1,6 +1,7 @@
 let home = Home.home
 let project = Proj.proj_template
 let projects = Proj.projetos_contratos
+let project_entities = Proj.proj_entities
 let contracts = Contratos.cont_template
 let entities = Ent.entidades
 let entity = Ent.ent_template

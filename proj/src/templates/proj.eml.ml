@@ -1,13 +1,13 @@
 open Types
 
 let projetos_contratos lst =
-  General.navbar_inpage "Projetos / Contratos" ^
+  General.navbar_home "Projetos / Contratos" ^
   <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
     <table class="table table-dark table-hover">
       <thead class="table-dark">
         <tr>
           <th scope="col">#</th>
-          <th scope="col">First</th>
+          <th scope="col">Projetos</th>
         </tr>
       </thead>
       <tbody class="table-group-divider"> 
@@ -21,21 +21,35 @@ let projetos_contratos lst =
     </table>
   </div>
 
-let proj_template (_proj: data) =
+let proj_template (_proj: data) (id : int) keywords publicacoes investigadores areas_dominios =
   General.navbar_inpage "Projetos" ^
-  <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
-    <h1>Projeto Nome</h1>
-    <h5>Descrição</h5>
+  <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px; word-wrap: break-word;">
+    <h1><%s _proj <| "nome" %></h1>
+    
+    <div style="width: 30rem; word-wrap: normal; white-space:normal">
+    <p style="margin-bottom: 2rem;"></p>
+    <h5 style="color: #2895bd">Título:</h5>
+    <p><%s _proj <| "titulo" %></p>
 
+    <h5 style="color: #2895bd">Português:</h5>
+    <p><%s _proj <| "portugues" %></p>
+
+    <h5 style="color: #2895bd">Inglês:</h5> 
+    <p><%s _proj <| "ingles" %></p>
+
+    <h5 style="color: #2895bd">Data de Início:</h5>
+    <p><%s _proj <| "data_ini" %></p>
+
+    <h5 style="color: #2895bd">Data de Fim:</h5> 
+    <p><%s _proj <| "data_fim" %></p>
+
+    <h5 style="color: #2895bd">URL:</h5> 
+    <p><%s _proj <| "url" %></p>
+
+    <h5 style="color: #2895bd">Digital Object Identifier:</h5>
+    <p><%s _proj <| "doi" %></p>
     <p style="margin-bottom: 2rem;"></p>
-    <p>Título:</p>
-    <p>Português:</p>
-    <p>Inglês:</p>
-    <p>Data de Início:</p>
-    <p>Data de Fim:</p>
-    <p>URL:</p>
-    <p>Digital Object Identifier:</p>
-    <p style="margin-bottom: 2rem;"></p>
+    </div>
 
     <h2 style="margin-bottom: 1rem;">Keywords</h2>
     <div style="width: 24rem" ;>
@@ -47,18 +61,12 @@ let proj_template (_proj: data) =
           </tr>
         </thead>
         <tbody class="table-group-divider">
+          <% keywords |> List.iter begin fun x -> %> 
           <tr>
-            <th scope="row">1</th>
-            <td>Keyword 1</td>
+            <th scope="row"><%s x<|"id" %></th>
+            <td><%s x <| "keyword" %></td>
           </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Keyword 2</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td>Keyword 3</td>
-          </tr>
+          <% end; %>
         </tbody>
       </table>
     </div>
@@ -72,30 +80,28 @@ let proj_template (_proj: data) =
             <th scope="col">#</th>
             <th scope="col">Nome</th>
             <th scope="col">URL</th>
+            <th scope="col">DOI</th>
           </tr>
         </thead>
         <tbody class="table-group-divider">
+          <% publicacoes |> List.iter begin fun x -> %> 
           <tr>
-            <th scope="row">1</th>
-            <td>Pub1</td>
-            <td>www.publicacao1.com/publicacao</td>
+            <th scope="row"><%s x<|"id" %></th>
+            <td><%s x <| "nomeJornal" %></td>
+            <td><%s x <| "url" %></td>
+            <td><%s x <| "doi" %></td>
           </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Pub2</td>
-            <td>www.publicacao2.com/publicacao</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td>Pub3</td>
-            <td>www.publicacao3.com/publicacao</td>
-          </tr>
+          <% end; %>
         </tbody>
       </table>
     </div>
+
+    <p style="margin-bottom: 2rem;"></p>
+    <h5 style="color: #2895bd">Descrição:</h5> 
+    <p style="margin-right: 40rem;"><%s _proj <| "descricao" %></p>
   </div>
 
-  <div class="top-left2" style="position: absolute; top: 12em; left: 39em;">
+  <div class="top-left2" style="position: absolute; top: 12em; left: 64em;">
     <h2 style="margin-bottom: 1rem;">Investigadores</h2>
     <div style="width: 24rem" ;>
       <table class="table table-dark table-hover">
@@ -107,103 +113,26 @@ let proj_template (_proj: data) =
           </tr>
         </thead>
         <tbody class="table-group-divider">
+          <% investigadores |> List.iter begin fun x -> %> 
           <tr>
-            <th scope="row">1</th>
-            <td>Investigador 1</td>
-            <td>Papel I1</td>
+            <th scope="row"><%s x <| "Iid" %></th>
+            <td><a href='/investigadores/<%s x<| "Iid" %>'><%s x<| "Inome" %></a></td>
+            <td><%s x <| "papel" %></td>
           </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Investigador 2</td>
-            <td>Papel I2</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td>Investigador 3</td>
-            <td>Papel I3</td>
-          </tr>
+          <% end; %>
         </tbody>
       </table>
     </div>
     <p style="margin-bottom: 2rem;"></p>
+    <h2 style="margin-bottom: 1rem;">Áreas e Domínios Cientificos</h2>
+      <% areas_dominios |> List.iter begin fun x -> %> 
+        <p><%s x <| "area" %> -> <%s x <| "dominio" %></p>
+      <% end; %>
 
-    <h2 style="margin-bottom: 1rem;">Domínios Cientificos</h2>
-    PLACEHOLDER
+    <p style="margin-bottom: 2rem;"></p>
+    <h2><a href='<%s id |> string_of_int %>/financiamento'>Detalhes de financiamento</a></h2>
   </div>
 
-  <div class="centre" style="position: absolute; top: 12em; left: 78em;">
-    <h2 style="margin-bottom: 1rem;">Contrato Associado</h2>
-    <div style="width: 24rem" ;>
-      <table class="table table-dark table-hover">
-        <thead class="table-dark">
-          <tr>
-            <th scope="col">IDCont</th>
-            <th scope="col">Nome</th>
-          </tr>
-        </thead>
-        <tbody class="table-group-divider">
-          <tr>
-            <td>x</td>
-            <td>Nome Contrato</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <p style="margin-bottom: 2rem;"></p>
-
-    <h2 style="margin-bottom: 1rem;">Entidades Financiadoras</h2>
-    <div style="width: 24rem" ;>
-      <table class="table table-dark table-hover">
-        <thead class="table-dark">
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Nome</th>
-          </tr>
-        </thead>
-        <tbody class="table-group-divider">
-          <tr>
-            <th scope="row">1</th>
-            <td>Entidade 1</td>
-          </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Entidade 2</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td>Entidade 3</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <p style="margin-bottom: 2rem;"></p>
-
-    <h2 style="margin-bottom: 1rem;">Programas</h2>
-    <div style="width: 24rem" ;>
-      <table class="table table-dark table-hover">
-        <thead class="table-dark">
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Nome</th>
-          </tr>
-        </thead>
-        <tbody class="table-group-divider">
-          <tr>
-            <th scope="row">1</th>
-            <td>Programa 1</td>
-          </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Programa 2</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td>Programa 3</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
 
   <div class="centre" style="position: absolute; top: 12em; left: 120em;">
     <h2 style="margin-bottom: 1rem;">Estados</h2>
@@ -252,4 +181,86 @@ let proj_template (_proj: data) =
     </a>
   </div>
 
+let proj_entities (_proj : data) contrato =
+  General.navbar_inpage "Projetos" ^
+  <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px; word-wrap: break-word;">
+    <h1><%s _proj <| "nome" %></h1>
+  </div>
+  <div class="left" style="position: absolute; top: 12em; left: 4em;">
+    <h2 style="margin-bottom: 1rem;">Contrato Associado</h2>
+    <div style="width: 24rem" ;>
+      <table class="table table-dark table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">IDCont</th>
+            <th scope="col">Nome</th>
+          </tr>
+        </thead>
+        <tbody class="table-group-divider">
+          <% contrato |> List.iter begin fun x -> %> 
+          <tr>
+            <th scope="row"><%s x <| "id" %></th>
+            <td><a href='/contratos/<%s x<| "id" %>'><%s x<| "nome" %></a></td>
+          </tr>
+          <% end; %>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
+  <div class="centre" style="position: absolute; top: 12em; left: 64em;">
+    <h2 style="margin-bottom: 1rem;">Entidades Financiadoras</h2>
+    <div style="width: 24rem" ;>
+      <table class="table table-dark table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Nome</th>
+          </tr>
+        </thead>
+        <tbody class="table-group-divider">
+          <tr>
+            <th scope="row">1</th>
+            <td>Entidade 1</td>
+          </tr>
+          <tr>
+            <th scope="row">2</th>
+            <td>Entidade 2</td>
+          </tr>
+          <tr>
+            <th scope="row">3</th>
+            <td>Entidade 3</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-bottom: 2rem;"></p>
+  </div>
+
+  <div class="right" style ="position: absolute; top: 12em; left: 120em;">
+    <h2 style="margin-bottom: 1rem;">Programas</h2>
+    <div style="width: 24rem" ;>
+      <table class="table table-dark table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Nome</th>
+          </tr>
+        </thead>
+        <tbody class="table-group-divider">
+          <tr>
+            <th scope="row">1</th>
+            <td>Programa 1</td>
+          </tr>
+          <tr>
+            <th scope="row">2</th>
+            <td>Programa 2</td>
+          </tr>
+          <tr>
+            <th scope="row">3</th>
+            <td>Programa 3</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
