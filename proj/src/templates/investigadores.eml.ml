@@ -1,26 +1,22 @@
-let investigadores = 
+open Types
+
+let investigadores (invs: data list) = 
   General.navbar_inpage "Investigadores" ^
   <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
     <table class="table table-dark table-hover">
       <thead class="table-dark">
         <tr>
           <th scope="col">#</th>
-          <th scope="col">First</th>
+          <th scope="col">Nome</th>
         </tr>
       </thead>
       <tbody class="table-group-divider">
+        <% invs |> List.iter begin fun x -> %> 
         <tr>
-          <th scope="row">1</th>
-          <td><a href="/inves_teste">Mark</a></td>
+          <th scope="row"><%s x<|"id" %></th>
+          <td><a href='/investigador/<%s x<|"id" %>'><%s x<|"nome" %></a></td>
         </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>Jacob</td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td>Larry</td>
-        </tr>
+        <% end; %>
       </tbody>
     </table>
   </div>
@@ -32,3 +28,27 @@ let investigadores =
   </div>
 
 
+let investigador (invs: data) =
+  General.navbar_inpage "Investigador" ^
+  <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
+    <table class="table table-dark table-hover">
+      <thead class="table-dark">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Nome</th>
+          <th scope="col">Idade</th>
+          <th scope="col">Morada</th>
+          <th scope="col">Instituto</th>
+        </tr>
+      </thead>
+      <tbody class="table-group-divider">
+        <tr>
+          <th scope="row"><%s invs<|"id" %></th>
+          <td><%s invs<|"nome" %></td>
+          <td><%s invs<|"idade" %></td>
+          <td><%s invs<|"morada" %></td>
+          <td><%s invs<|"instituto" %></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>

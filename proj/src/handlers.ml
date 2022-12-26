@@ -25,17 +25,29 @@ let query ?(params : Mssql.Param.t list = []) q =
 let home _request = serve home "Gestão de Projetos UBI"
 
 let projects _req =
-  serve (projects (query "SELECT * FROM users;")) "Projetos / Contratos"
+  serve (projects (query "SELECT * FROM projeto;")) "Projetos / Contratos"
 
-let investigators _req = serve investigadores "Investigadores"
+let investigators _req =
+  serve (investigadores (query "SELECT * FROM investigador;")) "Investigadores"
+
+let investigator req =
+  let result =
+    query
+      ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
+      "SELECT inves.*, inst.designacao as instituto FROM investigador inves \
+       inner join instituto inst ON inves.institutoId = inst.id WHERE inves.id \
+       = $1;"
+    |> List.hd
+  in
+
+  serve (investigador result) "Investigador"
+
 let institute _req = serve institutes "Institutos"
 let entities _req = serve entities "Entidades"
 
 let projects_id req =
   let result =
-    query
-      ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
-      "SELECT * FROM projects WHERE id = $1;"
+    query ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ] ""
     |> List.hd
   in
   serve (project result) "Projetos"

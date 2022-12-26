@@ -7,4 +7,5 @@ let entity = Ent.ent_template
 let institutes = Institute.institutos
 let institute = Institute.inst_template
 let investigadores = Investigadores.investigadores
+let investigador = Investigadores.investigador
 let serve page name = Dream.html @@ General.base name page

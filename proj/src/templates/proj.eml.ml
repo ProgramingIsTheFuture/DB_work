@@ -1,6 +1,6 @@
 open Types
 
-let projetos_contratos _lst =
+let projetos_contratos lst =
   General.navbar_inpage "Projetos / Contratos" ^
   <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
     <table class="table table-dark table-hover">
@@ -11,10 +11,10 @@ let projetos_contratos _lst =
         </tr>
       </thead>
       <tbody class="table-group-divider"> 
-        <% _lst |> List.iter begin fun x -> %> 
+        <% lst |> List.iter begin fun x -> %> 
         <tr>
           <th scope="row"><%s x<|"id" %></th>
-          <td><a href='/projetos/<%s x<|"id" %>'><%s x<|"name" %></a></td>
+          <td><a href='/projetos/<%s x<|"id" %>'><%s x<|"nome" %></a></td>
         </tr>
         <% end; %>
       </tbody>
