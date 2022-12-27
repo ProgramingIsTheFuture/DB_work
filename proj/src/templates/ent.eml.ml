@@ -81,7 +81,7 @@ let ent_template (ent: data list) (projs: data list) =
           <% ent |> List.iter begin fun x -> %>
           <tr>
             <th scope="row"><%s x <| "Pid" %></th>
-            <td><%s x<|"id"%><%s x <| "pdesignacao" %></td>
+            <td><%s x <| "pdesignacao" %></td>
           </tr>
           <% end; %>
         </tbody>
