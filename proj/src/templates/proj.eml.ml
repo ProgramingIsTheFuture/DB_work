@@ -27,6 +27,8 @@ let proj_template (_proj: data) (id : int) keywords publicacoes investigadores a
   General.navbar_inpage "Projeto" ^
   <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px; word-wrap: break-word;">
     <h1><%s _proj <| "nome" %></h1>
+    <h5 style="color: #2895bd">Descrição:</h5> 
+    <p style="margin-right: 40rem;"><%s _proj <| "descricao" %></p>
     
     <div style="width: 30rem; word-wrap: normal; white-space:normal">
     <p style="margin-bottom: 2rem;"></p>
@@ -78,11 +80,9 @@ let proj_template (_proj: data) (id : int) keywords publicacoes investigadores a
     </div>
 
     <p style="margin-bottom: 2rem;"></p>
-    <h5 style="color: #2895bd">Descrição:</h5> 
-    <p style="margin-right: 40rem;"><%s _proj <| "descricao" %></p>
   </div>
 
-  <div class="top-left2" style="position: absolute; top: 12em; left: 64em;">
+  <div class="top-left2" style="position: absolute; top: 17em; left: 64em;">
     <h2 style="margin-bottom: 1rem;">Keywords</h2>
     <div style="width: 24rem" ;>
       <table class="table table-dark table-hover">
@@ -118,7 +118,7 @@ let proj_template (_proj: data) (id : int) keywords publicacoes investigadores a
           <% investigadores |> List.iter begin fun x -> %> 
           <tr>
             <th scope="row"><%s x <| "Iid" %></th>
-            <td><a href='/investigador/<%s x<| "Iid" %>'><%s x<|"Inome" %></a></td>
+            <td><a href='/investigadores/<%s x<| "Iid" %>'><%s x<|"Inome" %></a></td>
             <td><%s x<|"papel" %></td>
           </tr>
           <% end; %>
@@ -136,7 +136,7 @@ let proj_template (_proj: data) (id : int) keywords publicacoes investigadores a
   </div>
 
 
-  <div class="centre" style="position: absolute; top: 12em; left: 120em;">
+  <div class="centre" style="position: absolute; top: 17em; left: 120em;">
     <h2 style="margin-bottom: 1rem;">Estados</h2>
     <h5 style="color: #2895bd">Atual:</h5> 
     <p style="margin-right: 40rem;"><%s status |> List.hd <| "designacao" %></p>
@@ -193,7 +193,7 @@ let proj_entities (_proj : data) contrato entidades programas =
           <% contrato |> List.iter begin fun x -> %> 
           <tr>
             <th scope="row"><%s x<|"id" %></th>
-            <td><a href='/contrato/<%s x<|"id" %>'><%s x<|"nome" %></a></td>
+            <td><a href='/contratos/<%s x<|"id" %>'><%s x<|"nome" %></a></td>
           </tr>
           <% end; %>
         </tbody>
@@ -215,7 +215,7 @@ let proj_entities (_proj : data) contrato entidades programas =
           <% entidades |> List.iter begin fun x -> %> 
           <tr>
             <th scope="row"><%s x <| "id" %></th>
-            <td><a href='/entidade/<%s x<|"id" %>'><%s x<|"nome" %></a></td>
+            <td><a href='/entidades/<%s x<|"id" %>'><%s x<|"nome" %></a></td>
           </tr>
           <% end; %>
         </tbody>
@@ -238,7 +238,7 @@ let proj_entities (_proj : data) contrato entidades programas =
           <% programas |> List.iter begin fun x -> %> 
           <tr>
             <th scope="row"><%s x <| "id" %></th>
-            <td><a href='/programa/<%s x<|"id" %>'><%s x<|"designacao" %></a></td>
+            <td><a href='/programas/<%s x<|"id" %>'><%s x<|"designacao" %></a></td>
           </tr>
           <% end; %>
         </tbody>

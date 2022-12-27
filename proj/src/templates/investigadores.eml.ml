@@ -14,7 +14,7 @@ let investigadores (invs: data list) =
         <% invs |> List.iter begin fun x -> %> 
         <tr>
           <th scope="row"><%s x<|"id" %></th>
-          <td><a href='/investigador/<%s x<|"id" %>'><%s x<|"nome" %></a></td>
+          <td><a href='/investigadores/<%s x<|"id" %>'><%s x<|"nome" %></a></td>
         </tr>
         <% end; %>
       </tbody>

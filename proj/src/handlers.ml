@@ -80,6 +80,11 @@ let entity req =
   in
   serve (entity programas projects) "Instituto"
 
+let programs _req =
+  serve
+    (programs (query "SELECT id, designacao FROM Programa;"))
+    "Programas"
+
 let projects_id req =
   let id = Dream.param req "id" |> int_of_string in
   let result =
@@ -179,5 +184,30 @@ let contracts_id req =
       "SELECT P.id, P.nome FROM Projeto P INNER JOIN Contrato C ON P.id = C.projectId WHERE C.id = $1"
   in
   serve (contract result result2) "Contratos"
+
+let programs_id req =
+  let id = Dream.param req "id" |> int_of_string in
+  let result =
+      query
+      ~params:[ Mssql.Param.Int id ]
+      "SELECT * FROM Programa P WHERE P.id = $1"
+  in
+  let result2 =
+      query
+      ~params:[ Mssql.Param.Int id ]
+      "SELECT E.id, E.nome FROM Programa Pr \
+      INNER JOIN Entigrama EP ON Pr.id = EP.programId \
+      INNER JOIN Entidade E ON EP.entidadeId = E.id \
+      WHERE Pr.id = $1"
+  in
+  let result3 =
+      query
+      ~params:[ Mssql.Param.Int id ]
+      "SELECT P.id, P.nome FROM Programa Pr \
+      INNER JOIN Projama PP ON Pr.id = PP.programId \
+      INNER JOIN Projeto P ON PP.projectId = P.id \
+      WHERE Pr.id = $1"
+  in
+  serve (program result result2 result3) "Programas"
 
 let inves_test _req = serve "" "Investigadores"

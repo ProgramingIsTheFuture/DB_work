@@ -9,4 +9,6 @@ let institutes = Institute.institutos
 let institute = Institute.inst_template
 let investigadores = Investigadores.investigadores
 let investigador = Investigadores.investigador
+let programs = Prog.programas
+let program = Prog.prog_template
 let serve page name = Dream.html @@ General.base name page

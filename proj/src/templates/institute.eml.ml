@@ -14,7 +14,7 @@ let institutos (inst: data list) =
         <% inst |> List.iter begin fun x -> %> 
         <tr>
           <th scope="row"><%s x<|"id" %></th>
-          <td><a href='/institute/<%s x<|"id" %>'><%s x<|"designacao" %></a></td>
+          <td><a href='/institutos/<%s x<|"id" %>'><%s x<|"designacao" %></a></td>
         </tr>
         <% end; %>
       </tbody>
@@ -42,7 +42,7 @@ let inst_template (inst: data list) =
           <% inst |> List.iter begin fun x -> %> 
           <tr>
             <th scope="row"><%s x<|"id" %></th>
-            <td><a href='/investigador/<%s x<|"id" %>'><%s x<|"nome" %></a></td>
+            <td><a href='/investigadores/<%s x<|"id" %>'><%s x<|"nome" %></a></td>
           </tr>
           <% end; %>
         </tbody>

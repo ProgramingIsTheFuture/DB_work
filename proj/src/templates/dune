@@ -37,3 +37,8 @@
  (targets investigadores.ml)
  (deps investigadores.eml.ml)
  (action (run dream_eml %{deps} --workspace %{workspace_root})))
+
+(rule
+ (targets prog.ml)
+ (deps prog.eml.ml)
+ (action (run dream_eml %{deps} --workspace %{workspace_root})))

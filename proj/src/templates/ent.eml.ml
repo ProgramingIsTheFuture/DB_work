@@ -27,7 +27,7 @@ let entidades (ents: data list) =
         <% ents |> List.iter begin fun x -> %> 
         <tr>
           <th scope="row"><%s x<|"id" %></th>
-          <td><a href='/entidade/<%s x<|"id" %>'><%s x<|"nome" %></a></td>
+          <td><a href='/entidades/<%s x<|"id" %>'><%s x<|"nome" %></a></td>
           <td><%s x<|"designacao" %></td>
         </tr>
         <% end; %>
@@ -40,8 +40,8 @@ let ent_template (ent: data list) (projs: data list) =
   <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
     <% ent |> List.hd |> begin fun x -> %>
     <h1><%s x<|"nome" %></h1>
-    <h5><%s x<|"descricao" %></h5>
-    <p style="margin-bottom: 3rem;"></p>
+    <h5 style="color: #2895bd">Descrição:</h5> 
+    <p style="margin-right: 40rem;"><%s x <| "descricao" %></p>
     
     <div style="width: 30rem; word-wrap: normal; white-space:normal">
     <h5 style="color: #2895bd">Designacao:</h5>
@@ -67,7 +67,7 @@ let ent_template (ent: data list) (projs: data list) =
     </div>
   </div>
 
-  <div class="top-left2" style="position: absolute; top: 14em; left: 39em;">
+  <div class="top-left2" style="position: absolute; top: 16em; left: 39em;">
     <h2 style="margin-bottom: 1rem;">Programas</h2>
     <div style="width: 24rem" ;>
       <table class="table table-dark table-hover">
@@ -90,7 +90,7 @@ let ent_template (ent: data list) (projs: data list) =
     <p style="margin-bottom: 2rem;"></p>
   </div>
 
-  <div class="centre" style="position: absolute; top: 14em; left: 78em;">
+  <div class="centre" style="position: absolute; top: 16em; left: 78em;">
     <h2 style="margin-bottom: 1rem;">Projetos Financiados</h2>
     <div style="width: 24rem" ;>
       <table class="table table-dark table-hover">
@@ -113,7 +113,7 @@ let ent_template (ent: data list) (projs: data list) =
     <p style="margin-bottom: 2rem;"></p>
   </div>
 
-  <div class="centre" style="position: absolute; top: 14em; left: 120em;">
+  <div class="centre" style="position: absolute; top: 16em; left: 120em;">
     <h2>Classificação</h2>
     <p style="margin-bottom: 2rem;"></p>
     PLACEHOLDER

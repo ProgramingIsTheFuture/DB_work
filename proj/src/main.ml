@@ -9,11 +9,13 @@ let () =
          @@ Handlers.projects_id_entities;
          Dream.get "/contratos/:id" @@ Handlers.contracts_id;
          Dream.get "/investigadores" @@ Handlers.investigators;
-         Dream.get "/investigador/:id" @@ Handlers.investigator;
+         Dream.get "/investigadores/:id" @@ Handlers.investigator;
          Dream.get "/institutos" @@ Handlers.institutes;
-         Dream.get "/institute/:id" @@ Handlers.institute;
+         Dream.get "/institutos/:id" @@ Handlers.institute;
          Dream.get "/entidades" @@ Handlers.entities;
-         Dream.get "/entidade/:id" @@ Handlers.entity;
+         Dream.get "/entidades/:id" @@ Handlers.entity;
+         Dream.get "/programas" @@ Handlers.programs;
+         Dream.get "/programas/:id" @@ Handlers.programs_id;
          Dream.get "/inves_teste" @@ Handlers.inves_test;
          Dream.get "/assets/**" @@ Dream.static "./assets";
        ]
