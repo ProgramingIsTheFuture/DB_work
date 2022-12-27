@@ -1,7 +1,7 @@
 open Types
 
 let investigadores (invs: data list) = 
-  General.navbar_inpage "Investigadores" ^
+  General.navbar_home "Investigadores" ^
   <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
     <table class="table table-dark table-hover">
       <thead class="table-dark">
