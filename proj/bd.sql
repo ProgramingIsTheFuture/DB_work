@@ -429,7 +429,7 @@ INSERT INTO [dbo].[Projama] ([projectId]
 , [programId])
   VALUES 
   (1, 1), (1, 3), (1, 4),
-  (2, 5),
+  (2, 2), (2, 5),
   (3, 3), (3, 6)
 
 -- PROJETOS <-> INVESTIGADORES (Participa)
