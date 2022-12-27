@@ -33,16 +33,33 @@ let investigators _req =
   serve (investigadores (query "SELECT * FROM investigador;")) "Investigadores"
 
 let investigator req =
-  let result =
+  let id = (Dream.param req "id" |> int_of_string) in
+  let result = 
     query
-      ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
+      ~params:[ Mssql.Param.Int id ]
       "SELECT inves.*, inst.designacao as instituto FROM investigador inves \
        inner join instituto inst ON inves.institutoId = inst.id WHERE inves.id \
        = $1;"
     |> List.hd
   in
-
-  serve (investigador result) "Investigador"
+  let result2 =
+    query
+      ~params:[ Mssql.Param.Int id ] 
+      "SELECT U.id, U.nome FROM Investigador I \
+      INNER JOIN UnidadeInvestigador UI ON I.id = UI.investigadorId \
+      INNER JOIN UnidadeInvestigacao U ON UI.unidadeInvestigacaoId = U.id \
+      WHERE I.id = $1"
+  in
+  let result3 = 
+    query
+      ~params:[ Mssql.Param.Int id ]
+      "SELECT P.id, P.nome, Pap.designacao, Par.tempoPerc FROM Investigador I \
+      INNER JOIN Participa Par ON I.id = Par.investigadorId \
+      INNER JOIN Projeto P ON Par.projectId = P.id \
+      INNER JOIN Papel Pap ON Par.papelId = Pap.id \
+      WHERE I.id = $1"
+  in
+  serve (investigador result result2 result3) "Investigador"
 
 let institutes _req =
   serve
