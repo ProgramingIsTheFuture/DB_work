@@ -44,8 +44,41 @@ let investigator req =
 
   serve (investigador result) "Investigador"
 
-let institute _req = serve institutes "Institutos"
-let entities _req = serve entities "Entidades"
+let institutes _req =
+  serve
+    (institutes (query "SELECT id, designacao FROM instituto;"))
+    "Institutos"
+
+let institute req =
+  let result =
+    query
+      ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
+      "SELECT Inst.designacao, Invs.id, Invs.nome FROM instituto Inst INNER \
+       JOIN Investigador Invs ON Inst.id = Invs.institutoId AND Inst.id = $1;"
+  in
+  serve (institute result) "Instituto"
+
+let entities _req =
+  serve
+    (entities (query "SELECT id, nome, designacao FROM entidade;"))
+    "Entidades"
+
+let entitie req =
+  let programas =
+    query
+      ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
+      "SELECT P.designacao as pdesignacao, E.* FROM Entidade E INNER JOIN \
+       Entigrama EP ON E.id = EP.entidadeId INNER JOIN Programa P ON \
+       EP.programId = P.id WHERE E.id = $1;"
+  in
+  let projects =
+    query
+      ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
+      "SELECT Proj.id, Proj.nome FROM Entigrama EP INNER JOIN Programa P ON \
+       EP.programId = P.id INNER JOIN Projama PJ ON PJ.programId = P.id INNER \
+       JOIN Projeto Proj ON Proj.id = PJ.projectId WHERE EP.entidadeId = $1;"
+  in
+  serve (entity programas projects) "Instituto"
 
 let projects_id req =
   let id = Dream.param req "id" |> int_of_string in

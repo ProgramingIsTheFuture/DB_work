@@ -6,7 +6,7 @@ let home =
         <li><a href="/projetos">Projetos / Contratos</a></li>
         <li><a href="/investigadores">Investigadores</a></li>
         <li><a href="/institutos">Institutos</a></li>
-        <li><a href="#">Entidades Financiadoras</a></li>
+        <li><a href="/entidades">Entidades Financiadoras</a></li>
         <li><a href="#">Option 5</a></li>
       </ul>
     </nav>

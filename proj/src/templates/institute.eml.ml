@@ -1,36 +1,32 @@
-let institutos =
+open Types
+
+let institutos (inst: data list) =
   General.navbar_inpage "Institutos" ^
   <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
     <table class="table table-dark table-hover">
       <thead class="table-dark">
         <tr>
           <th scope="col">#</th>
-          <th scope="col">First</th>
+          <th scope="col">Designação</th>
         </tr>
       </thead>
       <tbody class="table-group-divider">
+        <% inst |> List.iter begin fun x -> %> 
         <tr>
-          <th scope="row">1</th>
-          <td><a href="./inst_template.html">Mark</a></td>
+          <th scope="row"><%s x<|"id" %></th>
+          <td><a href='/institute/<%s x<|"id" %>'><%s x<|"designacao" %></a></td>
         </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>Jacob</td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td>Larry</td>
-        </tr>
+        <% end; %>
       </tbody>
     </table>
   </div>
 
 
 
-let inst_template = 
+let inst_template (inst: data list) = 
   General.navbar_inpage "Institutos" ^
   <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
-    <h1>Instituto Nome</h1>
+    <h1><%s inst |> List.hd <| "designacao" %></h1>
     <p style="margin-bottom: 2rem;"></p>
 
     <h2 style="margin-bottom: 1rem;">Docentes</h2>
@@ -43,18 +39,12 @@ let inst_template =
           </tr>
         </thead>
         <tbody class="table-group-divider">
+          <% inst |> List.iter begin fun x -> %> 
           <tr>
-            <th scope="row">1</th>
-            <td>Docente 1</td>
+            <th scope="row"><%s x<|"id" %></th>
+            <td><a href='/investigador/<%s x<|"id" %>'><%s x<|"nome" %></a></td>
           </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Docente 2</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td>Docente 3</td>
-          </tr>
+          <% end; %>
         </tbody>
       </table>
     </div>

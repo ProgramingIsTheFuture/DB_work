@@ -1,45 +1,57 @@
-let entidades =
+open Types
+
+(*
+[nacional] bit NOT NULL,
+  [nome] varchar(255) NOT NULL,
+  [descricao] varchar(255),
+  [email] varchar(255),
+  [telemovel] bigint,
+  [designacao] varchar(255) NOT NULL,
+  [morada] varchar(255),
+  [url] varchar(255),
+  [pais] varchar(255) NOT NULL,
+ *)
+
+let entidades (ents: data list) =
   General.navbar_inpage "Entidades" ^
   <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
     <table class="table table-dark table-hover">
       <thead class="table-dark">
         <tr>
           <th scope="col">#</th>
-          <th scope="col">First</th>
+          <th scope="col">Nome</th>
+          <th scope="col">Designação</th>
         </tr>
       </thead>
       <tbody class="table-group-divider">
+        <% ents |> List.iter begin fun x -> %> 
         <tr>
-          <th scope="row">1</th>
-          <td><a href="./ent_template.html">Mark</a></td>
+          <th scope="row"><%s x<|"id" %></th>
+          <td><a href='/entidade/<%s x<|"id" %>'><%s x<|"nome" %></a></td>
+          <td><a href='/entidade/<%s x<|"id" %>'><%s x<|"designacao" %></a></td>
         </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>Jacob</td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td>Larry</td>
-        </tr>
+        <% end; %>
       </tbody>
     </table>
   </div>
 
-let ent_template =
+let ent_template (ent: data list) (projs: data list) =
   General.navbar_inpage "Entidades" ^
   <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
-    <h1>Entidade Nome</h1>
-    <h5>Descrição</h5>
+    <% ent |> List.hd |> begin fun x -> %>
+    <h1><%s x<|"nome" %></h1>
+    <h5><%s x<|"descricao" %></h5>
     <p style="margin-bottom: 3rem;"></p>
 
-    <p>Designação:</p>
-    <p>Email:</p>
-    <p>Telemovel:</p>
-    <p>Morada:</p>
-    <p>País:</p>
-    <p>Nacional:</p>
+    <p>Designação: <%s x<|"designacao" %></p>
+    <p>Email:<%s x<|"email" %></p>
+    <p>Telemovel:<%s x<|"telemovel" %></p>
+    <p>Morada:<%s x<|"morada" %></p>
+    <p>País:<%s x<|"pais" %></p>
+    <p>Nacional:<%s x<|"nacional" %></p>
     <p></p>
     <p style="margin-bottom: 2rem;"></p>
+    <% end; %>
   </div>
 
   <div class="top-left2" style="position: absolute; top: 12em; left: 39em;">
@@ -49,22 +61,16 @@ let ent_template =
         <thead class="table-dark">
           <tr>
             <th scope="col">#</th>
-            <th scope="col">Nome</th>
+            <th scope="col">Designação</th>
           </tr>
         </thead>
         <tbody class="table-group-divider">
+          <% ent |> List.iter begin fun x -> %>
           <tr>
-            <th scope="row">1</th>
-            <td>Programa 1</td>
+            <th scope="row"><%s x<|"id"%></th>
+            <td><%s x<|"id"%><%s x<|"pdesignacao"%></td>
           </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Programa 2</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td>Programa 3</td>
-          </tr>
+          <% end; %>
         </tbody>
       </table>
     </div>
@@ -82,18 +88,12 @@ let ent_template =
           </tr>
         </thead>
         <tbody class="table-group-divider">
+          <% projs |> List.iter begin fun x -> %>
           <tr>
-            <th scope="row">1</th>
-            <td>Projeto 1</td>
+            <th scope="row"><%s x<|"id"%></th>
+            <td><a href='/projetos/<%s x<|"id" %>'><%s x<|"nome"%></td>
           </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Projeto 2</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td>Projeto 3</td>
-          </tr>
+          <% end; %>
         </tbody>
       </table>
     </div>
