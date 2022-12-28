@@ -90,12 +90,9 @@ let investigador (invs: data) unidades projetos =
       </table>
     </div>
     <p style="margin-bottom: 2rem;"></p>
-  </div>
 
-  <div class="centre" style="position: absolute; top: 14em; left: 120em;">
-    <h2>Classificação</h2>
-    <p style="margin-bottom: 2rem;"></p>
-    PLACEHOLDER
+    <h5 style="color: #2895bd">Tempo total:</h5>
+    <p><%i projetos |> List.map (fun p -> p <| "tempoPerc" |> int_of_string) |> List.fold_left (+) 0 %></p>
   </div>
 
   <div class="d-grid gap-2 col-1 mx-auto" style="width: 3rem; position: absolute; top: 5em; right: 6em">
