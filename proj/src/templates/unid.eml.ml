@@ -1,7 +1,7 @@
 open Types
 
-let institutos (inst: data list) =
-  General.navbar_home "Institutos" ^
+let unidades (_unid: data list) =
+  General.navbar_home "Unidades" ^
   <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
     <table class="table table-dark table-hover">
       <thead class="table-dark">
@@ -11,10 +11,10 @@ let institutos (inst: data list) =
         </tr>
       </thead>
       <tbody class="table-group-divider">
-        <% inst |> List.iter begin fun x -> %> 
+        <% _unid |> List.iter begin fun x -> %> 
         <tr>
           <th scope="row"><%s x<|"id" %></th>
-          <td><a href='/institutos/<%s x<|"id" %>'><%s x<|"designacao" %></a></td>
+          <td><a href='/unidades/<%s x<|"id" %>'><%s x<|"nome" %></a></td>
         </tr>
         <% end; %>
       </tbody>
@@ -23,10 +23,10 @@ let institutos (inst: data list) =
 
 
 
-let inst_template (inst: data list) = 
-  General.navbar_inpage "Instituto" ^
+let unid_template (unid : data list) = 
+  General.navbar_inpage "Unidade" ^
   <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
-    <h1><%s inst |> List.hd <| "designacao" %></h1>
+    <h1><%s unid |> List.hd <| "Unome" %></h1>
     <p style="margin-bottom: 2rem;"></p>
 
     <h2 style="margin-bottom: 1rem;">Docentes</h2>
@@ -39,10 +39,10 @@ let inst_template (inst: data list) =
           </tr>
         </thead>
         <tbody class="table-group-divider">
-          <% inst |> List.iter begin fun x -> %> 
+          <% unid |> List.iter begin fun x -> %> 
           <tr>
             <th scope="row"><%s x<|"id" %></th>
-            <td><a href='/investigadores/<%s x<|"id" %>'><%s x<|"nome" %></a></td>
+            <td><a href='/investigadores/<%s x<|"id" %>'><%s x<|"Inome" %></a></td>
           </tr>
           <% end; %>
         </tbody>
@@ -56,5 +56,3 @@ let inst_template (inst: data list) =
       Modificar
     </a>
   </div>
-
-

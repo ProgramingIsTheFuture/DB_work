@@ -380,7 +380,7 @@ INSERT INTO [dbo].[Projeto] ([nome]
 , [doi]
 , [statusId])
   VALUES 
-  ('Blockchain: Contagem de votos', 'Blockchain: Aplicações a elieições públicas transparentes e seguras', 'Visa utilizar a tecnologia blockchain para criar um sistema de votação mais seguro e transparente. A blockchain permite que os votos sejam registrados de forma segura e imutável, garantindo a integridade do processo eleitoral.', NULL, 'Blockchain-based voting system for transparent and secure elections', '2020-10-23', '2021-12-05', 'www.projetos.ubi.pt/blockchain-para-eleicoes', 'www.projetos.ubi.pt/doi/h2j401j2k', 4),
+  ('Blockchain: Contagem de votos', 'Blockchain: Aplicações a elieições públicas transparentes e seguras', 'Visa utilizar a tecnologia blockchain para criar um sistema de votação mais seguro e transparente. A blockchain permite que os votos sejam registrados de forma segura e imutável, garantindo a integridade do processo eleitoral.', NULL, 'Blockchain-based voting system for transparent and secure elections', '2020-10-23', '2021-12-05', 'www.projetos.ubi.pt/blockchain-para-eleicoes', 'www.projetos.ubi.pt/doi/h2j401j2k', 3),
 
   ('Psilocybin inside Tardigrades', 'Analisis of the possibility of Tardigrades having Psilobycin in their bloodstream', 'Analyzing whether or not tardigrades, also known as water bears, have the psychedelic compound psilocybin in their bloodstream. The results of this project could provide new insights into the biology and evolution of tardigrades and the role of psychoactive compounds in the natural world.', 'Análise da possibilidade de existir Psilobiscina na corrente sanguínea dos Tardígrados', NULL, '2019-05-21', '2020-02-18', 'www.projects.unesco.com/rejected/psilobycin-tardigrades', 'www.projects.unesco.com/doi/rejected/jds92qsif0', 2),
 
@@ -422,14 +422,14 @@ INSERT INTO [dbo].[HistoricoStatus] ([projectId]
   VALUES 
   (1, 1, '2020-10-23'), (1, 4, '2020-10-24'), (1, 7, '2021-11-12'), (1, 3, '2021-12-05'),
   (2, 1, '2019-05-21'), (2, 4, '2019-05-22'), (2, 7, '2019-12-30'), (2, 2, '2020-02-17'), (2, 5, '2020-02-18'),
-  (3, 4, '2021-05-21'), (3, 4, '2021-05-23')
+  (3, 1, '2021-05-21'), (3, 4, '2021-05-23')
 
 -- PROJETOS <-> PROGRAMAS (Projama)
 INSERT INTO [dbo].[Projama] ([projectId]
 , [programId])
   VALUES 
   (1, 1), (1, 3), (1, 4),
-  (2, 5),
+  (2, 2), (2, 5),
   (3, 3), (3, 6)
 
 -- PROJETOS <-> INVESTIGADORES (Participa)

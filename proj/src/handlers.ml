@@ -26,23 +26,53 @@ let home request = serve (home request None) "Gestão de Projetos UBI"
 
 let projects _req =
   serve
-    (projects (query "SELECT id, nome FROM Projeto;"))
+    (projects
+       (query
+          "SELECT C.id as Cid, C.nome as contrato, P.* FROM Projeto P, \
+           Contrato C WHERE P.id = C.projectId;"))
     "Projetos / Contratos"
 
 let investigators _req =
   serve (investigadores (query "SELECT * FROM investigador;")) "Investigadores"
 
 let investigator req =
+  let id = Dream.param req "id" |> int_of_string in
   let result =
-    query
-      ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
+    query ~params:[ Mssql.Param.Int id ]
       "SELECT inves.*, inst.designacao as instituto FROM investigador inves \
        inner join instituto inst ON inves.institutoId = inst.id WHERE inves.id \
        = $1;"
     |> List.hd
   in
+  let result2 =
+    query ~params:[ Mssql.Param.Int id ]
+      "SELECT U.id, U.nome FROM Investigador I INNER JOIN UnidadeInvestigador \
+       UI ON I.id = UI.investigadorId INNER JOIN UnidadeInvestigacao U ON \
+       UI.unidadeInvestigacaoId = U.id WHERE I.id = $1"
+  in
+  let result3 =
+    query ~params:[ Mssql.Param.Int id ]
+      "SELECT P.id, P.nome, Pap.designacao, Par.tempoPerc FROM Investigador I \
+       INNER JOIN Participa Par ON I.id = Par.investigadorId INNER JOIN \
+       Projeto P ON Par.projectId = P.id INNER JOIN Papel Pap ON Par.papelId = \
+       Pap.id WHERE I.id = $1"
+  in
+  serve (investigador result result2 result3) "Investigador"
 
-  serve (investigador result) "Investigador"
+let unids _req =
+  serve
+    (unidades (query "SELECT id, nome FROM UnidadeInvestigacao;"))
+    "Unidades"
+
+let unid req =
+  let result =
+    query
+      ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
+      "SELECT U.nome as Unome, I.id, I.nome as Inome FROM UnidadeInvestigacao \
+       U INNER JOIN UnidadeInvestigador UI ON U.id = UI.unidadeInvestigacaoId \
+       INNER JOIN Investigador I ON UI.investigadorId = I.id WHERE U.id = $1;"
+  in
+  serve (unidade result) "Instituto"
 
 let institutes _req =
   serve
@@ -63,22 +93,26 @@ let entities _req =
     (entities (query "SELECT id, nome, designacao FROM entidade;"))
     "Entidades"
 
-let entitie req =
+let entity req =
   let programas =
     query
       ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
-      "SELECT P.designacao as pdesignacao, E.* FROM Entidade E INNER JOIN \
-       Entigrama EP ON E.id = EP.entidadeId INNER JOIN Programa P ON \
-       EP.programId = P.id WHERE E.id = $1;"
+      "SELECT P.id as Pid, P.designacao as pdesignacao, E.* FROM Entidade E \
+       INNER JOIN Entigrama EP ON E.id = EP.entidadeId INNER JOIN Programa P \
+       ON EP.programId = P.id WHERE E.id = $1;"
   in
   let projects =
     query
       ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
-      "SELECT Proj.id, Proj.nome FROM Entigrama EP INNER JOIN Programa P ON \
-       EP.programId = P.id INNER JOIN Projama PJ ON PJ.programId = P.id INNER \
-       JOIN Projeto Proj ON Proj.id = PJ.projectId WHERE EP.entidadeId = $1;"
+      "SELECT DISTINCT Proj.id, Proj.nome FROM Entigrama EP INNER JOIN \
+       Programa P ON EP.programId = P.id INNER JOIN Projama PJ ON PJ.programId \
+       = P.id INNER JOIN Projeto Proj ON Proj.id = PJ.projectId WHERE \
+       EP.entidadeId = $1;"
   in
   serve (entity programas projects) "Instituto"
+
+let programs _req =
+  serve (programs (query "SELECT id, designacao FROM Programa;")) "Programas"
 
 let projects_id req =
   let id = Dream.param req "id" |> int_of_string in
@@ -150,6 +184,41 @@ let projects_id_entities req =
        = P.id WHERE P.id = $1"
   in
   serve (project_entities result result2 result3 result4) "Projetos"
+
+let contracts_id req =
+  let id = Dream.param req "id" |> int_of_string in
+  let result =
+    query ~params:[ Mssql.Param.Int id ]
+      "SELECT C.*, S.designacao as estado FROM Contrato C, Status S WHERE C.id \
+       = $1 and C.statusId = S.id"
+    |> List.hd
+  in
+  let result2 =
+    query ~params:[ Mssql.Param.Int id ]
+      "SELECT P.id, P.nome FROM Projeto P INNER JOIN Contrato C ON P.id = \
+       C.projectId WHERE C.id = $1"
+  in
+  serve (contract result result2) "Contratos"
+
+let programs_id req =
+  let id = Dream.param req "id" |> int_of_string in
+  let result =
+    query ~params:[ Mssql.Param.Int id ]
+      "SELECT * FROM Programa P WHERE P.id = $1"
+  in
+  let result2 =
+    query ~params:[ Mssql.Param.Int id ]
+      "SELECT E.id, E.nome FROM Programa Pr INNER JOIN Entigrama EP ON Pr.id = \
+       EP.programId INNER JOIN Entidade E ON EP.entidadeId = E.id WHERE Pr.id \
+       = $1"
+  in
+  let result3 =
+    query ~params:[ Mssql.Param.Int id ]
+      "SELECT P.id, P.nome FROM Programa Pr INNER JOIN Projama PP ON Pr.id = \
+       PP.programId INNER JOIN Projeto P ON PP.projectId = P.id WHERE Pr.id = \
+       $1"
+  in
+  serve (program result result2 result3) "Programas"
 
 let example request =
   match%lwt Dream.form request with

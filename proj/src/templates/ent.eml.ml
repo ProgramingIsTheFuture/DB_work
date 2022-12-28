@@ -27,8 +27,8 @@ let entidades (ents: data list) =
         <% ents |> List.iter begin fun x -> %> 
         <tr>
           <th scope="row"><%s x<|"id" %></th>
-          <td><a href='/entidade/<%s x<|"id" %>'><%s x<|"nome" %></a></td>
-          <td><a href='/entidade/<%s x<|"id" %>'><%s x<|"designacao" %></a></td>
+          <td><a href='/entidades/<%s x<|"id" %>'><%s x<|"nome" %></a></td>
+          <td><%s x<|"designacao" %></td>
         </tr>
         <% end; %>
       </tbody>
@@ -36,25 +36,38 @@ let entidades (ents: data list) =
   </div>
 
 let ent_template (ent: data list) (projs: data list) =
-  General.navbar_inpage "Entidades" ^
+  General.navbar_inpage "Entidade" ^
   <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
     <% ent |> List.hd |> begin fun x -> %>
     <h1><%s x<|"nome" %></h1>
-    <h5><%s x<|"descricao" %></h5>
-    <p style="margin-bottom: 3rem;"></p>
+    <h5 style="color: #2895bd">Descrição:</h5> 
+    <p style="margin-right: 40rem;"><%s x <| "descricao" %></p>
+    
+    <div style="width: 30rem; word-wrap: normal; white-space:normal">
+    <h5 style="color: #2895bd">Designacao:</h5>
+    <p><%s x<|"designacao" %></p>
 
-    <p>Designação: <%s x<|"designacao" %></p>
-    <p>Email:<%s x<|"email" %></p>
-    <p>Telemovel:<%s x<|"telemovel" %></p>
-    <p>Morada:<%s x<|"morada" %></p>
-    <p>País:<%s x<|"pais" %></p>
-    <p>Nacional:<%s x<|"nacional" %></p>
-    <p></p>
+    <h5 style="color: #2895bd">Email:</h5>
+    <p><%s x<|"email" %></p>
+
+    <h5 style="color: #2895bd">Telemóvel:</h5>
+    <p><%s x<|"telemovel" %></p>
+
+    <h5 style="color: #2895bd">Morada:</h5>
+    <p><%s x<|"morada" %></p>
+
+    <h5 style="color: #2895bd">País:</h5>
+    <p><%s x<|"pais" %></p>
+
+    <h5 style="color: #2895bd">Nacional:</h5>
+    <p><%s x<|"nacional" |> (fun n -> if n = "1" then "Sim" else "Não") %></p>
+    
     <p style="margin-bottom: 2rem;"></p>
     <% end; %>
+    </div>
   </div>
 
-  <div class="top-left2" style="position: absolute; top: 12em; left: 39em;">
+  <div class="top-left2" style="position: absolute; top: 16em; left: 39em;">
     <h2 style="margin-bottom: 1rem;">Programas</h2>
     <div style="width: 24rem" ;>
       <table class="table table-dark table-hover">
@@ -67,8 +80,8 @@ let ent_template (ent: data list) (projs: data list) =
         <tbody class="table-group-divider">
           <% ent |> List.iter begin fun x -> %>
           <tr>
-            <th scope="row"><%s x<|"id"%></th>
-            <td><%s x<|"id"%><%s x<|"pdesignacao"%></td>
+            <th scope="row"><%s x <| "Pid" %></th>
+            <td><%s x <| "pdesignacao" %></td>
           </tr>
           <% end; %>
         </tbody>
@@ -77,7 +90,7 @@ let ent_template (ent: data list) (projs: data list) =
     <p style="margin-bottom: 2rem;"></p>
   </div>
 
-  <div class="centre" style="position: absolute; top: 12em; left: 78em;">
+  <div class="centre" style="position: absolute; top: 16em; left: 78em;">
     <h2 style="margin-bottom: 1rem;">Projetos Financiados</h2>
     <div style="width: 24rem" ;>
       <table class="table table-dark table-hover">
@@ -100,7 +113,7 @@ let ent_template (ent: data list) (projs: data list) =
     <p style="margin-bottom: 2rem;"></p>
   </div>
 
-  <div class="centre" style="position: absolute; top: 12em; left: 120em;">
+  <div class="centre" style="position: absolute; top: 16em; left: 120em;">
     <h2>Classificação</h2>
     <p style="margin-bottom: 2rem;"></p>
     PLACEHOLDER
