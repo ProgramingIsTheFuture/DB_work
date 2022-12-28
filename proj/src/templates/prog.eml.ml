@@ -45,7 +45,7 @@ let prog_template (prog: data list) ents projs =
           <% ents |> List.iter begin fun x -> %>
           <tr>
             <th scope="row"><%s x <| "id" %></th>
-            <td><%s x <| "nome" %></td>
+            <td><a href='/entidades/<%s x<|"id" %>'><%s x <| "nome" %></a></td>
           </tr>
           <% end; %>
         </tbody>

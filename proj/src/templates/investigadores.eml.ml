@@ -56,7 +56,7 @@ let investigador (invs: data) unidades projetos =
           <% unidades |> List.iter begin fun x -> %>
           <tr>
             <th scope="row"><%s x <| "id" %></th>
-            <td><%s x <| "nome" %></td>
+            <td><a href='/unidades/<%s x<|"id" %>'><%s x <| "nome" %></a></td>
           </tr>
           <% end; %>
         </tbody>
