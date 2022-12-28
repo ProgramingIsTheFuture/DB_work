@@ -61,6 +61,23 @@ let investigator req =
   in
   serve (investigador result result2 result3) "Investigador"
 
+
+let unids _req =
+  serve
+    (unidades (query "SELECT id, nome FROM UnidadeInvestigacao;"))
+    "Unidades"
+
+let unid req =
+  let result =
+    query
+      ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
+      "SELECT U.nome as Unome, I.id, I.nome as Inome FROM UnidadeInvestigacao U \
+      INNER JOIN UnidadeInvestigador UI ON U.id = UI.unidadeInvestigacaoId \
+      INNER JOIN Investigador I ON UI.investigadorId = I.id \
+      WHERE U.id = $1;"
+  in
+  serve (unidade result) "Instituto"
+
 let institutes _req =
   serve
     (institutes (query "SELECT id, designacao FROM instituto;"))

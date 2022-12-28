@@ -1,7 +1,7 @@
 open Types
 
 let institutos (inst: data list) =
-  General.navbar_inpage "Institutos" ^
+  General.navbar_home "Institutos" ^
   <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
     <table class="table table-dark table-hover">
       <thead class="table-dark">

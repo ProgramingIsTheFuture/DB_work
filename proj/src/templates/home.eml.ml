@@ -5,6 +5,7 @@ let home =
       <ul class="options">
         <li><a href="/projetos">Projetos / Contratos</a></li>
         <li><a href="/investigadores">Investigadores</a></li>
+        <li><a href="/unidades">Unidades de Investigação</a></li>
         <li><a href="/institutos">Institutos</a></li>
         <li><a href="/entidades">Entidades Financiadoras</a></li>
         <li><a href="/programas">Programas</a></li>
