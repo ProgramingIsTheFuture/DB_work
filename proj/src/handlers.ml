@@ -22,7 +22,7 @@ let query ?(params : Mssql.Param.t list = []) q =
               (fun ctx (name, value) -> Types.SMap.add name value ctx)
               Types.empty)
 
-let home request = serve (home request None) "Gestão de Projetos UBI"
+let home _req = serve home "Gestão de Projetos UBI"
 
 let projects _req =
   serve
@@ -83,7 +83,7 @@ let institute req =
   let result =
     query
       ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
-      "SELECT Inst.designacao, Invs.id, Invs.nome FROM instituto Inst INNER \
+      "SELECT Inst.id as InstId, Inst.designacao, Invs.id, Invs.nome FROM instituto Inst INNER \
        JOIN Investigador Invs ON Inst.id = Invs.institutoId AND Inst.id = $1;"
   in
   serve (institute result) "Instituto"
@@ -220,11 +220,10 @@ let programs_id req =
   in
   serve (program result result2 result3) "Programas"
 
-let example request =
+let institute_form request =
   match%lwt Dream.form request with
-  | `Ok _ -> serve (Templates.home request (Some ("Tudo fixe", 0))) "Home"
+  | `Ok _ -> serve (Templates.institute_form request (Some "Tudo fixe")) "Institutos"
   | _ ->
       (*Change to a "error message"*)
-      serve (Templates.home request (Some ("Deu merda", 1))) "Home"
+      serve (Templates.institute_form request (Some "Deu merda")) "Institutos"
 
-let inves_test _req = serve "" "Investigadores"

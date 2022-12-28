@@ -14,11 +14,11 @@ let () =
          Dream.get "/unidades/:id" Handlers.unid;
          Dream.get "/institutos" @@ Handlers.institutes;
          Dream.get "/institutos/:id" @@ Handlers.institute;
+         Dream.get "/institutos/:id/modificar" @@ Handlers.institute_form;
+         Dream.post "/institutos/:id/modificar" @@ Handlers.institute_form;
          Dream.get "/entidades" @@ Handlers.entities;
          Dream.get "/entidades/:id" @@ Handlers.entity;
          Dream.get "/programas" @@ Handlers.programs;
          Dream.get "/programas/:id" @@ Handlers.programs_id;
-         Dream.get "/inves_teste" @@ Handlers.inves_test;
-         Dream.post "/example" @@ Handlers.example;
          Dream.get "/assets/**" @@ Dream.static "./assets";
        ]

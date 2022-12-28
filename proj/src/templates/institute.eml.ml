@@ -52,9 +52,23 @@ let inst_template (inst: data list) =
   </div>
 
   <div class="d-grid gap-2 col-1 mx-auto" style="width: 3rem; position: absolute; top: 5em; right: 6em">
-    <a href="/index.html" class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
+    <a href='/institutos/<%s inst |> List.hd <| "InstId" %>/modificar' class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
       Modificar
     </a>
   </div>
 
-
+let inst_form request message =
+  General.navbar_inpage "Instituto" ^
+  <div class="container">
+    <form method="POST" action="/institutos/:id/modificar">
+      <%s! Dream.csrf_tag request %>
+      <input type="text" name="message" /> 
+      <input type="text" name="hello" /> 
+      <input type="submit" />
+    </form>
+% begin match message with 
+%   | None -> () 
+%   | Some message -> 
+      <p>Message: <b><%s message %>!</b></p>
+%   end;
+  </div>

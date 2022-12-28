@@ -7,6 +7,7 @@ let entities = Ent.entidades
 let entity = Ent.ent_template
 let institutes = Institute.institutos
 let institute = Institute.inst_template
+let institute_form = Institute.inst_form
 let investigadores = Investigadores.investigadores
 let investigador = Investigadores.investigador
 let unidades = Unid.unidades
