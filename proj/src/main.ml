@@ -14,5 +14,6 @@ let () =
          Dream.get "/projetos/:id/financiamento"
          @@ Handlers.projects_id_entities;
          Dream.get "/inves_teste" @@ Handlers.inves_test;
+         Dream.post "/example" @@ Handlers.example;
          Dream.get "/assets/**" @@ Dream.static "./assets";
        ]
