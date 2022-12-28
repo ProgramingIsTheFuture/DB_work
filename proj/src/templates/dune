@@ -47,3 +47,13 @@
  (targets unid.ml)
  (deps unid.eml.ml)
  (action (run dream_eml %{deps} --workspace %{workspace_root})))
+
+(rule
+ (targets dom.ml)
+ (deps dom.eml.ml)
+ (action (run dream_eml %{deps} --workspace %{workspace_root})))
+
+(rule
+ (targets area.ml)
+ (deps area.eml.ml)
+ (action (run dream_eml %{deps} --workspace %{workspace_root})))

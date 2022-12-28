@@ -7,6 +7,10 @@ let () =
          Dream.get "/projetos/:id" @@ Handlers.projects_id;
          Dream.get "/projetos/:id/financiamento"
          @@ Handlers.projects_id_entities;
+         Dream.get "/dominios" Handlers.domains;
+         Dream.get "/dominios/:id" Handlers.domain;
+         Dream.get "/areas" Handlers.areas;
+         Dream.get "/areas/:id" Handlers.area;
          Dream.get "/contratos/:id" @@ Handlers.contracts_id;
          Dream.get "/investigadores" @@ Handlers.investigators;
          Dream.get "/investigadores/:id" @@ Handlers.investigator;

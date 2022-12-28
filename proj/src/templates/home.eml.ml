@@ -4,6 +4,8 @@ let home =
     <nav>
       <ul class="options">
         <li><a href="/projetos">Projetos / Contratos</a></li>
+        <li><a href="/dominios">Dominios</a></li>
+        <li><a href="/areas">Areas Cientificas</a></li>
         <li><a href="/investigadores">Investigadores</a></li>
         <li><a href="/unidades">Unidades de Investigação</a></li>
         <li><a href="/institutos">Institutos</a></li>

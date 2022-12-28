@@ -32,6 +32,50 @@ let projects _req =
            Contrato C WHERE P.id = C.projectId;"))
     "Projetos / Contratos"
 
+let domains _req =
+  serve (domains (query "SELECT * FROM Dominio")) "Domínios"
+
+let domain req =
+  let result =
+    query ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
+      "SELECT D.id as Did, D.designacao, A.id, A.designacao as Adesignacao FROM Dominio D
+      INNER JOIN AreaCientifica A ON D.id = A.dominioId
+      WHERE D.id = $1"
+  in
+  serve (domain result) "Dominio"
+
+let areas _req =
+  let result =
+    query 
+      "SELECT A.id, A.designacao, count(P.id) FROM AreaCientifica A, AreaProjeto AP, Projeto P
+      WHERE A.id = AP.areaCientificaId
+      AND AP.projectId = P.id
+      GROUP BY A.id, A.designacao
+      ORDER BY count(P.id) DESC"
+  in
+  serve (areas (query "SELECT * FROM AreaCientifica") result) "Áreas Científicas"
+
+let area req =
+  let id = Dream.param req "id" |> int_of_string in
+  let result =
+    query ~params:[ Mssql.Param.Int id ]
+      "SELECT * FROM AreaCientifica AC WHERE AC.id = $1"
+  in
+  let result2 =
+    query ~params:[ Mssql.Param.Int id ]
+      "SELECT D.id, D.designacao FROM AreaCientifica AC 
+      INNER JOIN Dominio D ON AC.dominioId = D.id
+      WHERE AC.id = $1"
+  in
+  let result3 =
+    query ~params:[ Mssql.Param.Int id ]
+      "SELECT P.id, P.nome FROM AreaCientifica AC
+      INNER JOIN AreaProjeto AP ON AC.id = AP.areaCientificaId
+      INNER JOIN Projeto P ON AP.projectId = P.id
+      WHERE AC.id = $1"
+  in
+  serve (area result result2 result3) "Áreas Científica"
+
 let investigators _req =
   serve (investigadores (query "SELECT * FROM investigador;")) "Investigadores"
 

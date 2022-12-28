@@ -21,8 +21,6 @@ let institutos (inst: data list) =
     </table>
   </div>
 
-
-
 let inst_template (inst: data list) = 
   General.navbar_inpage "Instituto" ^
   <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">

@@ -1,30 +1,33 @@
 open Types
 
-let programas (progs: data list) =
-  General.navbar_inpage "Programas" ^
+let areas lst area =
+  General.navbar_home "Áreas Científicas" ^
   <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
     <table class="table table-dark table-hover">
       <thead class="table-dark">
         <tr>
           <th scope="col">#</th>
-          <th scope="col">Nome</th>
+          <th scope="col">Áreas Cienfíficas</th>
         </tr>
       </thead>
-      <tbody class="table-group-divider">
-        <% progs |> List.iter begin fun x -> %> 
+      <tbody class="table-group-divider"> 
+        <% lst |> List.iter begin fun x -> %> 
         <tr>
           <th scope="row"><%s x<|"id" %></th>
-          <td><a href='/programas/<%s x<|"id" %>'><%s x<|"designacao" %></a></td>
+          <td><a href='/dominios/<%s x<|"id" %>'><%s x<|"designacao" %></a></td>
         </tr>
         <% end; %>
       </tbody>
     </table>
+
+    <h5 style="color: #2895bd">Área com mais projetos:</h5>
+    <p><%s area |> List.hd <| "designacao" %></p>
   </div>
 
-let prog_template (prog: data list) ents projs =
+let area_template (area: data list) dom projs =
   General.navbar_inpage "Programa" ^
   <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
-    <% prog |> List.hd |> begin fun x -> %>
+    <% area |> List.hd |> begin fun x -> %>
     <h1><%s x<|"designacao" %></h1>
     <p style="margin-bottom: 2rem;"></p>
     <% end; %>
@@ -32,30 +35,12 @@ let prog_template (prog: data list) ents projs =
   </div>
 
   <div class="top-left2" style="position: absolute; top: 14em; left: 5em;">
-    <h2 style="margin-bottom: 1rem;">Entidades Associadas</h2>
-    <div style="width: 24rem" ;>
-      <table class="table table-dark table-hover">
-        <thead class="table-dark">
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Designação</th>
-          </tr>
-        </thead>
-        <tbody class="table-group-divider">
-          <% ents |> List.iter begin fun x -> %>
-          <tr>
-            <th scope="row"><%s x <| "id" %></th>
-            <td><a href='/entidades/<%s x<|"id" %>'><%s x <| "nome" %></a></td>
-          </tr>
-          <% end; %>
-        </tbody>
-      </table>
-    </div>
-    <p style="margin-bottom: 2rem;"></p>
+    <h5 style="color: #2895bd">Domínio:</h5>
+    <p><a href='/dominios/<%s dom |> List.hd <| "id" %>'><%s dom |> List.hd <| "designacao" %></a></p>
   </div>
 
   <div class="centre" style="position: absolute; top: 14em; left: 61em;">
-    <h2 style="margin-bottom: 1rem;">Projetos Financiados</h2>
+    <h2 style="margin-bottom: 1rem;">Projetos</h2>
     <div style="width: 24rem;">
       <table class="table table-dark table-hover">
         <thead class="table-dark">
@@ -82,4 +67,3 @@ let prog_template (prog: data list) ents projs =
     Modificar
     </a>
   </div>
-
