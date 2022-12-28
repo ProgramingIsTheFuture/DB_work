@@ -7,12 +7,12 @@
 - [x] Listar os dados de todos os projetos
   - [x] Tabela com todos os dados
   - [x] Cada um com um link para mais informação sobre o projeto
-- [ ] Listar docentes
+- [x] Listar docentes
   - [x] Mostrar os projetos envolvidos
   - [x] Tempo de dedicação em cada projeto
-  - [ ] Tempo total
-- [ ] Adicionar tabela de area e dominio cientifico (projeto, dominio: N:M, e dominio, area: 1:N).
-  - [ ] Mostrar a área em que mais investigações são feitas.
+  - [x] Tempo total
+- [x] Adicionar tabela de area e dominio cientifico (projeto, dominio: N:M, e dominio, area: 1:N).
+  - [x] Mostrar a área em que mais investigações são feitas.
 - [ ] Mostrar o financiador que paga mais.
 - [ ] Procurar as entidades externas com mais financiamentos
 - [ ] Validar para não exceder o tempo maximo permitido, etc...
