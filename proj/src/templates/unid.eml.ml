@@ -24,7 +24,7 @@ let unidades (_unid: data list) =
 
 
 let unid_template (unid : data list) = 
-  General.navbar_inpage "Unidades" ^
+  General.navbar_inpage "Unidade" ^
   <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
     <h1><%s unid |> List.hd <| "Unome" %></h1>
     <p style="margin-bottom: 2rem;"></p>
