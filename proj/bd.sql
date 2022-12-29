@@ -136,6 +136,7 @@ CREATE TABLE [AreaProjeto] (
 CREATE TABLE [Entigrama] (
   [entidadeId] int,
   [programId] int,
+  [valor] int
   PRIMARY KEY ([entidadeId], [programId])
 )
 
@@ -264,10 +265,10 @@ INSERT INTO [dbo].[Entidade] ([nacional]
 -- PROGRAMAS
 INSERT INTO [dbo].[Programa] ([designacao])
   VALUES 
-  ('Portugal 2020'),
+  ('Portugal 2021'),
   ('Concurso Projetos Portugueses'),
   ('European Best Computer Science Projects Contest'),
-  ('Horizon 2020'),
+  ('Horizon 2021'),
   ('UNESCO Funding Program'),
   ('World Distinguished Project Funding Program')
 
@@ -275,12 +276,12 @@ INSERT INTO [dbo].[Programa] ([designacao])
 INSERT INTO [dbo].[Entigrama] ([entidadeId]
 , [programId])
   VALUES 
-  (1, 1), (1, 2), (1, 4), (1, 5),
-  (2, 2),
-  (3, 3),
-  (4, 3), (4, 4), (4, 5),
-  (5, 3), (5, 4), (5, 5), (5, 6),
-  (6, 5), (6, 6)
+  (1, 1, 50000), (1, 2, 100000), (1, 4, 35000), (1, 5, 40000),
+  (2, 2, 135000),
+  (3, 3, 200000),
+  (4, 3, 100000), (4, 4, 150000), (4, 5, 200000),
+  (5, 3, 150000), (5, 4, 200000), (5, 5, 350000), (5, 6, 400000),
+  (6, 5, 1000000), (6, 6, 500000)
 
 
 -- DOMINIOS
