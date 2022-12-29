@@ -274,7 +274,8 @@ INSERT INTO [dbo].[Programa] ([designacao])
 
 -- ENTIDADES <-> PROGRAMAS (Entigrama)
 INSERT INTO [dbo].[Entigrama] ([entidadeId]
-, [programId])
+, [programId]
+, [valor])
   VALUES 
   (1, 1, 50000), (1, 2, 100000), (1, 4, 35000), (1, 5, 40000),
   (2, 2, 135000),
