@@ -20,7 +20,7 @@ CREATE TABLE [Projeto] (
 
 CREATE TABLE [Contrato] (
   [id] int IDENTITY (1, 1),
-  [projectId] int NOT NULL,
+  [projetoId] int NOT NULL,
   [nome] varchar(255),
   [titulo] varchar(255),
   [descricao] varchar(255),
@@ -65,14 +65,14 @@ CREATE TABLE [Papel] (
 
 CREATE TABLE [Keywords] (
   [id] int IDENTITY (1, 1),
-  [projectId] int NOT NULL,
+  [projetoId] int NOT NULL,
   [keyword] varchar(255) NOT NULL,
   PRIMARY KEY ([id])
 )
 
 CREATE TABLE [Publicacao] (
   [id] int IDENTITY (1, 1),
-  [projectId] int NOT NULL,
+  [projetoId] int NOT NULL,
   [indicador] bit NOT NULL,
   [nomeJornal] varchar(255),
   [url] varchar(255),
@@ -101,7 +101,7 @@ CREATE TABLE [Status] (
 
 CREATE TABLE [HistoricoStatus] (
   [id] int IDENTITY (1, 1),
-  [projectId] int,
+  [projetoId] int,
   [statusId] int,
   [data] date,
   PRIMARY KEY ([id])
@@ -120,30 +120,30 @@ CREATE TABLE [Programa] (
 )
 
 CREATE TABLE [Participa] (
-  [projectId] int,
+  [projetoId] int,
   [investigadorId] int,
   [papelId] int,
   [tempoPerc] int NOT NULL,
-  PRIMARY KEY ([projectId], [investigadorId])
+  PRIMARY KEY ([projetoId], [investigadorId])
 )
 
 CREATE TABLE [AreaProjeto] (
-  [projectId] int,
+  [projetoId] int,
   [areaCientificaId] int,
-  PRIMARY KEY ([projectId], [areaCientificaId])
+  PRIMARY KEY ([projetoId], [areaCientificaId])
 )
 
 CREATE TABLE [Entigrama] (
   [entidadeId] int,
-  [programId] int,
+  [programaId] int,
   [valor] int
-  PRIMARY KEY ([entidadeId], [programId])
+  PRIMARY KEY ([entidadeId], [programaId])
 )
 
 CREATE TABLE [Projama] (
-  [projectId] int,
-  [programId] int,
-  PRIMARY KEY ([projectId], [programId])
+  [projetoId] int,
+  [programaId] int,
+  PRIMARY KEY ([projetoId], [programaId])
 )
 
 CREATE TABLE [UnidadeInvestigador] (
@@ -154,31 +154,31 @@ CREATE TABLE [UnidadeInvestigador] (
 
 ALTER TABLE [Projeto] ADD FOREIGN KEY ([statusId]) REFERENCES [Status] ([id])
 
-ALTER TABLE [Contrato] ADD FOREIGN KEY ([projectId]) REFERENCES [Projeto] ([id])
+ALTER TABLE [Contrato] ADD FOREIGN KEY ([projetoId]) REFERENCES [Projeto] ([id])
 
 ALTER TABLE [Contrato] ADD FOREIGN KEY ([statusId]) REFERENCES [Status] ([id])
 
 ALTER TABLE [Investigador] ADD FOREIGN KEY ([institutoId]) REFERENCES [Instituto] ([id])
 
-ALTER TABLE [Keywords] ADD FOREIGN KEY ([projectId]) REFERENCES [Projeto] ([id])
+ALTER TABLE [Keywords] ADD FOREIGN KEY ([projetoId]) REFERENCES [Projeto] ([id])
 
-ALTER TABLE [Publicacao] ADD FOREIGN KEY ([projectId]) REFERENCES [Projeto] ([id])
+ALTER TABLE [Publicacao] ADD FOREIGN KEY ([projetoId]) REFERENCES [Projeto] ([id])
 
-ALTER TABLE [HistoricoStatus] ADD FOREIGN KEY ([projectId]) REFERENCES [Projeto] ([id])
+ALTER TABLE [HistoricoStatus] ADD FOREIGN KEY ([projetoId]) REFERENCES [Projeto] ([id])
 
 ALTER TABLE [HistoricoStatus] ADD FOREIGN KEY ([statusId]) REFERENCES [Status] ([id])
 
-ALTER TABLE [Projama] ADD FOREIGN KEY ([programId]) REFERENCES [Programa] ([id])
+ALTER TABLE [Projama] ADD FOREIGN KEY ([programaId]) REFERENCES [Programa] ([id])
 
-ALTER TABLE [Projama] ADD FOREIGN KEY ([projectId]) REFERENCES [Projeto] ([id])
+ALTER TABLE [Projama] ADD FOREIGN KEY ([projetoId]) REFERENCES [Projeto] ([id])
 
-ALTER TABLE [AreaProjeto] ADD FOREIGN KEY ([projectId]) REFERENCES [Projeto] ([id])
+ALTER TABLE [AreaProjeto] ADD FOREIGN KEY ([projetoId]) REFERENCES [Projeto] ([id])
 
 ALTER TABLE [AreaProjeto] ADD FOREIGN KEY ([areaCientificaId]) REFERENCES [AreaCientifica] ([id])
 
 ALTER TABLE [AreaCientifica] ADD FOREIGN KEY ([dominioId]) REFERENCES [Dominio] ([id])
 
-ALTER TABLE [Entigrama] ADD FOREIGN KEY ([programId]) REFERENCES [Programa] ([id])
+ALTER TABLE [Entigrama] ADD FOREIGN KEY ([programaId]) REFERENCES [Programa] ([id])
 
 ALTER TABLE [Entigrama] ADD FOREIGN KEY ([entidadeId]) REFERENCES [Entidade] ([id])
 
@@ -186,7 +186,7 @@ ALTER TABLE [UnidadeInvestigador] ADD FOREIGN KEY ([unidadeInvestigacaoId]) REFE
 
 ALTER TABLE [UnidadeInvestigador] ADD FOREIGN KEY ([investigadorId]) REFERENCES [Investigador] ([id])
 
-ALTER TABLE [Participa] ADD FOREIGN KEY ([projectId]) REFERENCES [Projeto] ([id])
+ALTER TABLE [Participa] ADD FOREIGN KEY ([projetoId]) REFERENCES [Projeto] ([id])
 
 ALTER TABLE [Participa] ADD FOREIGN KEY ([investigadorId]) REFERENCES [Investigador] ([id])
 
@@ -274,7 +274,7 @@ INSERT INTO [dbo].[Programa] ([designacao])
 
 -- ENTIDADES <-> PROGRAMAS (Entigrama)
 INSERT INTO [dbo].[Entigrama] ([entidadeId]
-, [programId]
+, [programaId]
 , [valor])
   VALUES 
   (1, 1, 50000), (1, 2, 100000), (1, 4, 35000), (1, 5, 40000),
@@ -389,7 +389,7 @@ INSERT INTO [dbo].[Projeto] ([nome]
   ('Magnetic fields on turbulent fluids', 'Examining the impact of a magnetic field on turbulent flow in a conducting fluid', 'Studying the effect of an applied magnetic field on turbulent flow in a fluid that is capable of conducting electricity. Using computational fluid dynamics (CFD) simulations or experimental techniques to study the behavior of the flow and the characteristics of the magnetic field.', 'Impacto de um campo magnético no fluxo turbulento de um fluido condutor', NULL, '2021-05-21', NULL, 'www.projects.eu.org/magnetic-turbulence', 'www.projects.eu.org/doi/bajs82no12', 4)
 
 -- PROJETOS <-> AREAS CIENTIFICAS (AreaProjeto)
-INSERT INTO [dbo].[AreaProjeto] ([projectId]
+INSERT INTO [dbo].[AreaProjeto] ([projetoId]
 , [areaCientificaId])
   VALUES 
   (1, 4), (1, 5),
@@ -397,7 +397,7 @@ INSERT INTO [dbo].[AreaProjeto] ([projectId]
   (3, 4), (3, 5), (3, 6)
 
 -- KEYWORDS
-INSERT INTO [dbo].[Keywords] ([projectId]
+INSERT INTO [dbo].[Keywords] ([projetoId]
 , [keyword])
   VALUES 
   (1, 'Blockchain'), (1, 'Eleições'), (1, 'Votos'),
@@ -405,7 +405,7 @@ INSERT INTO [dbo].[Keywords] ([projectId]
   (3, 'Magnetitism'), (3, 'Fields'), (3, 'Fuilds'), (3, 'Turbulence'), (3, 'Electricity')
 
 -- PUBLICACOES
-INSERT INTO [dbo].[Publicacao] ([projectId]
+INSERT INTO [dbo].[Publicacao] ([projetoId]
 , [indicador]
 , [nomeJornal]
 , [url]
@@ -418,7 +418,7 @@ INSERT INTO [dbo].[Publicacao] ([projectId]
   (3, 1, 'Computational Geometry: Theory and Applications', 'www.dl.acm.org/coge/projects/magnetic-turbulence', 'www.dl.acm.org/coge/doi/aoqjd9481')
 
 -- HISTORICO STATUS
-INSERT INTO [dbo].[HistoricoStatus] ([projectId]
+INSERT INTO [dbo].[HistoricoStatus] ([projetoId]
 , [statusId]
 , [data])
   VALUES 
@@ -427,15 +427,15 @@ INSERT INTO [dbo].[HistoricoStatus] ([projectId]
   (3, 1, '2021-05-21'), (3, 4, '2021-05-23')
 
 -- PROJETOS <-> PROGRAMAS (Projama)
-INSERT INTO [dbo].[Projama] ([projectId]
-, [programId])
+INSERT INTO [dbo].[Projama] ([projetoId]
+, [programaId])
   VALUES 
   (1, 1), (1, 3), (1, 4),
   (2, 2), (2, 5),
   (3, 3), (3, 6)
 
 -- PROJETOS <-> INVESTIGADORES (Participa)
-INSERT INTO [dbo].[Participa] ([projectId]
+INSERT INTO [dbo].[Participa] ([projetoId]
 , [investigadorId]
 , [papelId]
 , [tempoPerc])
@@ -457,7 +457,7 @@ INSERT INTO [dbo].[Participa] ([projectId]
   (3, 21, 4, 35)
 
 -- CONTRATOS
-INSERT INTO [dbo].[Contrato] ([projectId]
+INSERT INTO [dbo].[Contrato] ([projetoId]
 , [nome]
 , [titulo]
 , [descricao]
@@ -474,12 +474,12 @@ GO
 --ORDER BY I.nome
 
 --SELECT P.id, P.nome, A.designacao, D.designacao FROM Projeto P, AreaProjeto AP, AreaCientifica A, Dominio D
---WHERE AP.projectId = P.id
+--WHERE AP.projetoId = P.id
 --  and AP.areaCientificaId = A.id
 --  and A.dominioId = D.id
 --ORDER BY P.id
 
 --SELECT E.id, E.nome, P.designacao FROM Entidade E, Entigrama EP, Programa P 
 --WHERE E.id = EP.entidadeId
---  and P.id = EP.programId
+--  and P.id = EP.programaId
 --ORDER BY E.id
