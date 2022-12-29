@@ -21,12 +21,6 @@ let investigadores (invs: data list) =
     </table>
   </div>
 
-  <div class="d-grid gap-2 col-1 mx-auto" style="margin: 30px">
-    <a href="/index.html" class="btn btn-outline-secondary" tabindex="-1" role="button" aria-disabled="true">
-      Adicionar investigador
-    </a>
-  </div>
-
 
 let investigador (invs: data) unidades projetos =
   General.navbar_inpage "Investigador" ^

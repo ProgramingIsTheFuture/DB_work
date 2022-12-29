@@ -20,6 +20,7 @@ let areas lst area =
       </tbody>
     </table>
 
+    <p style="margin-bottom: 2rem;"></p>
     <h5 style="color: #2895bd">Área com mais projetos:</h5>
     <p><%s area |> List.hd <| "designacao" %></p>
   </div>

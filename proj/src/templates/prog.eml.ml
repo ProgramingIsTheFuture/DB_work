@@ -33,12 +33,13 @@ let prog_template (prog: data list) ents projs =
 
   <div class="top-left2" style="position: absolute; top: 14em; left: 5em;">
     <h2 style="margin-bottom: 1rem;">Entidades Associadas</h2>
-    <div style="width: 24rem" ;>
+    <div style="width: 29rem" ;>
       <table class="table table-dark table-hover">
         <thead class="table-dark">
           <tr>
             <th scope="col">#</th>
             <th scope="col">Designação</th>
+            <th scope="col">Valor</th>
           </tr>
         </thead>
         <tbody class="table-group-divider">
@@ -46,6 +47,7 @@ let prog_template (prog: data list) ents projs =
           <tr>
             <th scope="row"><%s x <| "id" %></th>
             <td><a href='/entidades/<%s x<|"id" %>'><%s x <| "nome" %></a></td>
+            <td><%s x <| "valor" %></td>
           </tr>
           <% end; %>
         </tbody>

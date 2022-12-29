@@ -12,7 +12,7 @@ open Types
   [pais] varchar(255) NOT NULL,
  *)
 
-let entidades (ents: data list) =
+let entidades (ents: data list) maior extmaior =
   General.navbar_inpage "Entidades" ^
   <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
     <table class="table table-dark table-hover">
@@ -33,6 +33,14 @@ let entidades (ents: data list) =
         <% end; %>
       </tbody>
     </table>
+
+    <p style="margin-bottom: 2rem;"></p>
+    <h5 style="color: #2895bd">Entidade que paga mais:</h5>
+    <p><a href='/entidades/<%s extmaior |> List.hd <| "id" %>'><%s maior |> List.hd <| "nome" %></a> que investe <%s maior |> List.hd <| "total" %> euros</p>
+    
+    <p style="margin-bottom: 2rem;"></p>
+    <h5 style="color: #2895bd">Entidade exterior com mais projetos financiados:</h5>
+    <p><a href='/entidades/<%s extmaior |> List.hd <| "id" %>'><%s extmaior |> List.hd <| "nome" %></a> com <%s extmaior |> List.hd <| "numero" %> programas financiados</p>
   </div>
 
 let ent_template (ent: data list) (projs: data list) =
@@ -69,19 +77,21 @@ let ent_template (ent: data list) (projs: data list) =
 
   <div class="top-left2" style="position: absolute; top: 16em; left: 39em;">
     <h2 style="margin-bottom: 1rem;">Programas</h2>
-    <div style="width: 24rem" ;>
+    <div style="width: 28rem" ;>
       <table class="table table-dark table-hover">
         <thead class="table-dark">
           <tr>
             <th scope="col">#</th>
             <th scope="col">Designação</th>
+            <th scope="col">Valor</th>
           </tr>
         </thead>
         <tbody class="table-group-divider">
           <% ent |> List.iter begin fun x -> %>
           <tr>
             <th scope="row"><%s x <| "Pid" %></th>
-            <td><%s x <| "pdesignacao" %></td>
+            <td><a href='/programas/<%s x <| "Pid" %>'><%s x <| "pdesignacao" %></a></td>
+            <td><%s x <| "valor" %></td>
           </tr>
           <% end; %>
         </tbody>
@@ -114,9 +124,6 @@ let ent_template (ent: data list) (projs: data list) =
   </div>
 
   <div class="centre" style="position: absolute; top: 16em; left: 120em;">
-    <h2>Classificação</h2>
-    <p style="margin-bottom: 2rem;"></p>
-    PLACEHOLDER
   </div>
 
   <div class="d-grid gap-2 col-1 mx-auto" style="width: 3rem; position: absolute; top: 5em; right: 6em">
