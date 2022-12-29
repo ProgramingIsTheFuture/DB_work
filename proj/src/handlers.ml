@@ -244,7 +244,7 @@ let entities _req =
   in
   let extbigger =
     query
-      "SELECT TOP 1 E.id, E.nome, count(P.id) as numero FROM Entidade E
+      "SELECT TOP 1 E.id, E.nome, count(DISTINCT P.id) as numero FROM Entidade E
       INNER JOIN Entigrama EP ON E.id = EP.entidadeId
       INNER JOIN Programa Pr ON EP.programaId = Pr.id
       INNER JOIN Projama PP ON Pr.id = PP.programaId

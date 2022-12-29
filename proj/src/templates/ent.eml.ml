@@ -40,7 +40,7 @@ let entidades (ents: data list) maior extmaior =
     
     <p style="margin-bottom: 2rem;"></p>
     <h5 style="color: #2895bd">Entidade exterior com mais projetos financiados:</h5>
-    <p><a href='/entidades/<%s extmaior |> List.hd <| "id" %>'><%s extmaior |> List.hd <| "nome" %></a> com <%s extmaior |> List.hd <| "numero" %> programas financiados</p>
+    <p><a href='/entidades/<%s extmaior |> List.hd <| "id" %>'><%s extmaior |> List.hd <| "nome" %></a> com <%s extmaior |> List.hd <| "numero" %> projetos financiados</p>
   </div>
 
 let entidade (ent: data list) (projs: data list) =
