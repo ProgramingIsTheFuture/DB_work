@@ -21,7 +21,7 @@ let dominios lst =
     </table>
   </div>
 
-let dom_template (dom: data list) = 
+let dominio (dom: data list) = 
   General.navbar_inpage "Instituto" ^
   <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
     <h1><%s dom |> List.hd <| "designacao" %></h1>

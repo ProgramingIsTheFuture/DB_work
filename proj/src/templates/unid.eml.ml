@@ -21,9 +21,7 @@ let unidades (_unid: data list) =
     </table>
   </div>
 
-
-
-let unid_template (unid : data list) = 
+let unidade (unid : data list) = 
   General.navbar_inpage "Unidade" ^
   <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
     <h1><%s unid |> List.hd <| "Unome" %></h1>

@@ -43,7 +43,7 @@ let entidades (ents: data list) maior extmaior =
     <p><a href='/entidades/<%s extmaior |> List.hd <| "id" %>'><%s extmaior |> List.hd <| "nome" %></a> com <%s extmaior |> List.hd <| "numero" %> programas financiados</p>
   </div>
 
-let ent_template (ent: data list) (projs: data list) =
+let entidade (ent: data list) (projs: data list) =
   General.navbar_inpage "Entidade" ^
   <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
     <% ent |> List.hd |> begin fun x -> %>

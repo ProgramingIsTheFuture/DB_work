@@ -23,7 +23,7 @@ let projetos_contratos lst =
     </table>
   </div>
 
-let proj_template (_proj: data) (id : int) keywords publicacoes investigadores areas_dominios status historico_status =
+let projeto (_proj: data) (id : int) keywords publicacoes investigadores areas_dominios status historico_status =
   General.navbar_inpage "Projeto" ^
   <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px; word-wrap: break-word;">
     <h1><%s _proj <| "nome" %></h1>

@@ -14,8 +14,8 @@
  (action (run dream_eml %{deps} --workspace %{workspace_root})))
 
 (rule
- (targets contratos.ml)
- (deps contratos.eml.ml)
+ (targets cont.ml)
+ (deps cont.eml.ml)
  (action (run dream_eml %{deps} --workspace %{workspace_root})))
 
 (rule
@@ -24,8 +24,8 @@
  (action (run dream_eml %{deps} --workspace %{workspace_root})))
 
 (rule
- (targets institute.ml)
- (deps institute.eml.ml)
+ (targets inst.ml)
+ (deps inst.eml.ml)
  (action (run dream_eml %{deps} --workspace %{workspace_root})))
 
 (rule
@@ -34,8 +34,8 @@
  (action (run dream_eml %{deps} --workspace %{workspace_root})))
 
 (rule
- (targets investigadores.ml)
- (deps investigadores.eml.ml)
+ (targets inves.ml)
+ (deps inves.eml.ml)
  (action (run dream_eml %{deps} --workspace %{workspace_root})))
 
 (rule

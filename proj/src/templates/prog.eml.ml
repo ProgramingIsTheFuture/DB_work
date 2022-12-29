@@ -21,7 +21,7 @@ let programas (progs: data list) =
     </table>
   </div>
 
-let prog_template (prog: data list) ents projs =
+let programa (prog: data list) ents projs =
   General.navbar_inpage "Programa" ^
   <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
     <% prog |> List.hd |> begin fun x -> %>

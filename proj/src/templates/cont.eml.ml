@@ -1,6 +1,6 @@
 open Types
 
-let cont_template (_cont : data) projeto =
+let contrato (_cont : data) projeto =
   General.navbar_inpage "Contrato" ^
   <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
     <h1><%s _cont <| "nome" %></h1>

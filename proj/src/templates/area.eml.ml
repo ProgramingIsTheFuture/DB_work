@@ -25,7 +25,7 @@ let areas lst area =
     <p><%s area |> List.hd <| "designacao" %></p>
   </div>
 
-let area_template (area: data list) dom projs =
+let area (area: data list) dom projs =
   General.navbar_inpage "Programa" ^
   <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
     <% area |> List.hd |> begin fun x -> %>
