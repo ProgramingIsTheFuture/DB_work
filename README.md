@@ -13,7 +13,7 @@
   - [x] Tempo total
 - [x] Adicionar tabela de area e dominio cientifico (projeto, dominio: N:M, e dominio, area: 1:N).
   - [x] Mostrar a área em que mais investigações são feitas.
-- [ ] Mostrar o financiador que paga mais.
+- [x] Mostrar o financiador que paga mais.
 - [x] Procurar as entidades externas com mais financiamentos
 - [ ] Validar para não exceder o tempo maximo permitido, etc...
 
