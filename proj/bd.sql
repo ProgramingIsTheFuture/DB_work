@@ -63,7 +63,7 @@ CREATE TABLE [Papel] (
   PRIMARY KEY ([id])
 )
 
-CREATE TABLE [Keywords] (
+CREATE TABLE [Keyword] (
   [id] int IDENTITY (1, 1),
   [projetoId] int NOT NULL,
   [keyword] varchar(255) NOT NULL,
