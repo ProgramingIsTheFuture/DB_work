@@ -4,7 +4,7 @@
 
 ## BD
 
-- [ ] Pesquisar projetos por palavra chave / Mostrar as palavras chave na pagina dos projetos
+- [x] Pesquisar projetos por palavra chave
 - [x] Listar os dados de todos os projetos
   - [x] Tabela com todos os dados
   - [x] Cada um com um link para mais informação sobre o projeto
