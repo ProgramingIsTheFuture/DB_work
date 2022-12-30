@@ -160,7 +160,7 @@ ALTER TABLE [Contrato] ADD FOREIGN KEY ([statusId]) REFERENCES [Status] ([id])
 
 ALTER TABLE [Investigador] ADD FOREIGN KEY ([institutoId]) REFERENCES [Instituto] ([id])
 
-ALTER TABLE [Keywords] ADD FOREIGN KEY ([projetoId]) REFERENCES [Projeto] ([id])
+ALTER TABLE [Keyword] ADD FOREIGN KEY ([projetoId]) REFERENCES [Projeto] ([id])
 
 ALTER TABLE [Publicacao] ADD FOREIGN KEY ([projetoId]) REFERENCES [Projeto] ([id])
 
@@ -397,7 +397,7 @@ INSERT INTO [dbo].[AreaProjeto] ([projetoId]
   (3, 4), (3, 5), (3, 6)
 
 -- KEYWORDS
-INSERT INTO [dbo].[Keywords] ([projetoId]
+INSERT INTO [dbo].[Keyword] ([projetoId]
 , [keyword])
   VALUES 
   (1, 'Blockchain'), (1, 'Eleições'), (1, 'Votos'),
