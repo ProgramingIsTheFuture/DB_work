@@ -1,5 +1,6 @@
 let home = Home.home
 let projects = Proj.projetos_contratos
+let search_projects = Proj.procura_projetos
 let project = Proj.projeto
 let project_entities = Proj.proj_entities
 let contract = Cont.contrato

@@ -4,6 +4,7 @@ let () =
        [
          Dream.get "/" @@ Handlers.home;
          Dream.get "/projetos" @@ Handlers.projects;
+         Dream.post "/projetos" @@ Handlers.search_projects_kw;
          Dream.get "/projetos/:id" @@ Handlers.project_id;
          Dream.get "/projetos/:id/financiamento" @@ Handlers.project_id_entities;
          Dream.get "/contratos/:id" @@ Handlers.contract_id;

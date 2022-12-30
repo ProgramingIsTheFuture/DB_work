@@ -1,6 +1,6 @@
 open Types
 
-let projetos_contratos lst =
+let projetos_contratos request lst =
   General.navbar_home "Projetos / Contratos" ^
   <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
     <table class="table table-dark table-hover">
@@ -21,6 +21,42 @@ let projetos_contratos lst =
         <% end; %>
       </tbody>
     </table>
+
+    <p style="margin-bottom: 2rem;"></p>
+    <h5 style="color: #2895bd">Pesquisar projetos por palavras-chave:</h5>
+    <p style="margin-bottom: 2rem;"></p>
+  </div>
+  <div style="text-align:center; width: 300px; margin: 0 auto;">
+    <form class="d-flex" role="search" method="POST" action="/projetos">
+      <%s! Dream.csrf_tag request %>
+      <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="keyword">
+      <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+  </div>
+
+let procura_projetos projs keyword =
+  General.navbar_home "Projetos" ^
+  <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
+    <p style="margin-bottom: 2rem;"></p>
+    <h5 style="color: #2895bd">Projetos com a palavra-chave <%s keyword %></h5>
+    <p style="margin-bottom: 2rem;"></p>
+    <table class="table table-dark table-hover">
+      <thead class="table-dark">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Projeto</th>
+        </tr>
+      </thead>
+      <tbody class="table-group-divider"> 
+        <% projs |> List.iter begin fun x -> %> 
+        <tr>
+          <th scope="row"><%s x<|"id" %></th>
+          <td><a href='/projetos/<%s x<|"id" %>'><%s x<|"nome" %></a></td>
+        </tr>
+        <% end; %>
+      </tbody>
+    </table>
+
   </div>
 
 let projeto (_proj: data) (id : int) keywords publicacoes investigadores areas_dominios status historico_status =

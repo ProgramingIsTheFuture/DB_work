@@ -24,13 +24,34 @@ let query ?(params : Mssql.Param.t list = []) q =
 
 let home _req = serve home "Gestão de Projetos UBI"
 
-let projects _req =
+let projects req =
   serve
-    (projects
+    (projects req
        (query
           "SELECT C.id as Cid, C.nome as contrato, P.* FROM Projeto P, \
            Contrato C WHERE P.id = C.projetoId;"))
     "Projetos / Contratos"
+
+let search_projects_kw request =
+  match%lwt Dream.form request with
+  | `Ok ["keyword", keyword] -> begin 
+      let projetos = 
+        query ~params:[ Mssql.Param.String keyword]
+          "SELECT P.id, P.nome FROM Projeto P
+           INNER JOIN Keyword K ON P.id = K.projetoId
+           WHERE K.keyword LIKE CONCAT('%', $1, '%')"
+      in
+      serve (search_projects projetos keyword) "Projetos"
+  end
+  | _ ->
+      (*Change to a "error message"*)
+      let projetos = 
+        query ~params:[ Mssql.Param.String "Fields"]
+          "SELECT P.id, P.nome, K.keyword FROM Projeto P
+           INNER JOIN Keyword K ON P.id = K.projetoId
+           WHERE K.keyword LIKE $1"
+      in
+      serve (search_projects projetos "Fields") "Projetos"
 
 let project_id req =
   let id = Dream.param req "id" |> int_of_string in
@@ -40,7 +61,7 @@ let project_id req =
   in
   let keywords =
     query ~params:[ Mssql.Param.Int id ]
-      "SELECT K.id, K.keyword FROM projeto P, keywords K 
+      "SELECT K.id, K.keyword FROM projeto P, keyword K 
        WHERE P.id = $1 AND P.id = K.projetoId;"
   in
   let publicacoes =
