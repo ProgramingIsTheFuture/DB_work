@@ -18,8 +18,8 @@ let () =
          Dream.get "/unidades/:id" Handlers.unid_id;
          Dream.get "/institutos" @@ Handlers.institutes;
          Dream.get "/institutos/:id" @@ Handlers.institute_id;
-         Dream.get "/institutos/:id/modificar" @@ Handlers.institute_form;
-         Dream.post "/institutos/:id/modificar" @@ Handlers.institute_form;
+         Dream.get "/institutos/:id/modificar" @@ Handlers.modify_institute;
+         Dream.post "/institutos/:id/modificar" @@ Handlers.modify_institute;
          Dream.get "/entidades" @@ Handlers.entities;
          Dream.get "/entidades/:id" @@ Handlers.entity_id;
          Dream.get "/programas" @@ Handlers.programs;

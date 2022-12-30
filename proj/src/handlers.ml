@@ -278,6 +278,13 @@ let entities _req =
     (entities (query "SELECT id, nome, designacao FROM entidade;") bigger extbigger)
     "Entidades"
 
+let modify_institute request =
+  match%lwt Dream.form request with
+  | `Ok _ -> serve (Templates.institute_form request (query "SELECT * FROM investigador;")) "Institutos"
+  | _ ->
+      (*Change to a "error message"*)
+      serve (Templates.institute_form request (query "SELECT * FROM investigador;")) "Institutos"
+
 let entity_id req =
   let id = (Dream.param req "id" |> int_of_string) in
   let programas =
@@ -324,10 +331,4 @@ let program_id req =
   in
   serve (program programa entidades projetos) "Programas"
 
-let institute_form request =
-  match%lwt Dream.form request with
-  | `Ok _ -> serve (Templates.institute_form request (Some "Tudo fixe")) "Institutos"
-  | _ ->
-      (*Change to a "error message"*)
-      serve (Templates.institute_form request (Some "Deu merda")) "Institutos"
 
