@@ -255,6 +255,26 @@ let institute_id req =
   in
   serve (institute instituto) "Instituto"
 
+let modify_institute req _message = 
+  let pertencentes = 
+    query
+    ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
+      "SELECT Inv.id FROM Instituto Ins 
+       INNER JOIN Investigador Inv ON Ins.id = Inv.institutoId
+       WHERE Ins.id = $1" 
+  in
+  serve (Templates.institute_form req (query "SELECT id, nome FROM Investigador;") pertencentes _message) "Institutos"
+
+let modify_institute_form request =
+  let id = Dream.param request "id" |> int_of_string in
+  match%lwt Dream.form request with
+  | `Ok ["values", values] -> begin
+        query ~params:[ Mssql.Param.Array values; Mssql.Param.Int id ]
+        "UPDATE Investigador I SET I.institutoId = $2 WHERE I.id IN $1";
+        modify_institute request (Some "Sucesso!")
+  end
+  | _ -> modify_institute request (Some "Erro!")
+
 let entities _req =
   let bigger =
     query
@@ -278,12 +298,6 @@ let entities _req =
     (entities (query "SELECT id, nome, designacao FROM entidade;") bigger extbigger)
     "Entidades"
 
-let modify_institute request =
-  match%lwt Dream.form request with
-  | `Ok _ -> serve (Templates.institute_form request (query "SELECT * FROM investigador;")) "Institutos"
-  | _ ->
-      (*Change to a "error message"*)
-      serve (Templates.institute_form request (query "SELECT * FROM investigador;")) "Institutos"
 
 let entity_id req =
   let id = (Dream.param req "id" |> int_of_string) in

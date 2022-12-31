@@ -55,50 +55,37 @@ let instituto (inst: data list) =
     </a>
   </div>
 
-let inst_form request investigadores =
+let inst_form request investigadores _pertencentes message =
   General.navbar_inpage "Instituto" ^
-  <div class="container" style="width:500px;">
+  <div class="container" style="width:320px;">
     <p style="margin-bottom: 2rem;"></p>
+    <h5 style="color: #2895bd">Investigadores:</h5> 
+    <p style="margin-bottom: 2rem;"></p>
+
     <div id="form-fields">
     <form method="POST" action="/institutos/:id/modificar">
       <%s! Dream.csrf_tag request %>
       <div class="input-group">
-        <select class="form-select" id="inputGroupSelect04" aria-label="Example select with button addon">
-          <option selected>Escolha um investigador: </option>
-          <% investigadores |> List.iter begin fun x -> %> 
-            <option value='<%s x<|"id" %>'><%s x<|"nome" %></option>
-          <% end; %>
-        </select>  
-        <button class="btn btn-outline-secondary" type="button" onclick="addField()">+</button>
+        <% investigadores |> List.iter begin fun x -> %> 
+          <div class="form-check">
+% begin match (_pertencentes |> List.exists (fun i -> String.equal (i <| "id") (x <| "id"))) with
+%   | true -> 
+          <input value='<%s x<|"id" %>' name="values" class="form-check-input" type="checkbox" id="flexCheckChecked" checked>
+          <label class="form-check-label" for="flexCheckChecked"> 
+%   | false -> 
+          <input value='<%s x<|"id" %>' name="values" class="form-check-input" type="checkbox" id="flexCheckDefault">
+          <label class="form-check-label" for="flexCheckDefault">
+% end;
+              <%s x <| "id" %> - <%s x<|"nome" %>
+          </label>
+          </div>
+        <% end; %>
       </div>
     </div>
     </form>
-  <script>
-    function addField() {
-      // Create a new select element
-      var select = document.createElement("select");
-      select.className = "form-select";
-      select.id = "inputGroupSelect04";
-      select.setAttribute("aria-label", "Example select with button addon");
-
-      // Create the default "Choose an investigator" option
-      var defaultOption = document.createElement("option");
-      defaultOption.selected = true;
-      defaultOption.text = "Choose an investigator:";
-      select.appendChild(defaultOption);
-
-      // Add the options from the existing select element
-      var options = document.querySelectorAll("#inputGroupSelect04 > option");
-      for (var i = 0; i < options.length; i++) {
-        var option = options[i];
-        var newOption = document.createElement("option");
-        newOption.value = option.value;
-        newOption.text = option.text;
-        select.appendChild(newOption);
-      }
-
-      // Add the select element to the form
-      document.getElementById("form-fields").appendChild(select);
-    }
-  </script>
+% begin match message with 
+%   | None -> () 
+%   | Some message -> 
+      <p><b><%s message %>!</b></p>
+%   end;
   </div>
