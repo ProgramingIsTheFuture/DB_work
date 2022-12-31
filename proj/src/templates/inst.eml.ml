@@ -55,7 +55,7 @@ let instituto (inst: data list) =
     </a>
   </div>
 
-let inst_form request investigadores _pertencentes message =
+let inst_form request instituto message =
   General.navbar_inpage "Instituto" ^
   <div class="container" style="width:320px;">
     <p style="margin-bottom: 2rem;"></p>
@@ -63,25 +63,12 @@ let inst_form request investigadores _pertencentes message =
     <p style="margin-bottom: 2rem;"></p>
 
     <div id="form-fields">
-    <form method="POST" action="/institutos/:id/modificar">
+    <form method="POST" action='/institutos/<%s instituto<|"id"%>/modificar'>
       <%s! Dream.csrf_tag request %>
       <div class="input-group">
-        <% investigadores |> List.iter begin fun x -> %> 
-          <div class="form-check">
-% begin match (_pertencentes |> List.exists (fun i -> String.equal (i <| "id") (x <| "id"))) with
-%   | true -> 
-          <input value='<%s x<|"id" %>' name="values" class="form-check-input" type="checkbox" id="flexCheckChecked" checked>
-          <label class="form-check-label" for="flexCheckChecked"> 
-%   | false -> 
-          <input value='<%s x<|"id" %>' name="values" class="form-check-input" type="checkbox" id="flexCheckDefault">
-          <label class="form-check-label" for="flexCheckDefault">
-% end;
-              <%s x <| "id" %> - <%s x<|"nome" %>
-          </label>
-          </div>
-        <% end; %>
+        <input value='<%s instituto<| "designacao"%>' name="designacao" />
+        <input type="submit" />
       </div>
-    </div>
     </form>
 % begin match message with 
 %   | None -> () 
