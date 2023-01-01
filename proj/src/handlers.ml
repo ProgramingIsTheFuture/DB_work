@@ -40,7 +40,7 @@ let search_projects_kw request =
           ~params:[ Mssql.Param.String keyword ]
           "SELECT P.id, P.nome FROM Projeto P\n\
           \           INNER JOIN Keyword K ON P.id = K.projetoId\n\
-          \           WHERE K.keyword LIKE CONCAT('%', $1, '%')"
+          \           WHERE K.designacao LIKE CONCAT('%', $1, '%')"
       in
       serve (search_projects projetos keyword) "Projetos"
   | _ ->
@@ -48,9 +48,9 @@ let search_projects_kw request =
       let projetos =
         query
           ~params:[ Mssql.Param.String "Fields" ]
-          "SELECT P.id, P.nome, K.keyword FROM Projeto P\n\
+          "SELECT P.id, P.nome, K.designacao FROM Projeto P\n\
           \           INNER JOIN Keyword K ON P.id = K.projetoId\n\
-          \           WHERE K.keyword LIKE $1"
+          \           WHERE K.designacao LIKE $1"
       in
       serve (search_projects projetos "Fields") "Projetos"
 
@@ -62,7 +62,7 @@ let project_id req =
   in
   let keywords =
     query ~params:[ Mssql.Param.Int id ]
-      "SELECT K.id, K.keyword FROM projeto P, keyword K \n\
+      "SELECT K.id, K.designacao FROM projeto P, keyword K \n\
       \       WHERE P.id = $1 AND P.id = K.projetoId;"
   in
   let publicacoes =
