@@ -77,7 +77,7 @@ body {
 .container {
   width: 80%;
   margin: 0 auto;
-  text-align: center;
+  text-align: left;
 }
 .title {
   font-size: 2rem;
