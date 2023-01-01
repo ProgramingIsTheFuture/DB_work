@@ -136,7 +136,7 @@ CREATE TABLE [AreaProjeto] (
 CREATE TABLE [Entigrama] (
   [entidadeId] int,
   [programaId] int,
-  [valor] int
+  [valor] int,
   PRIMARY KEY ([entidadeId], [programaId])
 )
 
