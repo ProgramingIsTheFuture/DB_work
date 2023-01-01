@@ -9,78 +9,63 @@ body {
   font-family: "JetBrains Mono", monospace;
   background-color: #3e4145;
   color: #fff;
-  margin: 0;
-  padding = 0;
-  width = 100%;
   font-size: 16px;
 }
 
-.left, .center, .right {
-  height: 100%;
-  min-width: 200px; 
-  min-height: 200px; 
+.parent-container {
+  margin-top: 40px;
 }
 
-.left {
-  position: absolute;
-  top: 8%;
-  left: 4%;
-  word-wrap: break-word;
-}
-
-.center {
-  position: absolute;
-  top: 27%;
-  left: 45%;
-}
-
-.right {
-  position: absolute;
-  top: 27%;
-  left: 75%;
-}
-
-@media (max-width: 1440px) {
-  .left {
-    position: relative;
-    top: 8%;
-    left: 4%;
-    width: 100%;
-    font-size: 2vw;
+@media (min-height: 1440px) {
+  .parent-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
   }
 
-  .center {
+  .esq {
+    width: 40%;
+  }
+
+  .cen, .dir {
+    width: 25%;
+    margin-left: 50px;
+    margin-top: 70px;
+  }
+}
+
+@media (max-height: 1440px) {
+  .parent-container {
+    display: flex;
+    flex-direction: column;
     position: relative;
+  }
+
+  .esq {
+    width: 100%;
+    order: 1;
+  }
+
+  .cen {
+    width: 100%;
+    position: absolute;
+    right: 40%;
+    left: 60%;
     top: 0;
-    left: 0;
+    z-index: 1;
+    order: 2;
+  }
+
+  .dir {
     width: 100%;
-    font-size: 2vw;
+    z-index: 0;
+    order: 3;
   }
 
-  .right {
-    position: relative;
-    top: 0;
-    left: 0;
-    width: 100%;
-    font-size: 2vw;
-  }
-}
-
-@media (max-width: 768px) {
-  .left {
-    width: 30%;
-    font-size: 2.5vw;
+  .esq, .dir {
+    margin-left: 50px;
   }
 
-  .center {
-    width: 30%;
-    font-size: 2.5vw;
-  }
-
-  .right {
-    width: 30%;
-    font-size: 2.5vw;
-  }
 }
 
 .container {
