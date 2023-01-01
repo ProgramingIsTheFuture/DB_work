@@ -40,7 +40,7 @@ let search_projects_kw request =
           ~params:[ Mssql.Param.String keyword ]
           "SELECT P.id, P.nome FROM Projeto P\n\
           \           INNER JOIN Keyword K ON P.id = K.projetoId\n\
-          \           WHERE K.keyword LIKE CONCAT('%', $1, '%')"
+          \           WHERE K.designacao LIKE CONCAT('%', $1, '%')"
       in
       serve (search_projects projetos keyword) "Projetos"
   | _ ->
@@ -48,9 +48,9 @@ let search_projects_kw request =
       let projetos =
         query
           ~params:[ Mssql.Param.String "Fields" ]
-          "SELECT P.id, P.nome, K.keyword FROM Projeto P\n\
+          "SELECT P.id, P.nome, K.designacao FROM Projeto P\n\
           \           INNER JOIN Keyword K ON P.id = K.projetoId\n\
-          \           WHERE K.keyword LIKE $1"
+          \           WHERE K.designacao LIKE $1"
       in
       serve (search_projects projetos "Fields") "Projetos"
 
@@ -62,7 +62,7 @@ let project_id req =
   in
   let keywords =
     query ~params:[ Mssql.Param.Int id ]
-      "SELECT K.id, K.keyword FROM projeto P, keyword K \n\
+      "SELECT K.id, K.designacao FROM projeto P, keyword K \n\
       \       WHERE P.id = $1 AND P.id = K.projetoId;"
   in
   let publicacoes =
@@ -242,6 +242,27 @@ let domain_id req =
   in
   serve (domain dominio_area) "Dominio"
 
+let modify_domain req _message =
+  let institute =
+    query
+      ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
+      "SELECT id, designacao FROM Dominio WHERE id = $1"
+    |> List.hd
+  in
+  serve (domain_form req institute _message) "Domínio"
+
+let modify_domain_form request =
+  let id = Dream.param request "id" |> int_of_string in
+  match%lwt Dream.form request with
+  | `Ok [ ("designacao", des) ] ->
+      query
+        ~params:[ Mssql.Param.String des; Mssql.Param.Int id ]
+        "UPDATE Dominio SET designacao = $1 WHERE id = $2"
+      |> ignore;
+      (* List.map (fun (s, v) -> Dream.log "%s: %s\n\n" s v) tl |> ignore; *)
+      modify_domain request (Some "Sucesso!")
+  | _ -> modify_domain request (Some "Erro!")
+
 let areas _req =
   let areamaior =
     query
@@ -322,7 +343,7 @@ let unid_id req =
       \       INNER JOIN Investigador I ON UI.investigadorId = I.id \n\
       \       WHERE U.id = $1;"
   in
-  serve (unidade unid) "Instituto"
+  serve (unidade unid) "Unidade"
 
 let institutes _req =
   serve
@@ -347,7 +368,7 @@ let modify_institute req _message =
       "SELECT id, designacao FROM Instituto WHERE id = $1"
     |> List.hd
   in
-  serve (Templates.institute_form req institute _message) "Institutos"
+  serve (institute_form req institute _message) "Institutos"
 
 let modify_institute_form request =
   let id = Dream.param request "id" |> int_of_string in

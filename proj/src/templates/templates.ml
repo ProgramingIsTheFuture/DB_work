@@ -7,6 +7,7 @@ let project_entities = Proj.proj_entities
 let contract = Cont.contrato
 let domains = Dom.dominios
 let domain = Dom.dominio
+let domain_form = Dom.dom_form
 let areas = Area.areas
 let area = Area.area
 let entities = Ent.entidades

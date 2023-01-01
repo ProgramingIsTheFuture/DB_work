@@ -25,6 +25,7 @@
 - [ ] Inserir entidades financiadoras e programas de financiamento
 - [x] Mostrar os dados do projeto
 - [x] Mostrar os dados do investigador
+- [ ] CRUD de tudo o resto
 
 # Scripts
 

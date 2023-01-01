@@ -2,7 +2,7 @@ open Types
 
 let contrato (_cont : data) projeto =
   General.navbar_inpage "Contrato" ^
-  <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
+  <div class="left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
     <h1><%s _cont <| "nome" %></h1>
     <h5><%s _cont <| "descricao" %></h5>
 
@@ -18,7 +18,7 @@ let contrato (_cont : data) projeto =
     </div>
   </div>
 
-  <div class="top-left2" style="position: absolute; top: 12em; left: 64em;">
+  <div class="center" style="position: absolute; top: 12em; left: 64em;">
     <h2 style="margin-bottom: 1rem;">Projeto Associado</h2>
     <div style="width: 24rem" ;>
       <table class="table table-dark table-hover">

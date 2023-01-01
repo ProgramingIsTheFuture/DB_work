@@ -1,19 +1,85 @@
 html, body {
   height: 100%;
   width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  margin: 0;
-  padding: 0;
   font-family: "JetBrains Mono", monospace;
   background-color: #3e4145;
   color: #fff;
+  font-size: 16px;
 }
+
+.parent-container {
+  margin-top: 40px;
+  height: auto;
+  width: auto;
+}
+
+@media (min-height: 1440px) {
+  .parent-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .esq {
+    width: 40%;
+  }
+
+  .cen {
+    width: 25%;
+    margin-left: -20px;
+    margin-top: 70px;
+  }
+
+  .dir {
+    width: 25%;
+    margin-left: 50px;
+    margin-top: 70px;
+  }
+}
+
+@media (max-height: 1440px) {
+  .parent-container {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .esq {
+    width: 100%;
+    order: 1;
+  }
+
+  .cen {
+    width: 100%;
+    position: absolute;
+    right: 40%;
+    left: 60%;
+    top: 0;
+    z-index: 1;
+    order: 2;
+  }
+
+  .dir {
+    width: 100%;
+    z-index: 0;
+    order: 3;
+  }
+
+  .esq, .dir {
+    margin-left: 50px;
+  }
+
+}
+
 .container {
   width: 80%;
   margin: 0 auto;
-  text-align: center;
+  text-align: left;
 }
 .title {
   font-size: 2rem;

@@ -23,7 +23,7 @@ let institutos (inst: data list) =
 
 let instituto (inst: data list) = 
   General.navbar_inpage "Instituto" ^
-  <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
+  <div class="left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
     <h1><%s inst |> List.hd <| "designacao" %></h1>
     <p style="margin-bottom: 2rem;"></p>
 
@@ -57,17 +57,18 @@ let instituto (inst: data list) =
 
 let inst_form request instituto message =
   General.navbar_inpage "Instituto" ^
-  <div class="container" style="width:320px;">
-    <p style="margin-bottom: 2rem;"></p>
-    <h5 style="color: #2895bd">Investigadores:</h5> 
+  <div class="container" style="width:520px;">
     <p style="margin-bottom: 2rem;"></p>
 
     <div id="form-fields">
     <form method="POST" action='/institutos/<%s instituto<|"id"%>/modificar'>
       <%s! Dream.csrf_tag request %>
-      <div class="input-group">
-        <input value='<%s instituto<| "designacao"%>' name="designacao" />
-        <input type="submit" />
+        <div class="mb-3">
+          <label for="designacaoInst" class="form-label">Designacao</label>
+          <input value='<%s instituto<| "designacao"%>' name="designacao" type="designacao" class="form-control" id="designacaoInst" aria-describedby="emailHelp">
+          <div id="emailHelp" class="form-text">Introduza aqui a nova designação.</div>
+        </div>
+        <button type="submit" class="btn btn-primary">Submeter</button>
       </div>
     </form>
 % begin match message with 

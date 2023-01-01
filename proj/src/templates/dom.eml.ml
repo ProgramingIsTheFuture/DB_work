@@ -1,7 +1,7 @@
 open Types
 
 let dominios lst =
-  General.navbar_home "Dommínios" ^
+  General.navbar_home "Domínios" ^
   <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
     <table class="table table-dark table-hover">
       <thead class="table-dark">
@@ -22,8 +22,8 @@ let dominios lst =
   </div>
 
 let dominio (dom: data list) = 
-  General.navbar_inpage "Instituto" ^
-  <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
+  General.navbar_inpage "Domínio" ^
+  <div class="left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
     <h1><%s dom |> List.hd <| "designacao" %></h1>
     <p style="margin-bottom: 2rem;"></p>
 
@@ -53,4 +53,27 @@ let dominio (dom: data list) =
     <a href='/dominios/<%s dom |> List.hd <| "Did" %>/modificar' class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
       Modificar
     </a>
+  </div>
+
+let dom_form request dominio message =
+  General.navbar_inpage "Domínio" ^
+  <div class="container" style="width:520px;">
+    <p style="margin-bottom: 2rem;"></p>
+
+    <div id="form-fields">
+    <form method="POST" action='/dominios/<%s dominio<|"id"%>/modificar'>
+      <%s! Dream.csrf_tag request %>
+        <div class="mb-3">
+          <label for="designacaoDom" class="form-label">Designacao</label>
+          <input value='<%s dominio <| "designacao"%>' name="designacao" type="designacao" class="form-control" id="designacaoDom" aria-describedby="emailHelp">
+          <div id="emailHelp" class="form-text">Introduza aqui a nova designação.</div>
+        </div>
+        <button type="submit" class="btn btn-primary">Submeter</button>
+      </div>
+    </form>
+% begin match message with 
+%   | None -> () 
+%   | Some message -> 
+      <p><b><%s message %>!</b></p>
+%   end;
   </div>

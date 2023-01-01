@@ -23,7 +23,7 @@ let programas (progs: data list) =
 
 let programa (prog: data list) ents projs =
   General.navbar_inpage "Programa" ^
-  <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
+  <div class="left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
     <% prog |> List.hd |> begin fun x -> %>
     <h1><%s x<|"designacao" %></h1>
     <p style="margin-bottom: 2rem;"></p>
@@ -56,7 +56,7 @@ let programa (prog: data list) ents projs =
     <p style="margin-bottom: 2rem;"></p>
   </div>
 
-  <div class="centre" style="position: absolute; top: 14em; left: 61em;">
+  <div class="center" style="position: absolute; top: 14em; left: 61em;">
     <h2 style="margin-bottom: 1rem;">Projetos Financiados</h2>
     <div style="width: 24rem;">
       <table class="table table-dark table-hover">

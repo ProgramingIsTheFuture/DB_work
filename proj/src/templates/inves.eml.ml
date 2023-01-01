@@ -24,7 +24,7 @@ let investigadores (invs: data list) =
 
 let investigador (invs: data) unidades projetos =
   General.navbar_inpage "Investigador" ^
-  <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
+  <div class="left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
     <h1><%s invs <| "nome" %></h1>
     <h4>Pertence a: <%s invs <| "instituto" %></h4>
     <p style="margin-bottom: 2rem;"></p>
@@ -59,7 +59,7 @@ let investigador (invs: data) unidades projetos =
     <p style="margin-bottom: 2rem;"></p>
   </div>
 
-  <div class="centre" style="position: absolute; top: 14em; left: 78em;">
+  <div class="center" style="position: absolute; top: 14em; left: 78em;">
     <h2 style="margin-bottom: 1rem;">Projetos</h2>
     <div style="width: 30rem" ;>
       <table class="table table-dark table-hover">
