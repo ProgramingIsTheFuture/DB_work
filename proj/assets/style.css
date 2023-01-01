@@ -27,7 +27,13 @@ body {
     width: 40%;
   }
 
-  .cen, .dir {
+  .cen {
+    width: 25%;
+    margin-left: -20px;
+    margin-top: 70px;
+  }
+
+  .dir {
     width: 25%;
     margin-left: 50px;
     margin-top: 70px;
