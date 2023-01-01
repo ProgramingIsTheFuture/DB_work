@@ -395,8 +395,8 @@ INSERT INTO [dbo].[AreaProjeto] ([projetoId]
   (3, 4), (3, 5), (3, 6)
 
 -- KEYWORDS
-INSERT INTO [dbo].[designacao] ([projetoId]
-, [keyword])
+INSERT INTO [dbo].[Keyword] ([projetoId]
+, [designacao])
   VALUES 
   (1, 'Blockchain'), (1, 'Eleições'), (1, 'Votos'),
   (2, 'Psilobycin'), (2, 'Tardigrades'), (2, 'Bloodstream'),
