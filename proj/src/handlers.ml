@@ -500,3 +500,25 @@ let program_id req =
       \       WHERE Pr.id = $1"
   in
   serve (program programa entidades projetos) "Programas"
+
+let modify_program req _message =
+  let programa =
+    query
+      ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
+      "SELECT * FROM Programa WHERE id = $1"
+    |> List.hd
+  in
+  serve (program_form req programa _message) "Domínio"
+
+let modify_program_form request =
+  let id = Dream.param request "id" |> int_of_string in
+  match%lwt Dream.form request with
+  | `Ok [ ("designacao", des) ] ->
+      query
+        ~params:[ Mssql.Param.String des; Mssql.Param.Int id ]
+        "UPDATE Programa SET designacao = $1 WHERE id = $2"
+      |> ignore;
+      (* List.map (fun (s, v) -> Dream.log "%s: %s\n\n" s v) tl |> ignore; *)
+      Dream.log "Atualizou!";
+      modify_program request (Some "Sucesso!")
+  | _ -> modify_program request (Some "Erro!")

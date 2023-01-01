@@ -23,4 +23,5 @@ let unidade = Unid.unidade
 let unidade_form = Unid.unid_form
 let programs = Prog.programas
 let program = Prog.programa
+let program_form = Prog.prog_form
 let serve page name = Dream.html @@ General.base name page

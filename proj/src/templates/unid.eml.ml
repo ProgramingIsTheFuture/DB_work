@@ -50,14 +50,14 @@ let unidade (unid : data list) =
   </div>
 
   <div class="d-grid gap-2 col-1 mx-auto" style="width: 3rem; position: absolute; top: 5em; right: 6em">
-    <a href="/index.html" class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
+    <a href='/unidades/<%s unid |> List.hd <| "id" %>/modificar' class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
       Modificar
     </a>
   </div>
 
 let unid_form request unidade message =
   General.navbar_inpage "Unidade" ^
-  <div class="container" style="width:520px;">
+  <div style="width: 750px; margin: 0 auto; text-align: left">
     <p style="margin-bottom: 2rem;"></p>
 
     <div id="form-fields">

@@ -57,7 +57,7 @@ let instituto (inst: data list) =
 
 let inst_form request instituto message =
   General.navbar_inpage "Instituto" ^
-  <div class="container" style="width:520px;">
+  <div style="width: 750px; margin: 0 auto; text-align: left">
     <p style="margin-bottom: 2rem;"></p>
 
     <div id="form-fields">

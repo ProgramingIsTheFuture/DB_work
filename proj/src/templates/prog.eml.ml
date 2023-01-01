@@ -80,8 +80,31 @@ let programa (prog: data list) ents projs =
   </div>
 
   <div class="d-grid gap-2 col-1 mx-auto" style="width: 3rem; position: absolute; top: 5em; right: 6em">
-    <a href="/index.html" class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
+    <a href='/programas/<%s prog |> List.hd <| "id" %>/modificar' class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
     Modificar
     </a>
   </div>
 
+
+let prog_form request programa message =
+  General.navbar_inpage "Instituto" ^
+  <div style="width: 750px; margin: 0 auto; text-align: left">
+    <p style="margin-bottom: 2rem;"></p>
+
+    <div id="form-fields">
+    <form method="POST" action='/programas/<%s programa<|"id"%>/modificar'>
+      <%s! Dream.csrf_tag request %>
+        <div class="mb-3">
+          <label for="designacaoProg" class="form-label">Designacao</label>
+          <input value='<%s programa<| "designacao"%>' name="designacao" type="designacao" class="form-control" id="designacaoProg" aria-describedby="emailHelp">
+          <div id="emailHelp" class="form-text">Introduza aqui a nova designação.</div>
+        </div>
+        <button type="submit" class="btn btn-primary">Submeter</button>
+      </div>
+    </form>
+% begin match message with 
+%   | None -> () 
+%   | Some message -> 
+      <p><b><%s message %></b></p>
+%   end;
+  </div>
