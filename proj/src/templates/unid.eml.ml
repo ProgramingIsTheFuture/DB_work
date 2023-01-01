@@ -54,3 +54,26 @@ let unidade (unid : data list) =
       Modificar
     </a>
   </div>
+
+let unid_form request unidade message =
+  General.navbar_inpage "Unidade" ^
+  <div class="container" style="width:520px;">
+    <p style="margin-bottom: 2rem;"></p>
+
+    <div id="form-fields">
+    <form method="POST" action='/unidades/<%s unidade <|"id"%>/modificar'>
+      <%s! Dream.csrf_tag request %>
+        <div class="mb-3">
+          <label for="nomeUnid" class="form-label">Nome</label>
+          <input value='<%s unidade <| "nome"%>' name="nome" type="nome" class="form-control" id="nomeUnid" aria-describedby="nomeUnid">
+          <div id="emailHelp" class="form-text">Introduza aqui o novo nome.</div>
+        </div>
+        <button type="submit" class="btn btn-primary">Submeter</button>
+      </div>
+    </form>
+% begin match message with 
+%   | None -> () 
+%   | Some message -> 
+      <p><b><%s message %></b></p>
+%   end;
+  </div>

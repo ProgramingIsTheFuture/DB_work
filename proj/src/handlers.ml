@@ -24,6 +24,7 @@ let query ?(params : Mssql.Param.t list = []) q =
 
 let home _req = serve home "Gestão de Projetos UBI"
 
+(* PROJETOS *)
 let projects req =
   serve
     (projects req
@@ -118,18 +119,6 @@ let project_id_modify req =
   serve (project_modify req project status) "Mudar projeto"
 
 let project_id_modify_post req =
-  (*
-  [nome] varchar(255) NOT NULL,
-  [titulo] varchar(255),
-  [descricao] varchar(500),
-  [portugues] varchar(255),
-  [ingles] varchar(255),
-  [data_ini] date NOT NULL,
-  [data_fim] date,
-  [url] varchar(255),
-  [doi] varchar(255),
-  [statusId] int,
-   *)
   match%lwt Dream.form req with
   | `Ok tl ->
       let _, nome = List.filter (fun (n, _) -> "nome" = n) tl |> List.hd in
@@ -159,16 +148,6 @@ let project_id_modify_post req =
             Mssql.Param.String portugues;
             Mssql.Param.String ingles;
             Mssql.Param.String data_ini;
-            (* Mssql.Param.Date *)
-            (*   (Core_kernel.Time.of_string_gen *)
-            (*      ~default_zone:(fun () -> Core_kernel.Time.Zone.utc) *)
-            (*      ~find_zone:(fun _ -> Core_kernel.Time.Zone.utc) *)
-            (*      data_ini); *)
-            (* Mssql.Param.Date *)
-            (*   (Core_kernel.Time.of_string_gen *)
-            (*      ~default_zone:(fun () -> Core_kernel.Time.Zone.utc) *)
-            (*      ~find_zone:(fun _ -> Core_kernel.Time.Zone.utc) *)
-            (*      data_fim); *)
             Mssql.Param.String data_fim;
             Mssql.Param.String url;
             Mssql.Param.String doi;
@@ -213,6 +192,8 @@ let project_id_entities req =
   in
   serve (project_entities proj contrato entidades programas) "Projetos"
 
+
+(* CONTRATOS *)
 let contract_id req =
   let id = Dream.param req "id" |> int_of_string in
   let cont =
@@ -229,6 +210,8 @@ let contract_id req =
   in
   serve (contract cont projeto) "Contratos"
 
+
+(* DOMINIOS *)
 let domains _req = serve (domains (query "SELECT * FROM Dominio")) "Domínios"
 
 let domain_id req =
@@ -260,9 +243,12 @@ let modify_domain_form request =
         "UPDATE Dominio SET designacao = $1 WHERE id = $2"
       |> ignore;
       (* List.map (fun (s, v) -> Dream.log "%s: %s\n\n" s v) tl |> ignore; *)
+      Dream.log "Atualizou!";
       modify_domain request (Some "Sucesso!")
   | _ -> modify_domain request (Some "Erro!")
 
+
+(* AREAS CIENTIFICAS *)
 let areas _req =
   let areamaior =
     query
@@ -298,6 +284,8 @@ let area_id req =
   in
   serve (area area_c dominio projetos) "Áreas Científica"
 
+
+(* INVESTIGADORES *)
 let investigators _req =
   serve (investigadores (query "SELECT * FROM investigador;")) "Investigadores"
 
@@ -328,6 +316,8 @@ let investigator_id req =
   in
   serve (investigador invest unidades projetos) "Investigador"
 
+  
+(* UNIDADES DE INVESTIGACAO *)
 let unids _req =
   serve
     (unidades (query "SELECT id, nome FROM UnidadeInvestigacao;"))
@@ -345,6 +335,29 @@ let unid_id req =
   in
   serve (unidade unid) "Unidade"
 
+let modify_unid req _message =
+  let unit =
+    query
+      ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
+      "SELECT id, nome FROM UnidadeInvestigacao WHERE id = $1"
+    |> List.hd
+  in
+  serve (unidade_form req unit _message) "Unidade"
+
+let modify_unid_form request =
+  let id = Dream.param request "id" |> int_of_string in
+  match%lwt Dream.form request with
+  | `Ok [ ("nome", nome) ] ->
+      query
+        ~params:[ Mssql.Param.String nome; Mssql.Param.Int id ]
+        "UPDATE UnidadeInvestigacao SET nome = $1 WHERE id = $2"
+      |> ignore;
+      (* List.map (fun (s, v) -> Dream.log "%s: %s\n\n" s v) tl |> ignore; *)
+      modify_unid request (Some "Sucesso!")
+  | _ -> modify_unid request (Some "Erro!")
+
+
+(* INSTITUTOS *)
 let institutes _req =
   serve
     (institutes (query "SELECT id, designacao FROM instituto;"))
@@ -379,9 +392,12 @@ let modify_institute_form request =
         "UPDATE Instituto SET designacao = $1 WHERE id = $2"
       |> ignore;
       (* List.map (fun (s, v) -> Dream.log "%s: %s\n\n" s v) tl |> ignore; *)
+      Dream.log "Atualizou!";
       modify_institute request (Some "Sucesso!")
   | _ -> modify_institute request (Some "Erro!")
 
+
+(* ENTIDADES *)
 let entities _req =
   let bigger =
     query
@@ -427,6 +443,8 @@ let entity_id req =
   in
   serve (entity programas projects) "Entidades"
 
+
+(* PROGRAMAS *)
 let programs _req =
   serve (programs (query "SELECT id, designacao FROM Programa;")) "Programas"
 
