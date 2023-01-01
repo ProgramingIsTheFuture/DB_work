@@ -66,7 +66,7 @@ CREATE TABLE [Papel] (
 CREATE TABLE [Keyword] (
   [id] int IDENTITY (1, 1),
   [projetoId] int NOT NULL,
-  [keyword] varchar(255) NOT NULL,
+  [designacao] varchar(255) NOT NULL,
   PRIMARY KEY ([id])
 )
 
@@ -397,7 +397,7 @@ INSERT INTO [dbo].[AreaProjeto] ([projetoId]
   (3, 4), (3, 5), (3, 6)
 
 -- KEYWORDS
-INSERT INTO [dbo].[Keyword] ([projetoId]
+INSERT INTO [dbo].[designacao] ([projetoId]
 , [keyword])
   VALUES 
   (1, 'Blockchain'), (1, 'Eleições'), (1, 'Votos'),
