@@ -27,7 +27,7 @@ let areas lst area =
 
 let area (area: data list) dom projs =
   General.navbar_inpage "Programa" ^
-  <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
+  <div class="left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
     <% area |> List.hd |> begin fun x -> %>
     <h1><%s x<|"designacao" %></h1>
     <p style="margin-bottom: 2rem;"></p>
@@ -40,7 +40,7 @@ let area (area: data list) dom projs =
     <p><a href='/dominios/<%s dom |> List.hd <| "id" %>'><%s dom |> List.hd <| "designacao" %></a></p>
   </div>
 
-  <div class="centre" style="position: absolute; top: 14em; left: 61em;">
+  <div class="center" style="position: absolute; top: 14em; left: 61em;">
     <h2 style="margin-bottom: 1rem;">Projetos</h2>
     <div style="width: 24rem;">
       <table class="table table-dark table-hover">

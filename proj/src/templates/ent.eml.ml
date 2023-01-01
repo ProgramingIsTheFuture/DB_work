@@ -45,7 +45,7 @@ let entidades (ents: data list) maior extmaior =
 
 let entidade (ent: data list) (projs: data list) =
   General.navbar_inpage "Entidade" ^
-  <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
+  <div class="left">
     <% ent |> List.hd |> begin fun x -> %>
     <h1><%s x<|"nome" %></h1>
     <h5 style="color: #2895bd">Descrição:</h5> 
@@ -121,9 +121,6 @@ let entidade (ent: data list) (projs: data list) =
       </table>
     </div>
     <p style="margin-bottom: 2rem;"></p>
-  </div>
-
-  <div class="centre" style="position: absolute; top: 16em; left: 120em;">
   </div>
 
   <div class="d-grid gap-2 col-1 mx-auto" style="width: 3rem; position: absolute; top: 5em; right: 6em">

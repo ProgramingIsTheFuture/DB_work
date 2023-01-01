@@ -23,7 +23,7 @@ let institutos (inst: data list) =
 
 let instituto (inst: data list) = 
   General.navbar_inpage "Instituto" ^
-  <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
+  <div class="left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
     <h1><%s inst |> List.hd <| "designacao" %></h1>
     <p style="margin-bottom: 2rem;"></p>
 

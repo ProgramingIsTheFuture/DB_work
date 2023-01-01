@@ -1,15 +1,88 @@
 html, body {
   height: 100%;
   width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  margin: 0;
-  padding: 0;
   font-family: "JetBrains Mono", monospace;
   background-color: #3e4145;
   color: #fff;
+  margin: 0;
+  padding = 0;
+  width = 100%;
+  font-size: 16px;
 }
+
+.left, .center, .right {
+  height: 100%;
+  min-width: 200px; 
+  min-height: 200px; 
+}
+
+.left {
+  position: absolute;
+  top: 8%;
+  left: 4%;
+  word-wrap: break-word;
+}
+
+.center {
+  position: absolute;
+  top: 27%;
+  left: 45%;
+}
+
+.right {
+  position: absolute;
+  top: 27%;
+  left: 75%;
+}
+
+@media (max-width: 1440px) {
+  .left {
+    position: relative;
+    top: 8%;
+    left: 4%;
+    width: 100%;
+    font-size: 2vw;
+  }
+
+  .center {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    font-size: 2vw;
+  }
+
+  .right {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    font-size: 2vw;
+  }
+}
+
+@media (max-width: 768px) {
+  .left {
+    width: 30%;
+    font-size: 2.5vw;
+  }
+
+  .center {
+    width: 30%;
+    font-size: 2.5vw;
+  }
+
+  .right {
+    width: 30%;
+    font-size: 2.5vw;
+  }
+}
+
 .container {
   width: 80%;
   margin: 0 auto;

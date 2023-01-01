@@ -61,7 +61,7 @@ let procura_projetos projs keyword =
 
 let projeto (_proj: data) (id : int) keywords publicacoes investigadores areas_dominios status historico_status =
   General.navbar_inpage "Projeto" ^
-  <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px; word-wrap: break-word;">
+  <div class="left">
     <h1><%s _proj <| "nome" %></h1>
     <h5 style="color: #2895bd">Descrição:</h5> 
     <p style="margin-right: 40rem;"><%s _proj <| "descricao" %></p>
@@ -118,7 +118,7 @@ let projeto (_proj: data) (id : int) keywords publicacoes investigadores areas_d
     <p style="margin-bottom: 2rem;"></p>
   </div>
 
-  <div class="top-left2" style="position: absolute; top: 17em; left: 64em;">
+  <div class="center"> 
     <h2 style="margin-bottom: 1rem;">Keywords</h2>
     <div style="width: 24rem" ;>
       <table class="table table-dark table-hover">
@@ -171,11 +171,10 @@ let projeto (_proj: data) (id : int) keywords publicacoes investigadores areas_d
     <h2><a href='<%s id |> string_of_int %>/financiamento'>Detalhes de financiamento</a></h2>
   </div>
 
-
-  <div class="centre" style="position: absolute; top: 17em; left: 120em;">
+  <div class="right">
     <h2 style="margin-bottom: 1rem;">Estados</h2>
     <h5 style="color: #2895bd">Atual:</h5> 
-    <p style="margin-right: 40rem;"><%s status |> List.hd <| "designacao" %></p>
+    <p style="margin-right: 100%;"><%s status |> List.hd <| "designacao" %></p>
     <h4>Histórico:</h4>
     <div style="width: 24rem" ;>
       <table class="table table-dark table-hover">
