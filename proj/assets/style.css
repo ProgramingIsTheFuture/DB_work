@@ -14,6 +14,8 @@ body {
 
 .parent-container {
   margin-top: 40px;
+  height: auto;
+  width: auto;
 }
 
 @media (min-height: 1440px) {

@@ -1,7 +1,7 @@
 open Types
 
 let dominios lst =
-  General.navbar_home "Dommínios" ^
+  General.navbar_home "Domínios" ^
   <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
     <table class="table table-dark table-hover">
       <thead class="table-dark">
@@ -22,7 +22,7 @@ let dominios lst =
   </div>
 
 let dominio (dom: data list) = 
-  General.navbar_inpage "Instituto" ^
+  General.navbar_inpage "Domínio" ^
   <div class="left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
     <h1><%s dom |> List.hd <| "designacao" %></h1>
     <p style="margin-bottom: 2rem;"></p>

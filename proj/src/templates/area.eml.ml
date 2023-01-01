@@ -14,7 +14,7 @@ let areas lst area =
         <% lst |> List.iter begin fun x -> %> 
         <tr>
           <th scope="row"><%s x<|"id" %></th>
-          <td><a href='/dominios/<%s x<|"id" %>'><%s x<|"designacao" %></a></td>
+          <td><a href='/areas/<%s x<|"id" %>'><%s x<|"designacao" %></a></td>
         </tr>
         <% end; %>
       </tbody>
@@ -26,7 +26,7 @@ let areas lst area =
   </div>
 
 let area (area: data list) dom projs =
-  General.navbar_inpage "Programa" ^
+  General.navbar_inpage "Área Científica" ^
   <div class="left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
     <% area |> List.hd |> begin fun x -> %>
     <h1><%s x<|"designacao" %></h1>

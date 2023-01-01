@@ -246,7 +246,7 @@ let unid_id req =
       \       INNER JOIN Investigador I ON UI.investigadorId = I.id \n\
       \       WHERE U.id = $1;"
   in
-  serve (unidade unid) "Instituto"
+  serve (unidade unid) "Unidade"
 
 let institutes _req =
   serve
