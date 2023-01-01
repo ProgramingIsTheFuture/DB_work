@@ -60,153 +60,156 @@ let procura_projetos projs keyword =
 
 let projeto (_proj: data) (id : int) keywords publicacoes investigadores areas_dominios status historico_status =
   General.navbar_inpage "Projeto" ^
-  <div class="parent-container">
-    <div class="esq">
-      <h1><%s _proj <| "nome" %></h1>
-      <h5 style="color: #2895bd">Descrição:</h5> 
-      <p style="margin-right: 66%;"><%s _proj <| "descricao" %></p>
-      
-      <div style="width: 30rem; word-wrap: normal; white-space:normal">
+  <div>
+    <div class="d-grid gap-2 col-1 mx-auto" style="width: 3rem; position: absolute; top: 4rem; right: 8rem; z-index: 99;">
+      <a href='/projetos/<%s _proj <| "id" %>/modificar' class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
+        Modificar
+      </a>
+    </div>
+    <div class="parent-container">
+      <div class="esq">
+        <h1><%s _proj <| "nome" %></h1>
+        <h5 style="color: #2895bd">Descrição:</h5> 
+        <p style="margin-right: 66%;"><%s _proj <| "descricao" %></p>
+        
+        <div style="width: 30rem; word-wrap: normal; white-space:normal">
+          <p style="margin-bottom: 2rem;"></p>
+          <h5 style="color: #2895bd">Título:</h5>
+          <p><%s _proj <| "titulo" %></p>
+
+          <h5 style="color: #2895bd">Português:</h5>
+          <p><%s _proj <| "portugues" %></p>
+
+          <h5 style="color: #2895bd">Inglês:</h5> 
+          <p><%s _proj <| "ingles" %></p>
+
+          <h5 style="color: #2895bd">Data de Início:</h5>
+          <p><%s _proj <| "data_ini" %></p>
+
+          <h5 style="color: #2895bd">Data de Fim:</h5> 
+          <p><%s _proj <| "data_fim" %></p>
+
+          <h5 style="color: #2895bd">URL:</h5> 
+          <p><%s _proj <| "url" %></p>
+
+          <h5 style="color: #2895bd">Digital Object Identifier:</h5>
+          <p><%s _proj <| "doi" %></p>
+          <p style="margin-bottom: 2rem;"></p>
+        </div>
+
+        <div class="tbl" style="width: 24rem" ;>
+          <h2 style="margin-bottom: 1rem;">Publicações</h2>
+          <table class="table table-dark table-hover">
+            <thead class="table-dark">
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nome</th>
+                <th scope="col">URL</th>
+                <th scope="col">DOI</th>
+              </tr>
+            </thead>
+            <tbody class="table-group-divider">
+              <% publicacoes |> List.iter begin fun x -> %> 
+              <tr>
+                <th scope="row"><%s x<|"id" %></th>
+                <td><%s x<|"nomeJornal" %></td>
+                <td><%s x<|"url" %></td>
+                <td><%s x<|"doi" %></td>
+              </tr>
+              <% end; %>
+            </tbody>
+          </table>
+        </div>
         <p style="margin-bottom: 2rem;"></p>
-        <h5 style="color: #2895bd">Título:</h5>
-        <p><%s _proj <| "titulo" %></p>
+      </div>
 
-        <h5 style="color: #2895bd">Português:</h5>
-        <p><%s _proj <| "portugues" %></p>
-
-        <h5 style="color: #2895bd">Inglês:</h5> 
-        <p><%s _proj <| "ingles" %></p>
-
-        <h5 style="color: #2895bd">Data de Início:</h5>
-        <p><%s _proj <| "data_ini" %></p>
-
-        <h5 style="color: #2895bd">Data de Fim:</h5> 
-        <p><%s _proj <| "data_fim" %></p>
-
-        <h5 style="color: #2895bd">URL:</h5> 
-        <p><%s _proj <| "url" %></p>
-
-        <h5 style="color: #2895bd">Digital Object Identifier:</h5>
-        <p><%s _proj <| "doi" %></p>
+      <div class="cen"> 
+        <h2 style="margin-bottom: 1rem;">Keywords</h2>
+        <div class="tbl" style="width: 24rem" ;>
+          <table class="table table-dark table-hover">
+            <thead class="table-dark">
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Keywords</th>
+              </tr>
+            </thead>
+            <tbody class="table-group-divider">
+              <% keywords |> List.iter begin fun x -> %> 
+              <tr>
+                <th scope="row"><%s x<|"id" %></th>
+                <td><%s x<|"designacao" %></td>
+              </tr>
+              <% end; %>
+            </tbody>
+          </table>
+        </div>
         <p style="margin-bottom: 2rem;"></p>
-      </div>
 
-      <div class="tbl" style="width: 24rem" ;>
-        <h2 style="margin-bottom: 1rem;">Publicações</h2>
-        <table class="table table-dark table-hover">
-          <thead class="table-dark">
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Nome</th>
-              <th scope="col">URL</th>
-              <th scope="col">DOI</th>
-            </tr>
-          </thead>
-          <tbody class="table-group-divider">
-            <% publicacoes |> List.iter begin fun x -> %> 
-            <tr>
-              <th scope="row"><%s x<|"id" %></th>
-              <td><%s x<|"nomeJornal" %></td>
-              <td><%s x<|"url" %></td>
-              <td><%s x<|"doi" %></td>
-            </tr>
-            <% end; %>
-          </tbody>
-        </table>
-      </div>
-      <p style="margin-bottom: 2rem;"></p>
-    </div>
+        <h2 style="margin-bottom: 1rem;">Investigadores</h2>
+        <div class="tbl" style="width: 24rem" ;>
+          <table class="table table-dark table-hover">
+            <thead class="table-dark">
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nome</th>
+                <th scope="col">Papel</th>
+              </tr>
+            </thead>
+            <tbody class="table-group-divider">
+              <% investigadores |> List.iter begin fun x -> %> 
+              <tr>
+                <th scope="row"><%s x <| "Iid" %></th>
+                <td><a href='/investigadores/<%s x<| "Iid" %>'><%s x<|"Inome" %></a></td>
+                <td><%s x<|"papel" %></td>
+              </tr>
+              <% end; %>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin-bottom: 2rem;"></p>
+        <h2 style="margin-bottom: 1rem;">Áreas e Domínios Cientificos</h2>
+          <% areas_dominios |> List.iter begin fun x -> %> 
+            <p><%s x <| "area" %> -> <%s x<|"dominio" %></p>
+          <% end; %>
 
-    <div class="cen"> 
-      <h2 style="margin-bottom: 1rem;">Keywords</h2>
-      <div class="tbl" style="width: 24rem" ;>
-        <table class="table table-dark table-hover">
-          <thead class="table-dark">
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Keywords</th>
-            </tr>
-          </thead>
-          <tbody class="table-group-divider">
-            <% keywords |> List.iter begin fun x -> %> 
-            <tr>
-              <th scope="row"><%s x<|"id" %></th>
-              <td><%s x<|"designacao" %></td>
-            </tr>
-            <% end; %>
-          </tbody>
-        </table>
+        <p style="margin-bottom: 2rem;"></p>
+        <h2><a href='<%s id |> string_of_int %>/financiamento'>Detalhes de financiamento</a></h2>
       </div>
-      <p style="margin-bottom: 2rem;"></p>
+   
+      <div class="dir">
+        <h2 style="margin-bottom: 1rem;">Estados</h2>
+        <h5 style="color: #2895bd">Atual:</h5> 
+        <p style="margin-right: 66%;"><%s status |> List.hd <| "designacao" %></p>
+        <h4>Histórico:</h4>
+        <div class="tbl" style="width: 24rem" ;>
+          <table class="table table-dark table-hover">
+            <thead class="table-dark">
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Status</th>
+                <th scope="col">Data</th>
+              </tr>
+            </thead>
+            <tbody class="table-group-divider">
+              <% historico_status |> List.iter begin fun x -> %> 
+              <tr>
+                <th scope="row"><%s x<|"id" %></th>
+                <td><%s x<|"designacao" %></a></td>
+                <td><%s x<|"data" %></td>
+              </tr>
+              <% end; %>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin-bottom: 2rem;"></p>
 
-      <h2 style="margin-bottom: 1rem;">Investigadores</h2>
-      <div class="tbl" style="width: 24rem" ;>
-        <table class="table table-dark table-hover">
-          <thead class="table-dark">
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Nome</th>
-              <th scope="col">Papel</th>
-            </tr>
-          </thead>
-          <tbody class="table-group-divider">
-            <% investigadores |> List.iter begin fun x -> %> 
-            <tr>
-              <th scope="row"><%s x <| "Iid" %></th>
-              <td><a href='/investigadores/<%s x<| "Iid" %>'><%s x<|"Inome" %></a></td>
-              <td><%s x<|"papel" %></td>
-            </tr>
-            <% end; %>
-          </tbody>
-        </table>
-      </div>
-      <p style="margin-bottom: 2rem;"></p>
-      <h2 style="margin-bottom: 1rem;">Áreas e Domínios Cientificos</h2>
-        <% areas_dominios |> List.iter begin fun x -> %> 
-          <p><%s x <| "area" %> -> <%s x<|"dominio" %></p>
-        <% end; %>
-
-      <p style="margin-bottom: 2rem;"></p>
-      <h2><a href='<%s id |> string_of_int %>/financiamento'>Detalhes de financiamento</a></h2>
-    </div>
- 
-    <div class="dir">
-      <h2 style="margin-bottom: 1rem;">Estados</h2>
-      <h5 style="color: #2895bd">Atual:</h5> 
-      <p style="margin-right: 66%;"><%s status |> List.hd <| "designacao" %></p>
-      <h4>Histórico:</h4>
-      <div class="tbl" style="width: 24rem" ;>
-        <table class="table table-dark table-hover">
-          <thead class="table-dark">
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Status</th>
-              <th scope="col">Data</th>
-            </tr>
-          </thead>
-          <tbody class="table-group-divider">
-            <% historico_status |> List.iter begin fun x -> %> 
-            <tr>
-              <th scope="row"><%s x<|"id" %></th>
-              <td><%s x<|"designacao" %></a></td>
-              <td><%s x<|"data" %></td>
-            </tr>
-            <% end; %>
-          </tbody>
-        </table>
-      </div>
-      <p style="margin-bottom: 2rem;"></p>
-
-      <h2>Classificação</h2>
-      <p style="margin-bottom: 2rem;"></p>
-      PLACEHOLDER
-      <div class="d-grid gap-2 col-1 mx-auto" style="width: 3rem; position: absolute; top: 4rem; right: 1rem; z-index: 99;">
-        <a href='/projetos/<%s _proj <| "id" %>/modificar' class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
-          Modificar
-        </a>
+        <h2>Classificação</h2>
+        <p style="margin-bottom: 2rem;">
+        PLACEHOLDER
+        </p>
       </div>
     </div>
-  </div>
+  <div/>
 
 let projeto_id_modificar request project status=
   General.navbar_inpage "Modificar Projeto" ^ 
