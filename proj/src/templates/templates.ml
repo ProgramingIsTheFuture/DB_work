@@ -10,6 +10,7 @@ let domain = Dom.dominio
 let domain_form = Dom.dom_form
 let areas = Area.areas
 let area = Area.area
+let area_form = Area.area_form
 let entities = Ent.entidades
 let entity = Ent.entidade
 let institutes = Inst.institutos

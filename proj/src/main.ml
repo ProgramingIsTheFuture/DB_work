@@ -18,6 +18,10 @@ let () =
          @@ Handlers.modify_domain_form;
          Dream.get "/areas" Handlers.areas;
          Dream.get "/areas/:id" Handlers.area_id;
+         ( Dream.get "/areas/:id/modificar" @@ fun a ->
+           Handlers.modify_area a None);
+         Dream.post "/areas/:id/modificar"
+         @@ Handlers.modify_area_form;
          Dream.get "/investigadores" @@ Handlers.investigators;
          Dream.get "/investigadores/:id" @@ Handlers.investigator_id;
          Dream.get "/unidades" Handlers.unids;

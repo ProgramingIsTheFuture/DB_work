@@ -64,7 +64,43 @@ let area (area: data list) dom projs =
   </div>
 
   <div class="d-grid gap-2 col-1 mx-auto" style="width: 3rem; position: absolute; top: 5em; right: 6em">
-    <a href="/index.html" class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
+    <a href='/areas/<%s area |> List.hd <| "id" %>/modificar' class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
     Modificar
     </a>
+  </div>
+
+let area_form request area domains message =
+  General.navbar_inpage "Área Científica" ^
+  <div style="width: 750px; margin: 0 auto; text-align: left">
+    <p style="margin-bottom: 2rem;"></p>
+
+    <div id="form-fields">
+    <form method="POST" action='/areas/<%s area<|"id"%>/modificar'>
+      <%s! Dream.csrf_tag request %>
+        <div class="mb-3">
+          <label for="designacaoDom" class="form-label">Designacao</label>
+          <input value='<%s area <| "designacao"%>' name="designacao" type="designacao" class="form-control" id="designacaoDom" aria-describedby="emailHelp">
+          <div id="emailHelp" class="form-text">Introduza aqui a nova designação.</div>
+        </div>
+      </div>
+      <div class="forms">
+        <label for="domId">Domínio</label>
+        <select class="form-select" multiple name="dominioId" id="domId" style="margin-top: 5px">
+        <% domains |> List.iter begin fun x -> %>
+% begin match (x<|"id") = (area<|"dominioId") with
+% | true -> 
+  <option selected value='<%s x<|"id" %>'><%s x<|"designacao" %></option>
+% | false -> 
+  <option value='<%s x<|"id" %>'><%s x<|"designacao" %></option>
+% end;
+        <% end; %>
+        </select>
+        <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
+      </div>
+    </form>
+% begin match message with 
+%   | None -> () 
+%   | Some message -> 
+      <p><b><%s message %></b></p>
+%   end;
   </div>

@@ -108,6 +108,36 @@ let project_id req =
        historico_status)
     "Projetos"
 
+let project_id_entities req =
+  let id = Dream.param req "id" |> int_of_string in
+  let proj =
+    query ~params:[ Mssql.Param.Int id ] "SELECT * FROM projeto P WHERE id = $1"
+    |> List.hd
+  in
+  let contrato =
+    query ~params:[ Mssql.Param.Int id ]
+      "SELECT C.id, C.nome FROM Contrato C \n\
+      \      INNER JOIN Projeto P ON C.projetoId = P.id \n\
+      \      WHERE P.id = $1"
+  in
+  let entidades =
+    query ~params:[ Mssql.Param.Int id ]
+      "SELECT DISTINCT E.id, E.nome FROM Entidade E \n\
+      \       INNER JOIN Entigrama EP ON EP.entidadeId = E.id \n\
+      \       INNER JOIN Programa Pr ON EP.programaId = Pr.id\n\
+      \       INNER JOIN Projama PP ON PP.programaId = Pr.id\n\
+      \       INNER JOIN Projeto P ON PP.projetoId = P.id \n\
+      \       WHERE P.id = $1"
+  in
+  let programas =
+    query ~params:[ Mssql.Param.Int id ]
+      "SELECT DISTINCT Pr.id, Pr.designacao FROM Programa Pr \n\
+      \       INNER JOIN Projama PP ON PP.programaId = Pr.id \n\
+      \       INNER JOIN Projeto P ON PP.projetoId = P.id \n\
+      \       WHERE P.id = $1"
+  in
+  serve (project_entities proj contrato entidades programas) "Projetos"
+
 let project_id_modify req =
   let status = query "SELECT * FROM status;" in
   let project =
@@ -162,35 +192,6 @@ let project_id_modify_post req =
       project_id_modify req
   | _ -> project_id_modify req
 
-let project_id_entities req =
-  let id = Dream.param req "id" |> int_of_string in
-  let proj =
-    query ~params:[ Mssql.Param.Int id ] "SELECT * FROM projeto P WHERE id = $1"
-    |> List.hd
-  in
-  let contrato =
-    query ~params:[ Mssql.Param.Int id ]
-      "SELECT C.id, C.nome FROM Contrato C \n\
-      \      INNER JOIN Projeto P ON C.projetoId = P.id \n\
-      \      WHERE P.id = $1"
-  in
-  let entidades =
-    query ~params:[ Mssql.Param.Int id ]
-      "SELECT DISTINCT E.id, E.nome FROM Entidade E \n\
-      \       INNER JOIN Entigrama EP ON EP.entidadeId = E.id \n\
-      \       INNER JOIN Programa Pr ON EP.programaId = Pr.id\n\
-      \       INNER JOIN Projama PP ON PP.programaId = Pr.id\n\
-      \       INNER JOIN Projeto P ON PP.projetoId = P.id \n\
-      \       WHERE P.id = $1"
-  in
-  let programas =
-    query ~params:[ Mssql.Param.Int id ]
-      "SELECT DISTINCT Pr.id, Pr.designacao FROM Programa Pr \n\
-      \       INNER JOIN Projama PP ON PP.programaId = Pr.id \n\
-      \       INNER JOIN Projeto P ON PP.projetoId = P.id \n\
-      \       WHERE P.id = $1"
-  in
-  serve (project_entities proj contrato entidades programas) "Projetos"
 
 
 (* CONTRATOS *)
@@ -225,6 +226,7 @@ let domain_id req =
   in
   serve (domain dominio_area) "Dominio"
 
+
 let modify_domain req _message =
   let institute =
     query
@@ -243,7 +245,6 @@ let modify_domain_form request =
         "UPDATE Dominio SET designacao = $1 WHERE id = $2"
       |> ignore;
       (* List.map (fun (s, v) -> Dream.log "%s: %s\n\n" s v) tl |> ignore; *)
-      Dream.log "Atualizou!";
       modify_domain request (Some "Sucesso!")
   | _ -> modify_domain request (Some "Erro!")
 
@@ -284,6 +285,36 @@ let area_id req =
   in
   serve (area area_c dominio projetos) "Áreas Científica"
 
+let modify_area req _message =
+  let domains = query "SELECT * FROM Dominio" in
+  let institute =
+    query
+      ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
+      "SELECT * FROM AreaCientifica WHERE id = $1"
+    |> List.hd
+  in
+  serve (area_form req institute domains _message) "Domínio"
+
+let modify_area_form request =
+  let id = Dream.param request "id" |> int_of_string in
+  match%lwt Dream.form request with
+  | `Ok tl ->
+      let _, designacao = List.filter (fun (n, _) -> n = "designacao") tl |> List.hd in
+      let _, dominioId = List.filter (fun (n, _) -> n = "dominioId") tl |> List.hd in
+      query
+        ~params:
+          [
+            Mssql.Param.String designacao;
+            Mssql.Param.Int (dominioId |> int_of_string);
+            Mssql.Param.Int id;
+          ]
+        "UPDATE AreaCientifica SET designacao = $1, dominioId = $2
+         WHERE id = $3;"
+      |> ignore;
+      Dream.log "Atualizou!";
+      modify_area request (Some "Sucesso!")
+  | _ -> modify_area request (Some "Erro!") 
+  
 
 (* INVESTIGADORES *)
 let investigators _req =

@@ -74,6 +74,6 @@ let dom_form request dominio message =
 % begin match message with 
 %   | None -> () 
 %   | Some message -> 
-      <p><b><%s message %>!</b></p>
+      <p><b><%s message %></b></p>
 %   end;
   </div>
