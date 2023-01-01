@@ -52,8 +52,8 @@ let entidade (ent: data list) (projs: data list) =
       </a>
     </div>
   </div>
-  <div class="parent-container">
-    <div class="esq">
+  <div class="container">
+    <div class="esquerda" style="position: absolute; top: 6em; left: 4em;">
       <% ent |> List.hd |> begin fun x -> %>
       <h1><%s x<|"nome" %></h1>
       <h5 style="color: #2895bd">Descrição:</h5> 
