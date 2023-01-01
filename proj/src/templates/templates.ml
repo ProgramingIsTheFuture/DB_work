@@ -2,6 +2,7 @@ let home = Home.home
 let projects = Proj.projetos_contratos
 let search_projects = Proj.procura_projetos
 let project = Proj.projeto
+let project_modify = Proj.projeto_id_modificar
 let project_entities = Proj.proj_entities
 let contract = Cont.contrato
 let domains = Dom.dominios

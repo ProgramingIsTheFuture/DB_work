@@ -205,9 +205,37 @@ let projeto (_proj: data) (id : int) keywords publicacoes investigadores areas_d
   </div>
 
   <div class="d-grid gap-2 col-1 mx-auto" style="width: 3rem; position: absolute; top: 5em; right: 6em">
-    <a href="/index.html" class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
+    <a href='/projetos/<%s _proj <| "id" %>/modificar' class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
       Modificar
     </a>
+  </div>
+
+let projeto_id_modificar request project status=
+  General.navbar_inpage "Modificar Projeto" ^ 
+  <div>
+    <form method="POST" action='/projetos/<%s project<|"id" %>/modificar'>
+      <%s! Dream.csrf_tag request %>
+      <input type="text" name="nome" placeholder="nome" value='<%s project<|"nome" %>'/>
+      <input type="text" name="titulo" placeholder="titulo" value='<%s project<|"titulo" %>'/>
+      <input type="text" name="descricao" placeholder="descricao" value='<%s project<|"descricao" %>'/>
+      <input type="text" name="portugues"placeholder="portugues" value='<%s project<|"portugues" %>'/>
+      <input type="text" name="ingles" placeholder="ingles" value='<%s project<|"ingles" %>'/>
+      <input type="text" name="data_ini" placeholder="data_ini" value='<%s project<|"data_ini" %>'/>
+      <input type="text" name="data_fim" placeholder="data_fim" value='<%s project<|"data_fim" %>'/>
+      <input type="text" name="url" placeholder="url" value='<%s project<|"url" %>'/>
+      <input type="text" name="doi" placeholder="doi" value='<%s project<|"doi" %>'/>
+      <select name="status">
+        <% status |> List.iter begin fun x -> %>
+% begin match (x<|"id") = (project<|"statusId") with
+% | true -> 
+  <option selected value='<%s x<|"id" %>'><%s x<|"designacao" %></option>
+% | false -> 
+  <option value='<%s x<|"id" %>'><%s x<|"designacao" %></option>
+% end;
+        <% end; %>
+      </select>
+      <input type="submit" />
+    </form> 
   </div>
 
 let proj_entities (_proj : data) contrato entidades programas =

@@ -107,6 +107,82 @@ let project_id req =
        historico_status)
     "Projetos"
 
+let project_id_modify req =
+  let status = query "SELECT * FROM status;" in
+  let project =
+    query
+      ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
+      "SELECT * FROM Projeto WHERE id = $1;"
+    |> List.hd
+  in
+  serve (project_modify req project status) "Mudar projeto"
+
+let project_id_modify_post req =
+  (*
+  [nome] varchar(255) NOT NULL,
+  [titulo] varchar(255),
+  [descricao] varchar(500),
+  [portugues] varchar(255),
+  [ingles] varchar(255),
+  [data_ini] date NOT NULL,
+  [data_fim] date,
+  [url] varchar(255),
+  [doi] varchar(255),
+  [statusId] int,
+   *)
+  match%lwt Dream.form req with
+  | `Ok tl ->
+      let _, nome = List.filter (fun (n, _) -> "nome" = n) tl |> List.hd in
+      let _, titulo = List.filter (fun (n, _) -> n = "titulo") tl |> List.hd in
+      let _, descricao =
+        List.filter (fun (n, _) -> n = "descricao") tl |> List.hd
+      in
+      let _, portugues =
+        List.filter (fun (n, _) -> n = "portugues") tl |> List.hd
+      in
+      let _, ingles = List.filter (fun (n, _) -> n = "ingles") tl |> List.hd in
+      let _, data_ini =
+        List.filter (fun (n, _) -> n = "data_ini") tl |> List.hd
+      in
+      let _, data_fim =
+        List.filter (fun (n, _) -> n = "data_fim") tl |> List.hd
+      in
+      let _, url = List.filter (fun (n, _) -> n = "url") tl |> List.hd in
+      let _, doi = List.filter (fun (n, _) -> n = "doi") tl |> List.hd in
+      let _, status = List.filter (fun (n, _) -> n = "status") tl |> List.hd in
+      query
+        ~params:
+          [
+            Mssql.Param.String nome;
+            Mssql.Param.String titulo;
+            Mssql.Param.String descricao;
+            Mssql.Param.String portugues;
+            Mssql.Param.String ingles;
+            Mssql.Param.String data_ini;
+            (* Mssql.Param.Date *)
+            (*   (Core_kernel.Time.of_string_gen *)
+            (*      ~default_zone:(fun () -> Core_kernel.Time.Zone.utc) *)
+            (*      ~find_zone:(fun _ -> Core_kernel.Time.Zone.utc) *)
+            (*      data_ini); *)
+            (* Mssql.Param.Date *)
+            (*   (Core_kernel.Time.of_string_gen *)
+            (*      ~default_zone:(fun () -> Core_kernel.Time.Zone.utc) *)
+            (*      ~find_zone:(fun _ -> Core_kernel.Time.Zone.utc) *)
+            (*      data_fim); *)
+            Mssql.Param.String data_fim;
+            Mssql.Param.String url;
+            Mssql.Param.String doi;
+            Mssql.Param.Int (status |> int_of_string);
+            Mssql.Param.Int (Dream.param req "id" |> int_of_string);
+          ]
+        "UPDATE projeto SET nome = $1, titulo = $2, descricao = $3, portugues \
+         = $4, ingles = $5, data_ini = $6, data_fim = $7, url = $8, doi = $9, \
+         statusId = $10 WHERE id=$11;"
+      |> ignore;
+      Dream.log "Atualizou!";
+      project_id_modify req
+  | _ -> project_id_modify req
+
 let project_id_entities req =
   let id = Dream.param req "id" |> int_of_string in
   let proj =
