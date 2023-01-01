@@ -26,8 +26,10 @@ let navbar_home name =
   </nav>
 
 let base title bdy =
-  <html>
+  <html data-bs-theme="dark">
     <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
             integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
       <link rel="stylesheet" href="/assets/style.css">
@@ -36,7 +38,6 @@ let base title bdy =
     <body>
       <div id="root">
       </div>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"></script>
       <script>
         const pagehtml = `<%s bdy %>`;
         const ConvertStringToHTML = function (str) {
@@ -47,6 +48,8 @@ let base title bdy =
         const page = ConvertStringToHTML(pagehtml);
         document.getElementById("root").append(ConvertStringToHTML(page.childNodes[0].data));
       </script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" 
+      integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
     </body>
   </html>
 

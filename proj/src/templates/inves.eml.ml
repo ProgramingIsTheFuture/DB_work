@@ -31,7 +31,7 @@ let investigador (invs: data) unidades projetos =
 
     <h5 style="color: #2895bd">Idade:</h5>
     <p><%s invs <| "idade" %></p>
-    <h5 style="color: #2895bd">Morada::</h5>
+    <h5 style="color: #2895bd">Morada:</h5>
     <p><%s invs <| "morada" %></p>
     <p style="margin-bottom: 2rem;"></p>
   </div>
