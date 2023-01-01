@@ -18,6 +18,7 @@ let investigadores = Inves.investigadores
 let investigador = Inves.investigador
 let unidades = Unid.unidades
 let unidade = Unid.unidade
+let unidade_form = Unid.unid_form
 let programs = Prog.programas
 let program = Prog.programa
 let serve page name = Dream.html @@ General.base name page

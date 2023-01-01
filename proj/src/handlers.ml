@@ -3,10 +3,10 @@ open Async_unix
 open Templates
 
 let conn =
-  let host = "localhost" in
-  let db = "bd" in
-  let user = "sa" in
-  let password = "yourStrong(#)Password" in
+  let host = "192.168.100.14" in
+  let db = "BD_PL2_01" in
+  let user = "User_BD_PL2_01" in
+  let password = "diubi:2022!BD!PL2_01" in
   let port = Some 1433 in
   Mssql.with_conn ~host ~db ~user ~password ?port
 
@@ -24,6 +24,7 @@ let query ?(params : Mssql.Param.t list = []) q =
 
 let home _req = serve home "Gestão de Projetos UBI"
 
+(* PROJETOS *)
 let projects req =
   serve
     (projects req
@@ -40,7 +41,7 @@ let search_projects_kw request =
           ~params:[ Mssql.Param.String keyword ]
           "SELECT P.id, P.nome FROM Projeto P\n\
           \           INNER JOIN Keyword K ON P.id = K.projetoId\n\
-          \           WHERE K.keyword LIKE CONCAT('%', $1, '%')"
+          \           WHERE K.designacao LIKE CONCAT('%', $1, '%')"
       in
       serve (search_projects projetos keyword) "Projetos"
   | _ ->
@@ -50,7 +51,7 @@ let search_projects_kw request =
           ~params:[ Mssql.Param.String "Fields" ]
           "SELECT P.id, P.nome, K.keyword FROM Projeto P\n\
           \           INNER JOIN Keyword K ON P.id = K.projetoId\n\
-          \           WHERE K.keyword LIKE $1"
+          \           WHERE K.designacao LIKE $1"
       in
       serve (search_projects projetos "Fields") "Projetos"
 
@@ -62,7 +63,7 @@ let project_id req =
   in
   let keywords =
     query ~params:[ Mssql.Param.Int id ]
-      "SELECT K.id, K.keyword FROM projeto P, keyword K \n\
+      "SELECT K.id, K.nome FROM projeto P, keyword K \n\
       \       WHERE P.id = $1 AND P.id = K.projetoId;"
   in
   let publicacoes =
@@ -137,6 +138,7 @@ let project_id_entities req =
   in
   serve (project_entities proj contrato entidades programas) "Projetos"
 
+(* CONTRATOS *)
 let contract_id req =
   let id = Dream.param req "id" |> int_of_string in
   let cont =
@@ -153,6 +155,7 @@ let contract_id req =
   in
   serve (contract cont projeto) "Contratos"
 
+(* DOMINIOS *)
 let domains _req = serve (domains (query "SELECT * FROM Dominio")) "Domínios"
 
 let domain_id req =
@@ -187,6 +190,7 @@ let modify_domain_form request =
       modify_domain request (Some "Sucesso!")
   | _ -> modify_domain request (Some "Erro!")
 
+(* AREAS CIENTIFICAS *)
 let areas _req =
   let areamaior =
     query
@@ -222,6 +226,7 @@ let area_id req =
   in
   serve (area area_c dominio projetos) "Áreas Científica"
 
+(* INVESTIGADORES *)
 let investigators _req =
   serve (investigadores (query "SELECT * FROM investigador;")) "Investigadores"
 
@@ -252,6 +257,7 @@ let investigator_id req =
   in
   serve (investigador invest unidades projetos) "Investigador"
 
+(* UNIDADES *)
 let unids _req =
   serve
     (unidades (query "SELECT id, nome FROM UnidadeInvestigacao;"))
@@ -269,6 +275,28 @@ let unid_id req =
   in
   serve (unidade unid) "Unidade"
 
+let modify_unid req _message =
+  let unit =
+    query
+      ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
+      "SELECT id, nome FROM UnidadeInvestigacao WHERE id = $1"
+    |> List.hd
+  in
+  serve (unidade_form req unit _message) "Unidade"
+
+let modify_unid_form request =
+  let id = Dream.param request "id" |> int_of_string in
+  match%lwt Dream.form request with
+  | `Ok [ ("nome", nome) ] ->
+      query
+        ~params:[ Mssql.Param.String nome; Mssql.Param.Int id ]
+        "UPDATE UnidadeInvestigacao SET nome = $1 WHERE id = $2"
+      |> ignore;
+      (* List.map (fun (s, v) -> Dream.log "%s: %s\n\n" s v) tl |> ignore; *)
+      modify_unid request (Some "Sucesso!")
+  | _ -> modify_unid request (Some "Erro!")
+
+(* INSTITUTOS *)
 let institutes _req =
   serve
     (institutes (query "SELECT id, designacao FROM instituto;"))
@@ -306,6 +334,7 @@ let modify_institute_form request =
       modify_institute request (Some "Sucesso!")
   | _ -> modify_institute request (Some "Erro!")
 
+(* ENTIDADES *)
 let entities _req =
   let bigger =
     query
@@ -351,6 +380,7 @@ let entity_id req =
   in
   serve (entity programas projects) "Entidades"
 
+(* PROGRAMAS *)
 let programs _req =
   serve (programs (query "SELECT id, designacao FROM Programa;")) "Programas"
 

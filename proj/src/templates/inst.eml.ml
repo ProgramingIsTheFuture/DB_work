@@ -74,6 +74,6 @@ let inst_form request instituto message =
 % begin match message with 
 %   | None -> () 
 %   | Some message -> 
-      <p><b><%s message %>!</b></p>
+      <p><b><%s message %></b></p>
 %   end;
   </div>

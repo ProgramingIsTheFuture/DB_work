@@ -131,7 +131,7 @@ let projeto (_proj: data) (id : int) keywords publicacoes investigadores areas_d
             <% keywords |> List.iter begin fun x -> %> 
             <tr>
               <th scope="row"><%s x<|"id" %></th>
-              <td><%s x<|"keyword" %></td>
+              <td><%s x<|"designacao" %></td>
             </tr>
             <% end; %>
           </tbody>

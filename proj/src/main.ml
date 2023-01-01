@@ -20,6 +20,10 @@ let () =
          Dream.get "/investigadores/:id" @@ Handlers.investigator_id;
          Dream.get "/unidades" Handlers.unids;
          Dream.get "/unidades/:id" Handlers.unid_id;
+         ( Dream.get "/unidades/:id/modificar" @@ fun a ->
+           Handlers.modify_unid a None );
+         Dream.post "/unidades/:id/modificar"
+         @@ Handlers.modify_unid_form;
          Dream.get "/institutos" @@ Handlers.institutes;
          Dream.get "/institutos/:id" @@ Handlers.institute_id;
          ( Dream.get "/institutos/:id/modificar" @@ fun a ->
