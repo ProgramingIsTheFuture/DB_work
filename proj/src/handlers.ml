@@ -63,7 +63,7 @@ let project_id req =
   in
   let keywords =
     query ~params:[ Mssql.Param.Int id ]
-      "SELECT K.id, K.nome FROM projeto P, keyword K \n\
+      "SELECT K.id, K.designacao FROM projeto P, keyword K \n\
       \       WHERE P.id = $1 AND P.id = K.projetoId;"
   in
   let publicacoes =
