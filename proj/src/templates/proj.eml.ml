@@ -200,7 +200,7 @@ let projeto (_proj: data) (id : int) keywords publicacoes investigadores areas_d
       <h2>Classificação</h2>
       <p style="margin-bottom: 2rem;"></p>
       PLACEHOLDER
-      <div class="d-grid gap-2 col-1 mx-auto" style="width: 3rem; position: absolute; top: 5em; right: 6em">
+      <div class="d-grid gap-2 col-1 mx-auto" style="width: 3rem; position: absolute; top: 4rem; right: 1rem; z-index: 99;">
         <a href='/projetos/<%s _proj <| "id" %>/modificar' class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
           Modificar
         </a>

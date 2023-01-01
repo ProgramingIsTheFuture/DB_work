@@ -28,7 +28,6 @@ let programa (prog: data list) ents projs =
     <h1><%s x<|"designacao" %></h1>
     <p style="margin-bottom: 2rem;"></p>
     <% end; %>
-    </div>
   </div>
 
   <div class="top-left2" style="position: absolute; top: 14em; left: 5em;">
