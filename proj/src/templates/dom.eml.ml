@@ -54,3 +54,26 @@ let dominio (dom: data list) =
       Modificar
     </a>
   </div>
+
+let dom_form request dominio message =
+  General.navbar_inpage "Domínio" ^
+  <div class="container" style="width:520px;">
+    <p style="margin-bottom: 2rem;"></p>
+
+    <div id="form-fields">
+    <form method="POST" action='/dominios/<%s dominio<|"id"%>/modificar'>
+      <%s! Dream.csrf_tag request %>
+        <div class="mb-3">
+          <label for="designacaoDom" class="form-label">Designacao</label>
+          <input value='<%s dominio <| "designacao"%>' name="designacao" type="designacao" class="form-control" id="designacaoDom" aria-describedby="emailHelp">
+          <div id="emailHelp" class="form-text">Introduza aqui a nova designação.</div>
+        </div>
+        <button type="submit" class="btn btn-primary">Submeter</button>
+      </div>
+    </form>
+% begin match message with 
+%   | None -> () 
+%   | Some message -> 
+      <p><b><%s message %>!</b></p>
+%   end;
+  </div>

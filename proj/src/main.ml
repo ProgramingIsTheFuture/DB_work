@@ -10,6 +10,10 @@ let () =
          Dream.get "/contratos/:id" @@ Handlers.contract_id;
          Dream.get "/dominios" Handlers.domains;
          Dream.get "/dominios/:id" Handlers.domain_id;
+         ( Dream.get "/dominios/:id/modificar" @@ fun a ->
+           Handlers.modify_domain a None);
+         Dream.post "/dominios/:id/modificar"
+         @@ Handlers.modify_domain_form;
          Dream.get "/areas" Handlers.areas;
          Dream.get "/areas/:id" Handlers.area_id;
          Dream.get "/investigadores" @@ Handlers.investigators;

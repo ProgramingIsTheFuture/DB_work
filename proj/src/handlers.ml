@@ -166,6 +166,27 @@ let domain_id req =
   in
   serve (domain dominio_area) "Dominio"
 
+let modify_domain req _message =
+  let institute =
+    query
+      ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
+      "SELECT id, designacao FROM Dominio WHERE id = $1"
+    |> List.hd
+  in
+  serve (domain_form req institute _message) "Domínio"
+
+let modify_domain_form request =
+  let id = Dream.param request "id" |> int_of_string in
+  match%lwt Dream.form request with
+  | `Ok [ ("designacao", des) ] ->
+      query
+        ~params:[ Mssql.Param.String des; Mssql.Param.Int id ]
+        "UPDATE Dominio SET designacao = $1 WHERE id = $2"
+      |> ignore;
+      (* List.map (fun (s, v) -> Dream.log "%s: %s\n\n" s v) tl |> ignore; *)
+      modify_domain request (Some "Sucesso!")
+  | _ -> modify_domain request (Some "Erro!")
+
 let areas _req =
   let areamaior =
     query
@@ -271,7 +292,7 @@ let modify_institute req _message =
       "SELECT id, designacao FROM Instituto WHERE id = $1"
     |> List.hd
   in
-  serve (Templates.institute_form req institute _message) "Institutos"
+  serve (institute_form req institute _message) "Institutos"
 
 let modify_institute_form request =
   let id = Dream.param request "id" |> int_of_string in
