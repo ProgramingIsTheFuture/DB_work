@@ -154,24 +154,16 @@ let project_id_modify req =
 let project_id_modify_post req =
   match%lwt Dream.form req with
   | `Ok tl ->
-      let _, nome = List.filter (fun (n, _) -> "nome" = n) tl |> List.hd in
-      let _, titulo = List.filter (fun (n, _) -> n = "titulo") tl |> List.hd in
-      let _, descricao =
-        List.filter (fun (n, _) -> n = "descricao") tl |> List.hd
-      in
-      let _, portugues =
-        List.filter (fun (n, _) -> n = "portugues") tl |> List.hd
-      in
-      let _, ingles = List.filter (fun (n, _) -> n = "ingles") tl |> List.hd in
-      let _, data_ini =
-        List.filter (fun (n, _) -> n = "data_ini") tl |> List.hd
-      in
-      let _, data_fim =
-        List.filter (fun (n, _) -> n = "data_fim") tl |> List.hd
-      in
-      let _, url = List.filter (fun (n, _) -> n = "url") tl |> List.hd in
-      let _, doi = List.filter (fun (n, _) -> n = "doi") tl |> List.hd in
-      let _, status = List.filter (fun (n, _) -> n = "status") tl |> List.hd in
+      let nome = find_field tl "nome" in
+      let titulo = find_field tl "titulo" in
+      let descricao = find_field tl "descricao" in
+      let portugues = find_field tl "portugues" in
+      let ingles = find_field tl "ingles" in
+      let data_ini = find_field tl "data_ini" in
+      let data_fim = find_field tl "data_fim" in
+      let url = find_field tl "url" in 
+      let doi = find_field tl "doi" in 
+      let status = find_field tl "doi" in 
       query
         ~params:
           [
@@ -297,12 +289,8 @@ let modify_area_form request =
   let id = Dream.param request "id" |> int_of_string in
   match%lwt Dream.form request with
   | `Ok tl ->
-      let _, designacao =
-        List.filter (fun (n, _) -> n = "designacao") tl |> List.hd
-      in
-      let _, dominioId =
-        List.filter (fun (n, _) -> n = "dominioId") tl |> List.hd
-      in
+      let designacao = find_field tl "designacao" in
+      let dominioId = find_field tl "dominioId" in
       query
         ~params:
           [
@@ -504,6 +492,104 @@ let entity_id req =
       \       WHERE EP.entidadeId = $1;"
   in
   serve (entity programas projects) "Entidades"
+
+let modify_entity req _message =
+  let id = Dream.param req "id" |> int_of_string in
+  let entity =
+    query
+      ~params:[ Mssql.Param.Int id ]
+      "SELECT * FROM Entidade WHERE id = $1;"
+    |> List.hd
+  in
+  let programas =
+    query "SELECT id, designacao FROM Programa"
+  in
+  let entigrama =
+    query
+      ~params:[ Mssql.Param.Int id ]
+      "SELECT P.id as Pid, P.designacao as Pdes FROM Entidade E
+       INNER JOIN Entigrama EP ON E.id = EP.entidadeId
+       INNER JOIN Programa P ON P.id = EP.programaId
+       WHERE E.id = $1"
+  in
+  serve (entity_form req entity programas entigrama _message) "Entidade"
+
+let add_progs req progs = match progs with 
+  | [] -> ()
+  | _ ->  begin query
+          ~params:
+            [
+              Mssql.Param.Array (progs |> List.map (fun a -> Mssql.Param.Int (a |> int_of_string)));
+              Mssql.Param.Int (Dream.param req "id" |> int_of_string);
+            ]
+          "INSERT INTO Entigrama (entidadeId, programaId)
+           SELECT $2, P.id FROM Programa P WHERE P.id IN ($1)"|> ignore
+  end
+
+let remove_progs req del_progs = match del_progs with
+  | [] -> ()
+  | _ -> begin query
+        ~params:
+          [
+            Mssql.Param.Array (del_progs |> List.map (fun a -> Mssql.Param.Int (a |> int_of_string)));
+            Mssql.Param.Int (Dream.param req "id" |> int_of_string);
+          ]
+        "DELETE FROM Entigrama
+         WHERE entidadeId = $2 AND programaId IN ($1)"
+        |> ignore;
+  end
+
+let modify_entity_form req =
+  let programas_antes = 
+    query 
+      ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
+      "SELECT P.id, P.designacao as Pdes FROM Entidade E
+       INNER JOIN Entigrama EP ON E.id = EP.entidadeId
+       INNER JOIN Programa P ON P.id = EP.programaId
+       WHERE E.id = $1"
+    |> List.map (fun a -> Types.find "id" a) 
+  in
+  match%lwt Dream.form req with
+  | `Ok tl ->
+      let nome = find_field tl "nome" in
+      let descricao = find_field tl "descricao" in
+      let designacao = find_field tl "designacao" in
+      let email = find_field tl "email" in
+      let telemovel = find_field tl "telemovel" in
+      let morada = find_field tl "morada" in
+      let pais = find_field tl "pais" in 
+      let nacional = if pais == "Portugal" then 1 else 0 in 
+      let url = find_field tl "url" in
+      let rec get_progs = function
+        | (x, y) :: xs -> (match (fun n -> "progs" = n) x with | true -> Some y | false -> None) :: get_progs xs
+        | [] -> []
+      in
+      let progs = List.filter_map (fun a -> a) (get_progs tl) |> List.filter (fun b -> not (List.mem b programas_antes)) in 
+      let del_progs =  programas_antes |> List.filter (fun a -> not (List.mem a (List.filter_map (fun a -> a) (get_progs tl)))) in
+      query
+        ~params:
+          [
+            Mssql.Param.String nome;
+            Mssql.Param.String descricao;
+            Mssql.Param.String designacao;
+            Mssql.Param.String email;
+            Mssql.Param.Int (telemovel |> int_of_string);
+            Mssql.Param.String morada;
+            Mssql.Param.String pais;
+            Mssql.Param.Int nacional;
+            Mssql.Param.String url;
+            Mssql.Param.Int (Dream.param req "id" |> int_of_string);
+          ]
+        "UPDATE Entidade
+        SET nome = $1, descricao = $2, designacao = $3, email = $4, telemovel = $5, morada = $6, pais = $7, nacional = $8, url = $9
+        WHERE id = $10;"
+      |> ignore;
+      add_progs req progs;
+      remove_progs req del_progs;
+      Dream.log "Atualizou!";
+      modify_entity req (Some "Sucesso!");
+  | _ -> modify_entity req (Some "Erro!")
+
 
 (* PROGRAMAS *)
 let programs _req =

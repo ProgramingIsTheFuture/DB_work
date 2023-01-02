@@ -13,6 +13,7 @@ let area = Area.area
 let area_form = Area.area_form
 let entities = Ent.entidades
 let entity = Ent.entidade
+let entity_form = Ent.ent_form
 let institutes = Inst.institutos
 let institute = Inst.instituto
 let institute_form = Inst.inst_form

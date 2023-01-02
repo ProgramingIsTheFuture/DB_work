@@ -211,65 +211,6 @@ let projeto (_proj: data) (id : int) keywords publicacoes investigadores areas_d
     </div>
   <div/>
 
-let projeto_id_modificar request project status=
-  General.navbar_inpage "Modificar Projeto" ^ 
-  <div style="width: 750px; margin: 0 auto; text-align: left">
-    <form method="POST" action='/projetos/<%s project<|"id" %>/modificar'>
-      <%s! Dream.csrf_tag request %>
-      <div class="mb-3">
-        <label for="input1" class="form-label">Nome</label>
-        <input name="nome" placeholder="nome" value='<%s project<|"nome" %>' type="text" class="form-control" id="input1" aria-describedby="input1Help">
-        <div id="input1Help" class="form-text">Novo nome do projeto.</div>
-
-        <label for="input2" class="form-label">Título</label>
-        <input name="titulo" placeholder="titulo" value='<%s project<|"titulo" %>' type="text" class="form-control" id="input2" aria-describedby="input2Help">
-        <div id="input2Help" class="form-text">Novo título do projeto.</div>
-
-        <label for="input3" class="form-label">Descrição</label>
-        <input name="descricao" placeholder="descricao" value='<%s project<|"descricao" %>' type="text" class="form-control" id="input3" aria-describedby="input3Help">
-        <div id="input3Help" class="form-text">Nova descrição do projeto.</div>
-
-        <label for="input4" class="form-label">Português</label>
-        <input name="portugues" placeholder="portugues" value='<%s project<|"portugues" %>' type="text" class="form-control" id="input4" aria-describedby="input4Help">
-        <div id="input4Help" class="form-text">Novo nome do projeto em português (NULL se o título normal for em português)</div>
-
-        <label for="input5" class="form-label">Inglês</label>
-        <input name="ingles" placeholder="ingles" value='<%s project<|"ingles" %>' type="text" class="form-control" id="input5" aria-describedby="input5Help">
-        <div id="input5Help" class="form-text">Novo nome do projeto em inglês (NULL se o título normal for em inglês)</div>
-
-        <label for="input6" class="form-label">Data de Início</label>
-        <input name="data_ini" placeholder="data_ini" value='<%s project<|"data_ini" %>' type="text" class="form-control" id="input6" aria-describedby="input6Help">
-        <div id="input6Help" class="form-text">Nova data de início do projeto (yyyy-mm-dd)</div>
-
-        <label for="input7" class="form-label">Data de Fim</label>
-        <input name="data_fim" placeholder="data_fim" value='<%s project<|"data_fim" %>' type="text" class="form-control" id="input7" aria-describedby="input7Help">
-        <div id="input7Help" class="form-text">Nova data de fim do projeto (yyyy-mm-dd, NULL se ainda não estiver acabado)</div>
-
-        <label for="input8" class="form-label">URL</label>
-        <input name="url" placeholder="url" value='<%s project<|"url" %>' type="text" class="form-control" id="input8" aria-describedby="input8Help">
-        <div id="input8Help" class="form-text">Novo URL do projeto</div>
-
-        <label for="input9" class="form-label">DOI</label>
-        <input name="doi" placeholder="doi" value='<%s project<|"doi" %>' type="text" class="form-control" id="input9" aria-describedby="input9Help">
-        <div id="input9Help" class="form-text">Novo DOI do projeto</div>
-      </div>
-      <div class="forms">
-        <label for="status">Status</label>
-        <select class="form-select" multiple name="status" id="status" style="margin-top: 5px">
-        <% status |> List.iter begin fun x -> %>
-% begin match (x<|"id") = (project<|"statusId") with
-% | true -> 
-  <option selected value='<%s x<|"id" %>'><%s x<|"designacao" %></option>
-% | false -> 
-  <option value='<%s x<|"id" %>'><%s x<|"designacao" %></option>
-% end;
-        <% end; %>
-        </select>
-      </div>
-      <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
-    </form> 
-  </div>
-
 let proj_entities (_proj : data) contrato entidades programas =
   General.navbar_inpage "Projetos" ^
   <div class="top-left" style="position: absolute; top: 5em; left: 4em; font-size: 18px; word-wrap: break-word;">
@@ -341,3 +282,63 @@ let proj_entities (_proj : data) contrato entidades programas =
       </table>
     </div>
   </div>
+
+let projeto_id_modificar request project status=
+  General.navbar_inpage "Modificar Projeto" ^ 
+  <div style="width: 750px; margin: 0 auto; text-align: left">
+    <form method="POST" action='/projetos/<%s project<|"id" %>/modificar'>
+      <%s! Dream.csrf_tag request %>
+      <div class="mb-3">
+        <label for="input1" class="form-label">Nome</label>
+        <input name="nome" placeholder="nome" value='<%s project<|"nome" %>' type="text" class="form-control" id="input1" aria-describedby="input1Help">
+        <div id="input1Help" class="form-text">Novo nome do projeto.</div>
+
+        <label for="input2" class="form-label">Título</label>
+        <input name="titulo" placeholder="titulo" value='<%s project<|"titulo" %>' type="text" class="form-control" id="input2" aria-describedby="input2Help">
+        <div id="input2Help" class="form-text">Novo título do projeto.</div>
+
+        <label for="input3" class="form-label">Descrição</label>
+        <input name="descricao" placeholder="descricao" value='<%s project<|"descricao" %>' type="text" class="form-control" id="input3" aria-describedby="input3Help">
+        <div id="input3Help" class="form-text">Nova descrição do projeto.</div>
+
+        <label for="input4" class="form-label">Português</label>
+        <input name="portugues" placeholder="portugues" value='<%s project<|"portugues" %>' type="text" class="form-control" id="input4" aria-describedby="input4Help">
+        <div id="input4Help" class="form-text">Novo nome do projeto em português (NULL se o título normal for em português)</div>
+
+        <label for="input5" class="form-label">Inglês</label>
+        <input name="ingles" placeholder="ingles" value='<%s project<|"ingles" %>' type="text" class="form-control" id="input5" aria-describedby="input5Help">
+        <div id="input5Help" class="form-text">Novo nome do projeto em inglês (NULL se o título normal for em inglês)</div>
+
+        <label for="input6" class="form-label">Data de Início</label>
+        <input name="data_ini" placeholder="data_ini" value='<%s project<|"data_ini" %>' type="text" class="form-control" id="input6" aria-describedby="input6Help">
+        <div id="input6Help" class="form-text">Nova data de início do projeto (yyyy-mm-dd)</div>
+
+        <label for="input7" class="form-label">Data de Fim</label>
+        <input name="data_fim" placeholder="data_fim" value='<%s project<|"data_fim" %>' type="text" class="form-control" id="input7" aria-describedby="input7Help">
+        <div id="input7Help" class="form-text">Nova data de fim do projeto (yyyy-mm-dd, NULL se ainda não estiver acabado)</div>
+
+        <label for="input8" class="form-label">URL</label>
+        <input name="url" placeholder="url" value='<%s project<|"url" %>' type="text" class="form-control" id="input8" aria-describedby="input8Help">
+        <div id="input8Help" class="form-text">Novo URL do projeto</div>
+
+        <label for="input9" class="form-label">DOI</label>
+        <input name="doi" placeholder="doi" value='<%s project<|"doi" %>' type="text" class="form-control" id="input9" aria-describedby="input9Help">
+        <div id="input9Help" class="form-text">Novo DOI do projeto</div>
+      </div>
+      <div class="forms">
+        <label for="status">Status</label>
+        <select class="form-select" multiple name="status" id="status" style="margin-top: 5px">
+        <% status |> List.iter begin fun x -> %>
+% begin match (x<|"id") = (project<|"statusId") with
+% | true -> 
+  <option selected value='<%s x<|"id" %>'><%s x<|"designacao" %></option>
+% | false -> 
+  <option value='<%s x<|"id" %>'><%s x<|"designacao" %></option>
+% end;
+        <% end; %>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
+    </form> 
+  </div>
+
