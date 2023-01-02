@@ -5,6 +5,7 @@ let project = Proj.projeto
 let project_modify = Proj.projeto_id_modificar
 let project_entities = Proj.proj_entities
 let contract = Cont.contrato
+let contract_modify = Cont.contrato_form
 let publication = Pub.publicacao
 let publication_modify = Pub.publicacao_form
 let domains = Dom.dominios

@@ -13,6 +13,9 @@ let () =
          Dream.get "/projetos/:id/financiamento" @@ Handlers.project_id_entities;
          (* Contratos *)
          Dream.get "/contratos/:id" @@ Handlers.contract_id;
+         ( Dream.get "/contratos/:id/modificar" @@ fun a ->
+           Handlers.modify_contract a None );
+         Dream.post "/contratos/:id/modificar" @@ Handlers.modify_contract_form;
          (* Publicações *)
          Dream.get "/publicacoes/:id" @@ Handlers.publication_id;
          ( Dream.get "/publicacoes/:id/modificar" @@ fun a ->

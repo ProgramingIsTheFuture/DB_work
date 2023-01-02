@@ -299,6 +299,39 @@ let contract_id req =
   in
   serve (contract cont projeto) "Contratos"
 
+let modify_contract req message =
+  let contrato =
+    query
+      ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
+      "SELECT * FROM Contrato WHERE id = $1;"
+    |> List.hd
+  in
+  let status = query "SELECT * FROM Status;" in
+  serve (contract_modify req contrato status message) "Modificar Investigador"
+
+let modify_contract_form req =
+  match%lwt Dream.form req with
+  | `Ok tl ->
+      let nome = find_field tl "nome" in
+      let titulo = find_field tl "titulo" in 
+      let descricao = find_field tl "descricao" in
+      let status = find_field tl "status" |> int_of_string in
+      let id = Dream.param req "id" |> int_of_string in
+      query
+        ~params:
+          [
+            Mssql.Param.String nome;
+            Mssql.Param.String titulo;
+            Mssql.Param.String descricao;
+            Mssql.Param.Int status;
+            Mssql.Param.Int id;
+          ]
+        "UPDATE Contrato SET nome = $1, titulo = $2, descricao = $3, \
+         statusId = $4 WHERE id = $5"
+      |> ignore;
+      modify_contract req (Some "Sucesso!")
+  | _ -> modify_contract req (Some "Erro!")
+
 (* PUBLICAÇÕES *)
 let publication_id req =
   let id = Dream.param req "id" |> int_of_string in
