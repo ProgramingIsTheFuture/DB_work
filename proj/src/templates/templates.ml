@@ -33,4 +33,6 @@ let unidade_delete = Unid.unid_delete
 let programs = Prog.programas
 let program = Prog.programa
 let program_form = Prog.prog_form
+let program_add = Prog.prog_add
+let program_delete = Prog.prog_delete
 let serve page name = Dream.html @@ General.base name page

@@ -704,14 +704,14 @@ let delete_institute_form request =
       let inst = find_field tl "inst" |> int_of_string in
       query
         ~params:[ Mssql.Param.Int inst ]
-        "DELETE FROM Instituto WHERE id = ($1)"
+        "UPDATE Investigador SET institutoId = NULL WHERE institutoId = $1"
       |> ignore;
       query
         ~params:[ Mssql.Param.Int inst ]
-        "UPDATE Investigador SET institutoId = NULL WHERE institutoId = $1"
+        "DELETE FROM Instituto WHERE id = ($1)"
       |> ignore;
       (* List.map (fun (s, v) -> Dream.log "%s: %s\n\n" s v) tl |> ignore; *)
-      Dream.log "Inseriu!";
+      Dream.log "Removeu!";
       delete_institute request (Some "Sucesso!")
   | _ -> delete_institute request (Some "Erro!")
 
@@ -862,6 +862,24 @@ let program_id req =
   in
   serve (program programa entidades projetos) "Programas"
 
+let add_program req _message =
+  serve (program_add req _message) "Programa"
+
+let add_program_form request =
+  match%lwt Dream.form request with
+  | `Ok tl ->
+      let des= find_field tl "designacao" in
+      query
+        ~params:
+          [ 
+            Mssql.Param.String des; 
+          ]
+        "INSERT INTO Programa (designacao) VALUES ($1)"
+      |> ignore;
+      Dream.log "Inseriu!";
+      add_program request (Some "Sucesso!")
+  | _ -> add_program request (Some "Erro!")
+
 let modify_program req _message =
   let programa =
     query
@@ -883,3 +901,29 @@ let modify_program_form request =
       Dream.log "Atualizou!";
       modify_program request (Some "Sucesso!")
   | _ -> modify_program request (Some "Erro!")
+
+let delete_program req _message =
+  let programas = query "SELECT * FROM Programa" in
+  serve (program_delete req programas _message) "Institutos"
+
+let delete_program_form request =
+  match%lwt Dream.form request with
+  | `Ok tl ->
+      let prog = find_field tl "prog" |> int_of_string in
+      query
+        ~params:[ Mssql.Param.Int prog ]
+        "DELETE FROM Entigrama WHERE programaId = $1"
+      |> ignore;
+      query
+        ~params:[ Mssql.Param.Int prog ]
+        "DELETE FROM Projama WHERE programaId = $1"
+      |> ignore;
+      query
+        ~params:[ Mssql.Param.Int prog ]
+        "DELETE FROM Programa WHERE id = $1"
+      |> ignore;
+      (* List.map (fun (s, v) -> Dream.log "%s: %s\n\n" s v) tl |> ignore; *)
+      Dream.log "Inseriu!";
+      delete_program request (Some "Sucesso!")
+  | _ -> delete_program request (Some "Erro!")
+

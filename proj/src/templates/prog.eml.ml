@@ -84,6 +84,28 @@ let programa (prog: data list) ents projs =
     </a>
   </div>
 
+let prog_add request message =
+  General.navbar_inpage "Adicionar Programa" ^
+  <div style="width: 750px; margin: 0 auto; text-align: left">
+    <p style="margin-bottom: 2rem;"></p>
+
+    <div id="form-fields">
+    <form method="POST" action='/programas/0/adicionar'>
+      <%s! Dream.csrf_tag request %>
+        <div class="mb-3">
+          <label for="designacaoUnid" class="form-label">Designacao</label>
+          <input name="designacao" type="designacao" class="form-control" id="designacaoUnid" aria-describedby="emailHelp" required>
+          <div id="emailHelp" class="form-text">Introduza aqui a designacao.</div>
+        </div>
+        <button type="submit" class="btn btn-primary">Submeter</button>
+      </div>
+    </form>
+% begin match message with 
+%   | None -> () 
+%   | Some message -> 
+      <p><b><%s message %></b></p>
+%   end;
+  </div>
 
 let prog_form request programa message =
   General.navbar_inpage "Modificar Programa" ^
@@ -100,6 +122,28 @@ let prog_form request programa message =
         </div>
         <button type="submit" class="btn btn-primary">Submeter</button>
       </div>
+    </form>
+% begin match message with 
+%   | None -> () 
+%   | Some message -> 
+      <p><b><%s message %></b></p>
+%   end;
+  </div>
+
+let prog_delete request programas message =
+  General.navbar_inpage "Remover Programa" ^
+  <div style="width: 750px; margin: 0 auto; text-align: left">
+    <form method="POST" action='/programas/0/remover'>
+      <%s! Dream.csrf_tag request %>
+      <div class="forms" style="margin-top: 50px">
+        <label for="prog">Programas:</label>
+        <select class="form-select" multiple name="prog" id="prog" style="margin-top: 5px">
+        <% programas |> List.iter begin fun x -> %>
+          <option value='<%s x<|"id" %>'><%s x<|"designacao" %></option>
+        <% end; %>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
     </form>
 % begin match message with 
 %   | None -> () 
