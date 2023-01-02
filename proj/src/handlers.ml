@@ -387,15 +387,35 @@ let modify_publication_form req =
 let domains _req = serve (domains (query "SELECT * FROM Dominio")) "Domínios"
 
 let domain_id req =
-  let dominio_area =
+  let dominio =
     query
       ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
-      "SELECT D.id as Did, D.designacao, A.id, A.designacao as Adesignacao \
-       FROM Dominio D\n\
-      \      INNER JOIN AreaCientifica A ON D.id = A.dominioId\n\
-      \      WHERE D.id = $1"
+      "SELECT id, designacao FROM Dominio D WHERE D.id = $1"
   in
-  serve (domain dominio_area) "Dominio"
+  let area =
+    query
+      ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
+      "SELECT id, designacao FROM AreaCientifica WHERE dominioId = $1"
+  in
+  serve (domain dominio area) "Dominio"
+
+let add_domain req _message =
+  serve (domain_add req _message) "Programa"
+
+let add_domain_form request =
+  match%lwt Dream.form request with
+  | `Ok tl ->
+      let des= find_field tl "designacao" in
+      query
+        ~params:
+          [ 
+            Mssql.Param.String des; 
+          ]
+        "INSERT INTO Dominio (designacao) VALUES ($1)"
+      |> ignore;
+      Dream.log "Inseriu!";
+      add_domain request (Some "Sucesso!")
+  | _ -> add_domain request (Some "Erro!")
 
 let modify_domain req _message =
   let institute =
@@ -417,6 +437,28 @@ let modify_domain_form request =
       (* List.map (fun (s, v) -> Dream.log "%s: %s\n\n" s v) tl |> ignore; *)
       modify_domain request (Some "Sucesso!")
   | _ -> modify_domain request (Some "Erro!")
+
+let delete_domain req _message =
+  let dominios = query "SELECT * FROM Dominio" in
+  serve (domain_delete req dominios _message) "Institutos"
+
+let delete_domain_form request =
+  match%lwt Dream.form request with
+  | `Ok tl ->
+      let dom = find_field tl "dom" |> int_of_string in
+      let dom_novo = find_field tl "dom2" |> int_of_string in
+      query
+        ~params:[ Mssql.Param.Int dom_novo; Mssql.Param.Int dom ]
+        "UPDATE AreaCientifica SET dominioId = $1 WHERE dominioId = $2"
+      |> ignore;
+      query
+        ~params:[ Mssql.Param.Int dom ]
+        "DELETE FROM Dominio WHERE id = $1"
+      |> ignore;
+      (* List.map (fun (s, v) -> Dream.log "%s: %s\n\n" s v) tl |> ignore; *)
+      Dream.log "Removeu!";
+      delete_domain request (Some "Sucesso!")
+  | _ -> delete_domain request (Some "Erro!")
 
 (* AREAS CIENTIFICAS *)
 let areas _req =

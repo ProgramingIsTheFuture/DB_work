@@ -21,7 +21,7 @@ let dominios lst =
     </table>
   </div>
 
-let dominio (dom: data list) = 
+let dominio (dom: data list) area = 
   General.navbar_inpage "Domínio" ^
   <div class="left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
     <h1><%s dom |> List.hd <| "designacao" %></h1>
@@ -37,10 +37,10 @@ let dominio (dom: data list) =
           </tr>
         </thead>
         <tbody class="table-group-divider">
-          <% dom |> List.iter begin fun x -> %> 
+          <% area |> List.iter begin fun x -> %> 
           <tr>
             <th scope="row"><%s x<|"id" %></th>
-            <td><a href='/areas/<%s x<|"id" %>'><%s x<|"Adesignacao" %></a></td>
+            <td><a href='/areas/<%s x<|"id" %>'><%s x<|"designacao" %></a></td>
           </tr>
           <% end; %>
         </tbody>
@@ -50,13 +50,36 @@ let dominio (dom: data list) =
   </div>
 
   <div class="d-grid gap-2 col-1 mx-auto" style="width: 3rem; position: absolute; top: 5em; right: 6em">
-    <a href='/dominios/<%s dom |> List.hd <| "Did" %>/modificar' class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
+    <a href='/dominios/<%s dom |> List.hd <| "id" %>/modificar' class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
       Modificar
     </a>
   </div>
 
+let dom_add request message =
+  General.navbar_inpage "Adicionar Domínio" ^
+  <div style="width: 750px; margin: 0 auto; text-align: left">
+    <p style="margin-bottom: 2rem;"></p>
+
+    <div id="form-fields">
+    <form method="POST" action='/dominios/0/adicionar'>
+      <%s! Dream.csrf_tag request %>
+        <div class="mb-3">
+          <label for="designacaoDom" class="form-label">Designacao</label>
+          <input name="designacao" type="designacao" class="form-control" id="designacaoDom" aria-describedby="emailHelp" required>
+          <div id="emailHelp" class="form-text">Introduza aqui a designação.</div>
+        </div>
+        <button type="submit" class="btn btn-primary">Submeter</button>
+      </div>
+    </form>
+% begin match message with 
+%   | None -> () 
+%   | Some message -> 
+      <p><b><%s message %></b></p>
+%   end;
+  </div>
+
 let dom_form request dominio message =
-  General.navbar_inpage "Domínio" ^
+  General.navbar_inpage "Modificar Domínio" ^
   <div style="width: 750px; margin: 0 auto; text-align: left">
     <p style="margin-bottom: 2rem;"></p>
 
@@ -77,3 +100,34 @@ let dom_form request dominio message =
       <p><b><%s message %></b></p>
 %   end;
   </div>
+
+let dom_delete request dom message =
+  General.navbar_inpage "Remover Domínio" ^
+  <div style="width: 750px; margin: 0 auto; text-align: left">
+    <form method="POST" action='/dominios/0/remover'>
+      <%s! Dream.csrf_tag request %>
+      <div class="forms" style="margin-top: 50px">
+        <label for="dom">Domínio a Remover:</label>
+        <select class="form-select" multiple name="dom" id="dom" style="margin-top: 5px" required>
+        <% dom |> List.iter begin fun x -> %>
+          <option value='<%s x<|"id" %>'><%s x<|"designacao" %></option>
+        <% end; %>
+        </select>
+      </div>
+      <div class="forms" style="margin-top: 50px">
+        <label for="dom2">Novo domínio das àreas pertencentes ao domínio a remover:</label>
+        <select class="form-select" multiple name="dom2" id="dom2" style="margin-top: 5px" required>
+        <% dom |> List.iter begin fun x -> %>
+          <option value='<%s x<|"id" %>'><%s x<|"designacao" %></option>
+        <% end; %>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
+    </form>
+% begin match message with 
+%   | None -> () 
+%   | Some message -> 
+      <p><b><%s message %></b></p>
+%   end;
+  </div>
+
