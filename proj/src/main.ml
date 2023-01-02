@@ -45,6 +45,14 @@ let () =
          ( Dream.get "/areas/:id/modificar" @@ fun a ->
            Handlers.modify_area a None );
          Dream.post "/areas/:id/modificar" @@ Handlers.modify_area_form;
+         ( Dream.get "/areas/0/adicionar" @@ fun a ->
+           Handlers.add_area a None );
+         Dream.post "/areas/0/adicionar"
+         @@ Handlers.add_area_form;
+         ( Dream.get "/areas/0/remover" @@ fun a ->
+           Handlers.delete_area a None );
+         Dream.post "/areas/0/remover"
+         @@ Handlers.delete_area_form;
 
          (* Investigador *)
          Dream.get "/investigadores" @@ Handlers.investigators;

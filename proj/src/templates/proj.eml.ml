@@ -34,7 +34,7 @@ let projetos_contratos request lst =
     </form>
   </div>
 
-let procura_projetos projs keyword =
+let procura_projetos message projs keyword =
   General.navbar_inpage "Projetos" ^
   <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
     <p style="margin-bottom: 2rem;"></p>
@@ -56,6 +56,11 @@ let procura_projetos projs keyword =
         <% end; %>
       </tbody>
     </table>
+% begin match message with 
+%   | None -> () 
+%   | Some message -> 
+      <p><b><%s message %></b></p>
+%   end;
   </div>
 
 let projeto (_proj: data) (id : int) keywords publicacoes investigadores areas_dominios status historico_status =
