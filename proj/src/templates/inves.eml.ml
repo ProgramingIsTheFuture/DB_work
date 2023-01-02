@@ -97,7 +97,7 @@ let investigador (invs: data) unidades projetos =
 
 let investigador_form request (inves: data) (inst: data list) =
   General.navbar_inpage "Modificar investigador" ^
-  <div>
+  <div style="width: 750px; margin: 0 auto; text-align: left">
     <form method="POST" action='/investigadores/<%s inves <| "id" %>/modificar'>
       <%s! Dream.csrf_tag request %>
       <div class="mb-3">

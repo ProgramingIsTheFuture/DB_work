@@ -507,7 +507,7 @@ let modify_entity req _message =
   let entigrama =
     query
       ~params:[ Mssql.Param.Int id ]
-      "SELECT P.id as Pid, P.designacao as Pdes FROM Entidade E
+      "SELECT P.id as Pid, P.designacao as Pdes, EP.valor FROM Entidade E
        INNER JOIN Entigrama EP ON E.id = EP.entidadeId
        INNER JOIN Programa P ON P.id = EP.programaId
        WHERE E.id = $1"
@@ -526,6 +526,21 @@ let add_progs req progs = match progs with
            SELECT $2, P.id FROM Programa P WHERE P.id IN ($1)"|> ignore
   end
 
+let rec update_progs req prog_val = match prog_val with
+  | [] -> ()
+  | (p, v) :: xs -> begin query
+        ~params:
+          [
+            Mssql.Param.Int p;
+            Mssql.Param.Int v;
+            Mssql.Param.Int (Dream.param req "id" |> int_of_string);
+          ]
+        "UPDATE Entigrama SET valor = $2 
+         WHERE entidadeId = $3 AND programaId = $1"
+        |> ignore;
+        update_progs req xs
+  end
+
 let remove_progs req del_progs = match del_progs with
   | [] -> ()
   | _ -> begin query
@@ -534,8 +549,8 @@ let remove_progs req del_progs = match del_progs with
             Mssql.Param.Array (del_progs |> List.map (fun a -> Mssql.Param.Int (a |> int_of_string)));
             Mssql.Param.Int (Dream.param req "id" |> int_of_string);
           ]
-        "DELETE FROM Entigrama
-         WHERE entidadeId = $2 AND programaId IN ($1)"
+        "DELETE FROM Entigrama WHERE
+         entidadeId = $2 AND programaId IN ($1)"
         |> ignore;
   end
 
@@ -560,12 +575,16 @@ let modify_entity_form req =
       let pais = find_field tl "pais" in 
       let nacional = if pais == "Portugal" then 1 else 0 in 
       let url = find_field tl "url" in
-      let rec get_progs = function
-        | (x, y) :: xs -> (match (fun n -> "progs" = n) x with | true -> Some y | false -> None) :: get_progs xs
+      let rec get_str str = function
+        | (x, y) :: xs -> (match (fun n -> str = n) x with | true -> Some y | false -> None) :: get_str str xs
         | [] -> []
       in
-      let progs = List.filter_map (fun a -> a) (get_progs tl) |> List.filter (fun b -> not (List.mem b programas_antes)) in 
-      let del_progs =  programas_antes |> List.filter (fun a -> not (List.mem a (List.filter_map (fun a -> a) (get_progs tl)))) in
+      let progs = List.filter_map (fun a -> a) (get_str "progs" tl) |> List.filter (fun b -> not (List.mem b programas_antes)) in 
+      let del_progs =  programas_antes |> List.filter (fun a -> not (List.mem a (List.filter_map (fun a -> a) (get_str "progs" tl)))) in
+      let prog = List.filter_map (fun a -> a) (get_str "prog" tl) |> List.map (fun a -> a |> int_of_string) in
+      let vals = List.filter_map (fun a -> a) (get_str "valor" tl) |> List.map (fun a -> if a = "NULL" then 0 else a |> int_of_string) in
+      let prog_val = List.combine prog vals 
+      in
       query
         ~params:
           [
@@ -585,6 +604,7 @@ let modify_entity_form req =
         WHERE id = $10;"
       |> ignore;
       add_progs req progs;
+      update_progs req prog_val;
       remove_progs req del_progs;
       Dream.log "Atualizou!";
       modify_entity req (Some "Sucesso!");

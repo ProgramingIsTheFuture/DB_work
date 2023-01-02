@@ -173,20 +173,33 @@ let ent_form request entidade programas entigrama message=
         <input name="url" placeholder="url" value='<%s entidade<|"url" %>' type="text" class="form-control" id="input8" aria-describedby="input8Help">
         <div id="input8Help" class="form-text">Novo URL da entidade</div>
       </div>
-      <p>Programas:</p>
-      <% programas |> List.iter begin fun x -> %> 
-        <div class="form-check">
+      
+      <div style="width: 750px; margin: 0 auto; text-align: left">
+        <p>Programas:</p>
+        <% programas |> List.iter begin fun x -> %> 
+          <div class="form-check">
 % begin match (entigrama |> List.exists (fun i -> String.equal (i <| "Pid") (x <| "id"))) with
 %   | true -> 
-          <input value='<%s x<|"id" %>' name="progs" class="form-check-input" type="checkbox" id="flexCheckChecked" checked>
-          <label class="form-check-label" for="flexCheckChecked"> 
+            <input value='<%s x<|"id" %>' name="progs" class="form-check-input" type="checkbox" id="flexCheckChecked" checked>
+            <label class="form-check-label" for="flexCheckChecked"> 
 %   | false -> 
-          <input value='<%s x<|"id" %>' name="progs" class="form-check-input" type="checkbox" id="flexCheckDefault">
-          <label class="form-check-label" for="flexCheckDefault">
+            <input value='<%s x<|"id" %>' name="progs" class="form-check-input" type="checkbox" id="flexCheckDefault">
+            <label class="form-check-label" for="flexCheckDefault">
 % end;
-          <%s x <| "id" %> - <%s x<|"designacao" %>
+            <%s x <| "id" %> - <%s x<|"designacao" %>
           </div>
         <% end; %>
+      </div>
+      <div style="width: 750px; margin: 0 auto; text-align: left">
+      <% entigrama |> List.iter begin fun x -> %> 
+        <div class="mb-3">
+          <label for="valor" class="form-label">Valor programa <%s x<| "Pid" %>:</label>
+          <input name="prog" placeholder="prog" value='<%s x<|"Pid" %>' type="hidden">
+          <input name="valor" placeholder="valor" value='<%s x<|"valor" %>' type="text" class="form-control" id="valor" aria-describedby="valorHelp">
+          <div id="valorHelp" class="form-text">Se ativar a checkbox, introduza um valor em €. Se desativar a checkbox, deixe o valor em branco.</div>
+        </div>
+        <% end; %>
+      </div>
       <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
     </form> 
 % begin match message with 

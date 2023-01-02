@@ -57,7 +57,7 @@ let dominio (dom: data list) =
 
 let dom_form request dominio message =
   General.navbar_inpage "Domínio" ^
-  <div class="container" style="width:520px;">
+  <div style="width: 750px; margin: 0 auto; text-align: left">
     <p style="margin-bottom: 2rem;"></p>
 
     <div id="form-fields">
