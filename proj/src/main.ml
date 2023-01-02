@@ -46,6 +46,14 @@ let () =
          ( Dream.get "/unidades/:id/modificar" @@ fun a ->
            Handlers.modify_unid a None );
          Dream.post "/unidades/:id/modificar" @@ Handlers.modify_unid_form;
+         ( Dream.get "/unidades/0/adicionar" @@ fun a ->
+           Handlers.add_unid a None );
+         Dream.post "/unidades/0/adicionar"
+         @@ Handlers.add_unid_form;
+         ( Dream.get "/unidades/0/remover" @@ fun a ->
+           Handlers.delete_unid a None );
+         Dream.post "/unidades/0/remover"
+         @@ Handlers.delete_unid_form;
          (* Institutos *)
          Dream.get "/institutos" @@ Handlers.institutes;
          Dream.get "/institutos/:id" @@ Handlers.institute_id;
@@ -53,6 +61,14 @@ let () =
            Handlers.modify_institute a None );
          Dream.post "/institutos/:id/modificar"
          @@ Handlers.modify_institute_form;
+         ( Dream.get "/institutos/0/adicionar" @@ fun a ->
+           Handlers.add_institute a None );
+         Dream.post "/institutos/0/adicionar"
+         @@ Handlers.add_institute_form;
+         ( Dream.get "/institutos/0/remover" @@ fun a ->
+           Handlers.delete_institute a None );
+         Dream.post "/institutos/0/remover"
+         @@ Handlers.delete_institute_form;
          (* Entidades *)
          Dream.get "/entidades" @@ Handlers.entities;
          Dream.get "/entidades/:id" @@ Handlers.entity_id;

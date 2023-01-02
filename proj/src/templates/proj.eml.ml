@@ -1,7 +1,7 @@
 open Types
 
 let projetos_contratos request lst =
-  General.navbar_home "Projetos / Contratos" ^
+  General.navbar_home "projetos" "Projetos / Contratos" ^
   <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
     <table class="table table-dark table-hover">
       <thead class="table-dark">
@@ -35,7 +35,7 @@ let projetos_contratos request lst =
   </div>
 
 let procura_projetos projs keyword =
-  General.navbar_home "Modificar Projetos" ^
+  General.navbar_inpage "Projetos" ^
   <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
     <p style="margin-bottom: 2rem;"></p>
     <h5 style="color: #2895bd">Projetos com a palavra-chave <%s keyword %></h5>

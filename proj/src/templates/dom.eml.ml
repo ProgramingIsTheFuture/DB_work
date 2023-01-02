@@ -1,7 +1,7 @@
 open Types
 
 let dominios lst =
-  General.navbar_home "Domínios" ^
+  General.navbar_home "dominios" "Domínios" ^
   <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
     <table class="table table-dark table-hover">
       <thead class="table-dark">
