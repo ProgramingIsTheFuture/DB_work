@@ -56,7 +56,7 @@ let unidade (unid : data list) =
   </div>
 
 let unid_form request unidade message =
-  General.navbar_inpage "Unidade" ^
+  General.navbar_inpage "Modificar Unidade" ^
   <div style="width: 750px; margin: 0 auto; text-align: left">
     <p style="margin-bottom: 2rem;"></p>
 

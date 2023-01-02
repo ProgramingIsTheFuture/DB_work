@@ -136,7 +136,7 @@ let entidade (ent: data list) (projs: data list) =
   </div>
 
 let ent_form request entidade programas entigrama message=
-  General.navbar_inpage "Entidade" ^ 
+  General.navbar_inpage "Modificar Entidade" ^ 
   <div style="width: 750px; margin: 0 auto; text-align: left">
     <form method="POST" action='/entidades/<%s entidade<|"id" %>/modificar'>
       <%s! Dream.csrf_tag request %>

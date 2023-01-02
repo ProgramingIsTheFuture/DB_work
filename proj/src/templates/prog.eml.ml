@@ -86,7 +86,7 @@ let programa (prog: data list) ents projs =
 
 
 let prog_form request programa message =
-  General.navbar_inpage "Programa" ^
+  General.navbar_inpage "Modificar Programa" ^
   <div style="width: 750px; margin: 0 auto; text-align: left">
     <p style="margin-bottom: 2rem;"></p>
 

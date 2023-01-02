@@ -56,7 +56,7 @@ let instituto (inst: data list) =
   </div>
 
 let inst_form request instituto message =
-  General.navbar_inpage "Instituto" ^
+  General.navbar_inpage "Modificar Instituto" ^
   <div style="width: 750px; margin: 0 auto; text-align: left">
     <p style="margin-bottom: 2rem;"></p>
 

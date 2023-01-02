@@ -35,7 +35,7 @@ let projetos_contratos request lst =
   </div>
 
 let procura_projetos projs keyword =
-  General.navbar_home "Projetos" ^
+  General.navbar_home "Modificar Projetos" ^
   <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
     <p style="margin-bottom: 2rem;"></p>
     <h5 style="color: #2895bd">Projetos com a palavra-chave <%s keyword %></h5>
@@ -283,7 +283,7 @@ let proj_entities (_proj : data) contrato entidades programas =
     </div>
   </div>
 
-let projeto_id_modificar request project status=
+let projeto_id_modificar request message project status programs projama =
   General.navbar_inpage "Modificar Projeto" ^ 
   <div style="width: 750px; margin: 0 auto; text-align: left">
     <form method="POST" action='/projetos/<%s project<|"id" %>/modificar'>
@@ -338,7 +338,28 @@ let projeto_id_modificar request project status=
         <% end; %>
         </select>
       </div>
+      <div style="width: 750px; margin: 0 auto; margin-top: 50px; text-align: left">
+        <p>Programas:</p>
+        <% programs |> List.iter begin fun x -> %> 
+          <div class="form-check">
+% begin match (projama |> List.exists (fun i -> String.equal (i <| "id") (x <| "id"))) with
+%   | true -> 
+            <input value='<%s x<|"id" %>' name="progs" class="form-check-input" type="checkbox" id="flexCheckChecked" checked>
+            <label class="form-check-label" for="flexCheckChecked"> 
+%   | false -> 
+            <input value='<%s x<|"id" %>' name="progs" class="form-check-input" type="checkbox" id="flexCheckDefault">
+            <label class="form-check-label" for="flexCheckDefault">
+% end;
+            <%s x <| "id" %> - <%s x<|"designacao" %>
+          </div>
+        <% end; %>
+      </div>
       <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
     </form> 
+% begin match message with 
+%   | None -> () 
+%   | Some message -> 
+      <p><b><%s message %></b></p>
+%   end;
   </div>
 

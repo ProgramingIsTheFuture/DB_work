@@ -7,7 +7,8 @@ let () =
          Dream.get "/projetos" @@ Handlers.projects;
          Dream.post "/projetos" @@ Handlers.search_projects_kw;
          Dream.get "/projetos/:id" @@ Handlers.project_id;
-         Dream.get "/projetos/:id/modificar" @@ Handlers.project_id_modify;
+         ( Dream.get "/projetos/:id/modificar" @@ fun a ->
+           Handlers.project_id_modify a None );
          Dream.post "/projetos/:id/modificar" @@ Handlers.project_id_modify_post;
          Dream.get "/projetos/:id/financiamento" @@ Handlers.project_id_entities;
          (* Contratos *)
