@@ -1,7 +1,7 @@
 open Types
 
 let areas lst area =
-  General.navbar_home "Áreas Científicas" ^
+  General.navbar_home "areas" "Áreas Científicas" ^
   <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
     <table class="table table-dark table-hover">
       <thead class="table-dark">
@@ -67,6 +67,37 @@ let area (area: data list) dom projs =
     <a href='/areas/<%s area |> List.hd <| "id" %>/modificar' class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
     Modificar
     </a>
+  </div>
+
+let area_add request dominios message =
+  General.navbar_inpage "Adicionar Área Científica" ^
+  <div style="width: 750px; margin: 0 auto; text-align: left">
+    <p style="margin-bottom: 2rem;"></p>
+
+    <div id="form-fields">
+    <form method="POST" action='/areas/0/adicionar'>
+      <%s! Dream.csrf_tag request %>
+        <div class="mb-3">
+          <label for="designacaoDom" class="form-label">Designacao</label>
+          <input name="designacao" type="designacao" class="form-control" id="designacaoDom" aria-describedby="emailHelp" required>
+          <div id="emailHelp" class="form-text">Introduza aqui a designação.</div>
+        </div>
+        <button type="submit" class="btn btn-primary">Submeter</button>
+      </div>
+      <div class="forms">
+        <label for="dom">Domínio:</label>
+        <select class="form-select" multiple name="dom" id="dom" style="margin-top: 5px" required>
+        <% dominios |> List.iter begin fun x -> %>
+          <option value='<%s x<|"id" %>'><%s x<|"designacao" %></option>
+        <% end; %>
+        </select>
+      </div>
+    </form>
+% begin match message with 
+%   | None -> () 
+%   | Some message -> 
+      <p><b><%s message %></b></p>
+%   end;
   </div>
 
 let area_form request area domains message =

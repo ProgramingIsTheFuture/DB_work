@@ -1,7 +1,7 @@
 open Types
 
 let investigadores (invs: data list) = 
-  General.navbar_home "Investigadores" ^
+  General.navbar_home "investigadores" "Investigadores" ^
   <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
     <table class="table table-dark table-hover">
       <thead class="table-dark">
@@ -95,7 +95,7 @@ let investigador (invs: data) unidades projetos =
     </a>
   </div>
 
-let investigador_form request (inves: data) (inst: data list) (unidades: data list) (unidade_investigador: data list) =
+let investigador_form request (inves: data) (inst: data list) (unidades: data list) (unidade_investigador: data list) message =
   General.navbar_inpage "Modificar investigador" ^
   <div>
     <form method="POST" action='/investigadores/<%s inves <| "id" %>/modificar'>
@@ -147,4 +147,9 @@ let investigador_form request (inves: data) (inst: data list) (unidades: data li
       </div>
       <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
     </form>
+% begin match message with 
+%   | None -> () 
+%   | Some message -> 
+      <p><b><%s message %></b></p>
+%   end;
   </div>

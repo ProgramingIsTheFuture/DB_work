@@ -1,7 +1,7 @@
 open Types
 
 let unidades (_unid: data list) =
-  General.navbar_home "Unidades" ^
+  General.navbar_home "unidades" "Unidades" ^
   <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
     <table class="table table-dark table-hover">
       <thead class="table-dark">
@@ -21,10 +21,10 @@ let unidades (_unid: data list) =
     </table>
   </div>
 
-let unidade (unid : data list) = 
+let unidade (unid : data list) investigadores = 
   General.navbar_inpage "Unidade" ^
   <div class="left" style="position: absolute; top: 5em; left: 4em; font-size: 18px">
-    <h1><%s unid |> List.hd <| "Unome" %></h1>
+    <h1><%s unid |> List.hd <| "nome" %></h1>
     <p style="margin-bottom: 2rem;"></p>
 
     <h2 style="margin-bottom: 1rem;">Docentes</h2>
@@ -37,10 +37,10 @@ let unidade (unid : data list) =
           </tr>
         </thead>
         <tbody class="table-group-divider">
-          <% unid |> List.iter begin fun x -> %> 
+          <% investigadores |> List.iter begin fun x -> %> 
           <tr>
             <th scope="row"><%s x<|"id" %></th>
-            <td><a href='/investigadores/<%s x<|"id" %>'><%s x<|"Inome" %></a></td>
+            <td><a href='/investigadores/<%s x<|"id" %>'><%s x<|"nome" %></a></td>
           </tr>
           <% end; %>
         </tbody>
@@ -55,8 +55,31 @@ let unidade (unid : data list) =
     </a>
   </div>
 
+let unid_add request message =
+  General.navbar_inpage "Adicionar Unidade" ^
+  <div style="width: 750px; margin: 0 auto; text-align: left">
+    <p style="margin-bottom: 2rem;"></p>
+
+    <div id="form-fields">
+    <form method="POST" action='/unidades/0/adicionar'>
+      <%s! Dream.csrf_tag request %>
+        <div class="mb-3">
+          <label for="designacaoUnid" class="form-label">Nome</label>
+          <input name="nome" type="nome" class="form-control" id="designacaoUnid" aria-describedby="emailHelp" required>
+          <div id="emailHelp" class="form-text">Introduza aqui o nome.</div>
+        </div>
+        <button type="submit" class="btn btn-primary">Submeter</button>
+      </div>
+    </form>
+% begin match message with 
+%   | None -> () 
+%   | Some message -> 
+      <p><b><%s message %></b></p>
+%   end;
+  </div>
+
 let unid_form request unidade message =
-  General.navbar_inpage "Unidade" ^
+  General.navbar_inpage "Modificar Unidade" ^
   <div style="width: 750px; margin: 0 auto; text-align: left">
     <p style="margin-bottom: 2rem;"></p>
 
@@ -77,3 +100,26 @@ let unid_form request unidade message =
       <p><b><%s message %></b></p>
 %   end;
   </div>
+
+let unid_delete request unid message =
+  General.navbar_inpage "Remover Unidade" ^
+  <div style="width: 750px; margin: 0 auto; text-align: left">
+    <form method="POST" action='/unidades/0/remover'>
+      <%s! Dream.csrf_tag request %>
+      <div class="forms" style="margin-top: 50px">
+        <label for="unid">Unidades:</label>
+        <select class="form-select" multiple name="unid" id="unid" style="margin-top: 5px">
+        <% unid |> List.iter begin fun x -> %>
+          <option value='<%s x<|"id" %>'><%s x<|"nome" %></option>
+        <% end; %>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
+    </form>
+% begin match message with 
+%   | None -> () 
+%   | Some message -> 
+      <p><b><%s message %></b></p>
+%   end;
+  </div>
+

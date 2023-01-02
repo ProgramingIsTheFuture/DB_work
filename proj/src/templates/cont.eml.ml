@@ -42,8 +42,47 @@ let contrato (_cont : data) projeto =
   </div>
 
   <div class="d-grid gap-2 col-1 mx-auto" style="width: 3rem; position: absolute; top: 5em; right: 6em">
-    <a href="/index.html" class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
+    <a href='/contratos/<%s _cont <| "id" %>/modificar' class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
       Modificar
     </a>
   </div>
 
+let contrato_form request (cont: data) status message =
+  General.navbar_inpage "Modificar Contrato" ^
+  <div style="width: 750px; margin: 0 auto; text-align: left">
+    <form method="POST" action='/contratos/<%s cont <| "id" %>/modificar'>
+      <%s! Dream.csrf_tag request %>
+      <div class="mb-3">
+        <label for="input1" class="form-label">Nome</label>
+        <input name="nome" placeholder="nome" value='<%s cont<|"nome" %>' type="text" class="form-control" id="input1" aria-describedby="input1Help" />
+        <div id="input1Help" class="form-text">Novo nome do contrato.</div>
+
+        <label for="input4" class="form-label">Título</label>
+        <input name="titulo" placeholder="titulo" value='<%s cont<|"titulo" %>' type="text" class="form-control" id="input4" aria-describedby="input4Help" />
+        <div id="input4Help" class="form-text">Novo título do contrato.</div>
+
+        <label for="input2" class="form-label">Descrição</label>
+        <input name="descricao" placeholder="descricao" value='<%s cont<|"descricao" %>' type="text" class="form-control" id="input2" aria-describedby="input2Help" />
+        <div id="input2Help" class="form-text">Nova descrição do contrato.</div>
+      </div>
+      <div class="forms">
+        <label for="status">Status</label>
+        <select class="form-select" multiple name="status" id="status" style="margin-top: 5px">
+        <% status |> List.iter begin fun x -> %>
+% begin match (x<|"id") = (cont<|"statusId") with
+% | true -> 
+  <option selected value='<%s x<|"id" %>'><%s x<|"designacao" %></option>
+% | false -> 
+  <option value='<%s x<|"id" %>'><%s x<|"designacao" %></option>
+% end;
+        <% end; %>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
+    </form>
+% begin match message with 
+%   | None -> () 
+%   | Some message -> 
+      <p><b><%s message %></b></p>
+%   end;
+  </div>

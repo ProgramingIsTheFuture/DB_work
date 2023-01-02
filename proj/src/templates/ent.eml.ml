@@ -13,7 +13,7 @@ open Types
  *)
 
 let entidades (ents: data list) maior extmaior =
-  General.navbar_inpage "Entidades" ^
+  General.navbar_home "entidades" "Entidades" ^
   <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
     <table class="table table-dark table-hover">
       <thead class="table-dark">
@@ -136,7 +136,7 @@ let entidade (ent: data list) (projs: data list) =
   </div>
 
 let ent_form request entidade programas entigrama message=
-  General.navbar_inpage "Entidade" ^ 
+  General.navbar_inpage "Modificar Entidade" ^ 
   <div style="width: 750px; margin: 0 auto; text-align: left">
     <form method="POST" action='/entidades/<%s entidade<|"id" %>/modificar'>
       <%s! Dream.csrf_tag request %>
