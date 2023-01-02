@@ -95,9 +95,9 @@ let investigador (invs: data) unidades projetos =
     </a>
   </div>
 
-let investigador_form request (inves: data) (inst: data list) =
+let investigador_form request (inves: data) (inst: data list) (unidades: data list) (unidade_investigador: data list) =
   General.navbar_inpage "Modificar investigador" ^
-  <div style="width: 750px; margin: 0 auto; text-align: left">
+  <div>
     <form method="POST" action='/investigadores/<%s inves <| "id" %>/modificar'>
       <%s! Dream.csrf_tag request %>
       <div class="mb-3">
@@ -125,6 +125,25 @@ let investigador_form request (inves: data) (inst: data list) =
 % end;
         <% end; %>
         </select>
+      </div>
+      <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
+    </form>
+
+    UnidadeInvestigador
+    <form method="POST" action='/investigadores/<%s inves<|"id" %>/unidade/modificar'>
+      <%s! Dream.csrf_tag request %>
+      <% unidades |> List.iter begin fun x -> %> 
+      <div class="mb-2">
+% begin match unidade_investigador |> List.exists (fun ui -> (x<|"id") = (ui<|"unidadeInvestigacaoId" )) with
+% | true ->
+  <input value='<%s x<|"id" %>' name="unidade" class="form-check-input" type="checkbox" id="flexCheckChecked" checked />
+  <label class="form-check-label" for="flexCheckChecked"></label> 
+% | false -> 
+  <input value='<%s x<|"id" %>' name="unidade" class="form-check-input" type="checkbox" id="flexCheckDefault" />
+  <label class="form-check-label" for="flexCheckDefault"></label> 
+% end;
+      <%s x <| "id" %> - <%s x<|"nome" %>
+      <% end; %>
       </div>
       <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
     </form>

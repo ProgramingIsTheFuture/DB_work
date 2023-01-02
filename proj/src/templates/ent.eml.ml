@@ -180,11 +180,11 @@ let ent_form request entidade programas entigrama message=
           <div class="form-check">
 % begin match (entigrama |> List.exists (fun i -> String.equal (i <| "Pid") (x <| "id"))) with
 %   | true -> 
-            <input value='<%s x<|"id" %>' name="progs" class="form-check-input" type="checkbox" id="flexCheckChecked" checked>
-            <label class="form-check-label" for="flexCheckChecked"> 
+            <input value='<%s x<|"id" %>' name="progs" class="form-check-input" type="checkbox" id="flexCheckChecked" checked />
+            <label class="form-check-label" for="flexCheckChecked"></label>
 %   | false -> 
-            <input value='<%s x<|"id" %>' name="progs" class="form-check-input" type="checkbox" id="flexCheckDefault">
-            <label class="form-check-label" for="flexCheckDefault">
+            <input value='<%s x<|"id" %>' name="progs" class="form-check-input" type="checkbox" id="flexCheckDefault" />
+            <label class="form-check-label" for="flexCheckDefault"></label>
 % end;
             <%s x <| "id" %> - <%s x<|"designacao" %>
           </div>

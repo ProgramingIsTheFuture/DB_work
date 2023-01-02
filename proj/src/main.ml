@@ -31,6 +31,10 @@ let () =
          @@ Handlers.investigator_id_modificar;
          Dream.post "/investigadores/:id/modificar"
          @@ Handlers.investigator_id_modificar_post;
+         Dream.get "/investigadores/:id/unidade/modificar"
+         @@ Handlers.investigator_id_modificar;
+         Dream.post "/investigadores/:id/unidade/modificar"
+         @@ Handlers.unidade_investigador_id_modificar_post;
          (* Unidades *)
          Dream.get "/unidades" Handlers.unids;
          Dream.get "/unidades/:id" Handlers.unid_id;
@@ -49,10 +53,8 @@ let () =
          Dream.get "/entidades/:id" @@ Handlers.entity_id;
          (* Programas *)
          ( Dream.get "/entidades/:id/modificar" @@ fun a ->
-           Handlers.modify_entity a None);
-         Dream.post "/entidades/:id/modificar"
-         @@ Handlers.modify_entity_form;
-
+           Handlers.modify_entity a None );
+         Dream.post "/entidades/:id/modificar" @@ Handlers.modify_entity_form;
          Dream.get "/programas" @@ Handlers.programs;
          Dream.get "/programas/:id" @@ Handlers.program_id;
          ( Dream.get "/programas/:id/modificar" @@ fun a ->

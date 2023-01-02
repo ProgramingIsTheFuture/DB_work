@@ -161,9 +161,9 @@ let project_id_modify_post req =
       let ingles = find_field tl "ingles" in
       let data_ini = find_field tl "data_ini" in
       let data_fim = find_field tl "data_fim" in
-      let url = find_field tl "url" in 
-      let doi = find_field tl "doi" in 
-      let status = find_field tl "doi" in 
+      let url = find_field tl "url" in
+      let doi = find_field tl "doi" in
+      let status = find_field tl "doi" in
       query
         ~params:
           [
@@ -337,14 +337,25 @@ let investigator_id req =
   serve (investigador invest unidades projetos) "Investigador"
 
 let investigator_id_modificar req =
+  let inves_id = Dream.param req "id" |> int_of_string in
   let investigador =
     query
-      ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
+      ~params:[ Mssql.Param.Int inves_id ]
       "SELECT * FROM Investigador WHERE id = $1;"
     |> List.hd
   in
   let institutes = query "SELECT * FROM Instituto;" in
-  serve (investigador_form req investigador institutes) "Modificar Investigador"
+  let unidades = query "SELECT id, nome FROM UnidadeInvestigacao" in
+  let insvestigador_unidade =
+    query
+      ~params:[ Mssql.Param.Int inves_id ]
+      "SELECT * FROM UnidadeInvestigacao UI INNER JOIN UnidadeInvestigador UIR \
+       ON UI.id = UIR.unidadeInvestigacaoId WHERE UIR.investigadorId = $1"
+  in
+  serve
+    (investigador_form req investigador institutes unidades
+       insvestigador_unidade)
+    "Modificar Investigador"
 
 let investigator_id_modificar_post req =
   match%lwt Dream.form req with
@@ -366,6 +377,30 @@ let investigator_id_modificar_post req =
         "UPDATE Investigador SET nome = $1, idade = $2, morada = $3, \
          institutoId = $4 WHERE id = $5"
       |> ignore;
+      investigator_id_modificar req
+  | _ -> investigator_id_modificar req
+
+let unidade_investigador_id_modificar_post req =
+  match%lwt Dream.form req with
+  | `Ok tl ->
+      List.map (fun (n, v) -> Dream.log "%s - %s\n" n v) tl |> ignore;
+      let inves_id = Dream.param req "id" |> int_of_string in
+      let _ =
+        query
+          ~params:[ Mssql.Param.Int inves_id ]
+          "DELETE FROM UnidadeInvestigador WHERE investigadorId = $1;"
+      in
+      let campos_unidades = List.filter (fun (n, _) -> n = "unidade") tl in
+      let unidade_id = List.map (fun (_, b) -> b) campos_unidades in
+      let q =
+        List.map (fun a -> "($1," ^ a ^ ")") unidade_id |> String.concat ", "
+      in
+      let _ =
+        query
+          ~params:[ Mssql.Param.Int inves_id ]
+          ("INSERT INTO UnidadeInvestigador (investigadorId, \
+            unidadeInvestigacaoId) VALUES " ^ q ^ ";")
+      in
       investigator_id_modificar req
   | _ -> investigator_id_modificar req
 
@@ -496,73 +531,75 @@ let entity_id req =
 let modify_entity req _message =
   let id = Dream.param req "id" |> int_of_string in
   let entity =
-    query
-      ~params:[ Mssql.Param.Int id ]
-      "SELECT * FROM Entidade WHERE id = $1;"
+    query ~params:[ Mssql.Param.Int id ] "SELECT * FROM Entidade WHERE id = $1;"
     |> List.hd
   in
-  let programas =
-    query "SELECT id, designacao FROM Programa"
-  in
+  let programas = query "SELECT id, designacao FROM Programa" in
   let entigrama =
-    query
-      ~params:[ Mssql.Param.Int id ]
-      "SELECT P.id as Pid, P.designacao as Pdes, EP.valor FROM Entidade E
-       INNER JOIN Entigrama EP ON E.id = EP.entidadeId
-       INNER JOIN Programa P ON P.id = EP.programaId
-       WHERE E.id = $1"
+    query ~params:[ Mssql.Param.Int id ]
+      "SELECT P.id as Pid, P.designacao as Pdes, EP.valor FROM Entidade E\n\
+      \       INNER JOIN Entigrama EP ON E.id = EP.entidadeId\n\
+      \       INNER JOIN Programa P ON P.id = EP.programaId\n\
+      \       WHERE E.id = $1"
   in
   serve (entity_form req entity programas entigrama _message) "Entidade"
 
-let add_progs req progs = match progs with 
+let add_progs req progs =
+  match progs with
   | [] -> ()
-  | _ ->  begin query
-          ~params:
-            [
-              Mssql.Param.Array (progs |> List.map (fun a -> Mssql.Param.Int (a |> int_of_string)));
-              Mssql.Param.Int (Dream.param req "id" |> int_of_string);
-            ]
-          "INSERT INTO Entigrama (entidadeId, programaId)
-           SELECT $2, P.id FROM Programa P WHERE P.id IN ($1)"|> ignore
-  end
+  | _ ->
+      query
+        ~params:
+          [
+            Mssql.Param.Array
+              (progs |> List.map (fun a -> Mssql.Param.Int (a |> int_of_string)));
+            Mssql.Param.Int (Dream.param req "id" |> int_of_string);
+          ]
+        "INSERT INTO Entigrama (entidadeId, programaId)\n\
+        \           SELECT $2, P.id FROM Programa P WHERE P.id IN ($1)"
+      |> ignore
 
-let rec update_progs req prog_val = match prog_val with
+let rec update_progs req prog_val =
+  match prog_val with
   | [] -> ()
-  | (p, v) :: xs -> begin query
+  | (p, v) :: xs ->
+      query
         ~params:
           [
             Mssql.Param.Int p;
             Mssql.Param.Int v;
             Mssql.Param.Int (Dream.param req "id" |> int_of_string);
           ]
-        "UPDATE Entigrama SET valor = $2 
-         WHERE entidadeId = $3 AND programaId = $1"
-        |> ignore;
-        update_progs req xs
-  end
+        "UPDATE Entigrama SET valor = $2 \n\
+        \         WHERE entidadeId = $3 AND programaId = $1"
+      |> ignore;
+      update_progs req xs
 
-let remove_progs req del_progs = match del_progs with
+let remove_progs req del_progs =
+  match del_progs with
   | [] -> ()
-  | _ -> begin query
+  | _ ->
+      query
         ~params:
           [
-            Mssql.Param.Array (del_progs |> List.map (fun a -> Mssql.Param.Int (a |> int_of_string)));
+            Mssql.Param.Array
+              (del_progs
+              |> List.map (fun a -> Mssql.Param.Int (a |> int_of_string)));
             Mssql.Param.Int (Dream.param req "id" |> int_of_string);
           ]
-        "DELETE FROM Entigrama WHERE
-         entidadeId = $2 AND programaId IN ($1)"
-        |> ignore;
-  end
+        "DELETE FROM Entigrama WHERE\n\
+        \         entidadeId = $2 AND programaId IN ($1)"
+      |> ignore
 
 let modify_entity_form req =
-  let programas_antes = 
-    query 
+  let programas_antes =
+    query
       ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
-      "SELECT P.id, P.designacao as Pdes FROM Entidade E
-       INNER JOIN Entigrama EP ON E.id = EP.entidadeId
-       INNER JOIN Programa P ON P.id = EP.programaId
-       WHERE E.id = $1"
-    |> List.map (fun a -> Types.find "id" a) 
+      "SELECT P.id, P.designacao as Pdes FROM Entidade E\n\
+      \       INNER JOIN Entigrama EP ON E.id = EP.entidadeId\n\
+      \       INNER JOIN Programa P ON P.id = EP.programaId\n\
+      \       WHERE E.id = $1"
+    |> List.map (fun a -> Types.find "id" a)
   in
   match%lwt Dream.form req with
   | `Ok tl ->
@@ -572,19 +609,35 @@ let modify_entity_form req =
       let email = find_field tl "email" in
       let telemovel = find_field tl "telemovel" in
       let morada = find_field tl "morada" in
-      let pais = find_field tl "pais" in 
-      let nacional = if pais == "Portugal" then 1 else 0 in 
+      let pais = find_field tl "pais" in
+      let nacional = if pais == "Portugal" then 1 else 0 in
       let url = find_field tl "url" in
       let rec get_str str = function
-        | (x, y) :: xs -> (match (fun n -> str = n) x with | true -> Some y | false -> None) :: get_str str xs
+        | (x, y) :: xs ->
+            (match (fun n -> str = n) x with true -> Some y | false -> None)
+            :: get_str str xs
         | [] -> []
       in
-      let progs = List.filter_map (fun a -> a) (get_str "progs" tl) |> List.filter (fun b -> not (List.mem b programas_antes)) in 
-      let del_progs =  programas_antes |> List.filter (fun a -> not (List.mem a (List.filter_map (fun a -> a) (get_str "progs" tl)))) in
-      let prog = List.filter_map (fun a -> a) (get_str "prog" tl) |> List.map (fun a -> a |> int_of_string) in
-      let vals = List.filter_map (fun a -> a) (get_str "valor" tl) |> List.map (fun a -> if a = "NULL" then 0 else a |> int_of_string) in
-      let prog_val = List.combine prog vals 
+      let progs =
+        List.filter_map (fun a -> a) (get_str "progs" tl)
+        |> List.filter (fun b -> not (List.mem b programas_antes))
       in
+      let del_progs =
+        programas_antes
+        |> List.filter (fun a ->
+               not
+                 (List.mem a
+                    (List.filter_map (fun a -> a) (get_str "progs" tl))))
+      in
+      let prog =
+        List.filter_map (fun a -> a) (get_str "prog" tl)
+        |> List.map (fun a -> a |> int_of_string)
+      in
+      let vals =
+        List.filter_map (fun a -> a) (get_str "valor" tl)
+        |> List.map (fun a -> if a = "NULL" then 0 else a |> int_of_string)
+      in
+      let prog_val = List.combine prog vals in
       query
         ~params:
           [
@@ -599,17 +652,17 @@ let modify_entity_form req =
             Mssql.Param.String url;
             Mssql.Param.Int (Dream.param req "id" |> int_of_string);
           ]
-        "UPDATE Entidade
-        SET nome = $1, descricao = $2, designacao = $3, email = $4, telemovel = $5, morada = $6, pais = $7, nacional = $8, url = $9
-        WHERE id = $10;"
+        "UPDATE Entidade\n\
+        \        SET nome = $1, descricao = $2, designacao = $3, email = $4, \
+         telemovel = $5, morada = $6, pais = $7, nacional = $8, url = $9\n\
+        \        WHERE id = $10;"
       |> ignore;
       add_progs req progs;
       update_progs req prog_val;
       remove_progs req del_progs;
       Dream.log "Atualizou!";
-      modify_entity req (Some "Sucesso!");
+      modify_entity req (Some "Sucesso!")
   | _ -> modify_entity req (Some "Erro!")
-
 
 (* PROGRAMAS *)
 let programs _req =
