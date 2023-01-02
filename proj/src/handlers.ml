@@ -22,6 +22,9 @@ let query ?(params : Mssql.Param.t list = []) q =
               (fun ctx (name, value) -> Types.SMap.add name value ctx)
               Types.empty)
 
+let find_field tl nome =
+  List.filter (fun (n, _) -> n = nome) tl |> List.hd |> snd
+
 let home _req = serve home "Gestão de Projetos UBI"
 
 (* PROJETOS *)
@@ -192,8 +195,6 @@ let project_id_modify_post req =
       project_id_modify req
   | _ -> project_id_modify req
 
-
-
 (* CONTRATOS *)
 let contract_id req =
   let id = Dream.param req "id" |> int_of_string in
@@ -211,7 +212,6 @@ let contract_id req =
   in
   serve (contract cont projeto) "Contratos"
 
-
 (* DOMINIOS *)
 let domains _req = serve (domains (query "SELECT * FROM Dominio")) "Domínios"
 
@@ -225,7 +225,6 @@ let domain_id req =
       \      WHERE D.id = $1"
   in
   serve (domain dominio_area) "Dominio"
-
 
 let modify_domain req _message =
   let institute =
@@ -247,7 +246,6 @@ let modify_domain_form request =
       (* List.map (fun (s, v) -> Dream.log "%s: %s\n\n" s v) tl |> ignore; *)
       modify_domain request (Some "Sucesso!")
   | _ -> modify_domain request (Some "Erro!")
-
 
 (* AREAS CIENTIFICAS *)
 let areas _req =
@@ -299,8 +297,12 @@ let modify_area_form request =
   let id = Dream.param request "id" |> int_of_string in
   match%lwt Dream.form request with
   | `Ok tl ->
-      let _, designacao = List.filter (fun (n, _) -> n = "designacao") tl |> List.hd in
-      let _, dominioId = List.filter (fun (n, _) -> n = "dominioId") tl |> List.hd in
+      let _, designacao =
+        List.filter (fun (n, _) -> n = "designacao") tl |> List.hd
+      in
+      let _, dominioId =
+        List.filter (fun (n, _) -> n = "dominioId") tl |> List.hd
+      in
       query
         ~params:
           [
@@ -308,13 +310,12 @@ let modify_area_form request =
             Mssql.Param.Int (dominioId |> int_of_string);
             Mssql.Param.Int id;
           ]
-        "UPDATE AreaCientifica SET designacao = $1, dominioId = $2
-         WHERE id = $3;"
+        "UPDATE AreaCientifica SET designacao = $1, dominioId = $2\n\
+        \         WHERE id = $3;"
       |> ignore;
       Dream.log "Atualizou!";
       modify_area request (Some "Sucesso!")
-  | _ -> modify_area request (Some "Erro!") 
-  
+  | _ -> modify_area request (Some "Erro!")
 
 (* INVESTIGADORES *)
 let investigators _req =
@@ -347,7 +348,39 @@ let investigator_id req =
   in
   serve (investigador invest unidades projetos) "Investigador"
 
-  
+let investigator_id_modificar req =
+  let investigador =
+    query
+      ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
+      "SELECT * FROM Investigador WHERE id = $1;"
+    |> List.hd
+  in
+  let institutes = query "SELECT * FROM Instituto;" in
+  serve (investigador_form req investigador institutes) "Modificar Investigador"
+
+let investigator_id_modificar_post req =
+  match%lwt Dream.form req with
+  | `Ok tl ->
+      let nome = find_field tl "nome" in
+      let idade = find_field tl "idade" |> int_of_string in
+      let morada = find_field tl "morada" in
+      let institute_id = find_field tl "institutoId" |> int_of_string in
+      let id = Dream.param req "id" |> int_of_string in
+      query
+        ~params:
+          [
+            Mssql.Param.String nome;
+            Mssql.Param.Int idade;
+            Mssql.Param.String morada;
+            Mssql.Param.Int institute_id;
+            Mssql.Param.Int id;
+          ]
+        "UPDATE Investigador SET nome = $1, idade = $2, morada = $3, \
+         institutoId = $4 WHERE id = $5"
+      |> ignore;
+      investigator_id_modificar req
+  | _ -> investigator_id_modificar req
+
 (* UNIDADES DE INVESTIGACAO *)
 let unids _req =
   serve
@@ -387,7 +420,6 @@ let modify_unid_form request =
       modify_unid request (Some "Sucesso!")
   | _ -> modify_unid request (Some "Erro!")
 
-
 (* INSTITUTOS *)
 let institutes _req =
   serve
@@ -426,7 +458,6 @@ let modify_institute_form request =
       Dream.log "Atualizou!";
       modify_institute request (Some "Sucesso!")
   | _ -> modify_institute request (Some "Erro!")
-
 
 (* ENTIDADES *)
 let entities _req =
@@ -473,7 +504,6 @@ let entity_id req =
       \       WHERE EP.entidadeId = $1;"
   in
   serve (entity programas projects) "Entidades"
-
 
 (* PROGRAMAS *)
 let programs _req =

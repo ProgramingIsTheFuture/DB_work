@@ -90,8 +90,42 @@ let investigador (invs: data) unidades projetos =
   </div>
 
   <div class="d-grid gap-2 col-1 mx-auto" style="width: 3rem; position: absolute; top: 5em; right: 6em">
-    <a href="/index.html" class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
+    <a href='/investigadores/<%s invs <| "id" %>/modificar' class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
       Modificar
     </a>
   </div>
 
+let investigador_form request (inves: data) (inst: data list) =
+  General.navbar_inpage "Modificar investigador" ^
+  <div>
+    <form method="POST" action='/investigadores/<%s inves <| "id" %>/modificar'>
+      <%s! Dream.csrf_tag request %>
+      <div class="mb-3">
+        <label for="input1" class="form-label">Nome</label>
+        <input name="nome" placeholder="nome" value='<%s inves<|"nome" %>' type="text" class="form-control" id="input1" aria-describedby="input1Help" />
+        <div id="input1Help" class="form-text">Novo nome do investigador.</div>
+
+        <label for="input2" class="form-label">Título</label>
+        <input name="idade" placeholder="idade" value='<%s inves<|"idade" %>' type="number" class="form-control" id="input2" aria-describedby="input2Help" />
+        <div id="input2Help" class="form-text">Nova idade do investigador.</div>
+
+        <label for="input3" class="form-label">Descrição</label>
+        <input name="morada" placeholder="morada" value='<%s inves<|"morada" %>' type="text" class="form-control" id="input3" aria-describedby="input3Help" />
+        <div id="input3Help" class="form-text">Nova morada do investigador.</div>
+      </div>
+      <div class="forms">
+        <label for="institutoId">Instituto</label>
+        <select class="form-select" multiple name="institutoId" id="status" style="margin-top: 5px">
+        <% inst |> List.iter begin fun x -> %>
+% begin match (x<|"id") = (inves<|"institutoId") with
+% | true -> 
+  <option selected value='<%s x<|"id" %>'><%s x<|"designacao" %></option>
+% | false -> 
+  <option value='<%s x<|"id" %>'><%s x<|"designacao" %></option>
+% end;
+        <% end; %>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
+    </form>
+  </div>

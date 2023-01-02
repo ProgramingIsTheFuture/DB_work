@@ -18,6 +18,7 @@ let institute = Inst.instituto
 let institute_form = Inst.inst_form
 let investigadores = Inves.investigadores
 let investigador = Inves.investigador
+let investigador_form = Inves.investigador_form
 let unidades = Unid.unidades
 let unidade = Unid.unidade
 let unidade_form = Unid.unid_form
