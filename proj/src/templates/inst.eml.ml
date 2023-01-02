@@ -107,7 +107,7 @@ let inst_delete request inst message =
     <form method="POST" action='/institutos/0/remover'>
       <%s! Dream.csrf_tag request %>
       <div class="forms" style="margin-top: 50px">
-        <label for="inst">Institutos:</label>
+        <label for="inst">Instituto a remover:</label>
         <select class="form-select" multiple name="inst" id="inst" style="margin-top: 5px">
         <% inst |> List.iter begin fun x -> %>
           <option value='<%s x<|"id" %>'><%s x<|"designacao" %></option>

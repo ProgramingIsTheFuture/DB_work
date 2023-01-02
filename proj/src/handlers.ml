@@ -666,8 +666,8 @@ let unidade_investigador_id_modificar_post req =
           ("INSERT INTO UnidadeInvestigador (investigadorId, \
             unidadeInvestigacaoId) VALUES " ^ q ^ ";")
       in
-      investigator_id_modificar req (Some "Sucesso")
-  | _ -> investigator_id_modificar req (Some "Erro")
+      investigator_id_modificar req (Some "Sucesso!")
+  | _ -> investigator_id_modificar req (Some "Erro!")
 
 (* UNIDADES DE INVESTIGACAO *)
 let unids _req =
@@ -848,9 +848,13 @@ let entities _req =
 
 let entity_id req =
   let id = Dream.param req "id" |> int_of_string in
+  let entidade =
+    query ~params:[ Mssql.Param.Int id ]
+      "SELECT * FROM Entidade WHERE id = $1"
+  in
   let programas =
     query ~params:[ Mssql.Param.Int id ]
-      "SELECT P.id as Pid, P.designacao as pdesignacao, EP.valor, E.* FROM \
+      "SELECT P.id as Pid, P.designacao as pdesignacao, EP.valor FROM \
        Entidade E \n\
       \       INNER JOIN Entigrama EP ON E.id = EP.entidadeId \n\
       \       INNER JOIN Programa P ON EP.programaId = P.id \n\
@@ -864,7 +868,43 @@ let entity_id req =
       \       INNER JOIN Projeto Proj ON Proj.id = PJ.projetoId \n\
       \       WHERE EP.entidadeId = $1;"
   in
-  serve (entity programas projects) "Entidades"
+  serve (entity entidade programas projects) "Entidades"
+
+let add_entity req _message =
+  serve (entity_add req _message) "Entidade"
+
+let add_entity_form request =
+  match%lwt Dream.form request with
+  | `Ok tl ->
+      let nome = find_field tl "nome" in
+      let descricao = find_field tl "descricao" in
+      let designacao = find_field tl "designacao" in
+      let email = find_field tl "email" in
+      let telemovel = find_field tl "telemovel" in
+      let morada = find_field tl "morada" in
+      let pais = find_field tl "pais" in 
+      let nacional = if pais == "Portugal" then 1 else 0 in 
+      let url = find_field tl "url" in
+      query
+        ~params:
+          [ 
+            Mssql.Param.String nome;
+            Mssql.Param.String descricao;
+            Mssql.Param.String designacao;
+            Mssql.Param.String email;
+            Mssql.Param.Int (telemovel |> int_of_string);
+            Mssql.Param.String morada;
+            Mssql.Param.String pais;
+            Mssql.Param.Int nacional;
+            Mssql.Param.String url;
+          ]
+        "INSERT INTO Entidade 
+        (nome, descricao, designacao, email, telemovel, morada, pais, nacional, url) 
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)"
+      |> ignore;
+      Dream.log "Inseriu!";
+      add_entity request (Some "Sucesso!")
+  | _ -> add_entity request (Some "Erro!")
 
 let modify_entity req _message =
   let id = Dream.param req "id" |> int_of_string in
@@ -949,6 +989,7 @@ let modify_entity_form req =
       let morada = find_field tl "morada" in
       let pais = find_field tl "pais" in
       let nacional = if pais == "Portugal" then 1 else 0 in
+      let pais = find_field tl "pais" in 
       let url = find_field tl "url" in
       let progs =
         List.filter_map (fun a -> a) (get_str "progs" tl)
@@ -995,6 +1036,27 @@ let modify_entity_form req =
       Dream.log "Atualizou!";
       modify_entity req (Some "Sucesso!")
   | _ -> modify_entity req (Some "Erro!")
+
+let delete_entity req _message =
+  let entidade = query "SELECT * FROM Entidade" in
+  serve (entity_delete req entidade _message) "Institutos"
+
+let delete_entity_form request =
+  match%lwt Dream.form request with
+  | `Ok tl ->
+      let ent = find_field tl "ent" |> int_of_string in
+      query
+        ~params:[ Mssql.Param.Int ent ]
+        "DELETE FROM Entigrama WHERE entidadeId = $1"
+      |> ignore;
+      query
+        ~params:[ Mssql.Param.Int ent ]
+        "DELETE FROM Entidade WHERE id = $1"
+      |> ignore;
+      (* List.map (fun (s, v) -> Dream.log "%s: %s\n\n" s v) tl |> ignore; *)
+      Dream.log "Inseriu!";
+      delete_entity request (Some "Sucesso!")
+  | _ -> delete_entity request (Some "Erro!")
 
 (* PROGRAMAS *)
 let programs _req =

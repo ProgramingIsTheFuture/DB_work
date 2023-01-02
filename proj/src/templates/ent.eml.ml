@@ -43,7 +43,7 @@ let entidades (ents: data list) maior extmaior =
     <p><a href='/entidades/<%s extmaior |> List.hd <| "id" %>'><%s extmaior |> List.hd <| "nome" %></a> com <%s extmaior |> List.hd <| "numero" %> entidades financiados</p>
   </div>
 
-let entidade (ent: data list) (projs: data list) =
+let entidade (ent: data list) prog (projs: data list) =
   General.navbar_inpage "Entidade" ^
   <div>
     <div class="d-grid gap-2 col-1 mx-auto" style="width: 3rem; position: absolute; top: 5em; right: 6em">
@@ -98,7 +98,7 @@ let entidade (ent: data list) (projs: data list) =
             </tr>
           </thead>
           <tbody class="table-group-divider">
-            <% ent |> List.iter begin fun x -> %>
+            <% prog |> List.iter begin fun x -> %>
             <tr>
               <th scope="row"><%s x <| "Pid" %></th>
               <td><a href='/programas/<%s x <| "Pid" %>'><%s x <| "pdesignacao" %></a></td>
@@ -135,6 +135,57 @@ let entidade (ent: data list) (projs: data list) =
     </div>
   </div>
 
+let ent_add request message =
+  General.navbar_inpage "Adicionar Entidades" ^
+  <div style="width: 750px; margin: 0 auto; text-align: left">
+    <p style="margin-bottom: 2rem;"></p>
+
+    <div id="form-fields">
+    <form method="POST" action='/entidades/0/adicionar'>
+      <%s! Dream.csrf_tag request %>
+        <div class="mb-3">
+        <label for="input1" class="form-label">Nome</label>
+        <input name="nome" placeholder="nome"  type="text" class="form-control" id="input1" aria-describedby="input1Help">
+        <div id="input1Help" class="form-text">Nome da entidade.</div>
+
+        <label for="input3" class="form-label">Descrição</label>
+        <input name="descricao" placeholder="descricao" type="text" class="form-control" id="input3" aria-describedby="input3Help">
+        <div id="input3Help" class="form-text">Descrição da entidade.</div>
+        
+        <label for="input2" class="form-label">Designacao</label>
+        <input name="designacao" placeholder="designacao" type="text" class="form-control" id="input2" aria-describedby="input2Help">
+        <div id="input2Help" class="form-text">Designação da entidade.</div>
+
+        <label for="input4" class="form-label">Email</label>
+        <input name="email" placeholder="email" type="text" class="form-control" id="input4" aria-describedby="input4Help">
+        <div id="input4Help" class="form-text">Email da entidade</div>
+
+        <label for="input5" class="form-label">Telemóvel</label>
+        <input name="telemovel" placeholder="telemovel" type="text" class="form-control" id="input5" aria-describedby="input5Help">
+        <div id="input5Help" class="form-text">Telemóvel da entidade em inglês</div>
+
+        <label for="input6" class="form-label">Morada</label>
+        <input name="morada" placeholder="morada" type="text" class="form-control" id="input6" aria-describedby="input6Help">
+        <div id="input6Help" class="form-text">Morada da entidade</div>
+
+        <label for="input7" class="form-label">País</label>
+        <input name="pais" placeholder="pais"  type="text" class="form-control" id="input7" aria-describedby="input7Help">
+        <div id="input7Help" class="form-text">País da entidade</div>
+
+        <label for="input8" class="form-label">URL</label>
+        <input name="url" placeholder="url" type="text" class="form-control" id="input8" aria-describedby="input8Help">
+        <div id="input8Help" class="form-text">URL da entidade</div>
+        </div>
+        <button type="submit" class="btn btn-primary">Submeter</button>
+      </div>
+    </form>
+% begin match message with 
+%   | None -> () 
+%   | Some message -> 
+      <p><b><%s message %></b></p>
+%   end;
+  </div>
+
 let ent_form request entidade programas entigrama message=
   General.navbar_inpage "Modificar Entidade" ^ 
   <div style="width: 750px; margin: 0 auto; text-align: left">
@@ -159,7 +210,7 @@ let ent_form request entidade programas entigrama message=
 
         <label for="input5" class="form-label">Telemóvel</label>
         <input name="telemovel" placeholder="telemovel" value='<%s entidade<|"telemovel" %>' type="text" class="form-control" id="input5" aria-describedby="input5Help">
-        <div id="input5Help" class="form-text">Novo telemóvel da entidade em inglês (NULL se o título normal for em inglês)</div>
+        <div id="input5Help" class="form-text">Novo telemóvel da entidade em inglês</div>
 
         <label for="input6" class="form-label">Morada</label>
         <input name="morada" placeholder="morada" value='<%s entidade<|"morada" %>' type="text" class="form-control" id="input6" aria-describedby="input6Help">
@@ -202,6 +253,28 @@ let ent_form request entidade programas entigrama message=
       </div>
       <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
     </form> 
+% begin match message with 
+%   | None -> () 
+%   | Some message -> 
+      <p><b><%s message %></b></p>
+%   end;
+  </div>
+
+let ent_delete request entidades message =
+  General.navbar_inpage "Remover Entidade" ^
+  <div style="width: 750px; margin: 0 auto; text-align: left">
+    <form method="POST" action='/entidades/0/remover'>
+      <%s! Dream.csrf_tag request %>
+      <div class="forms" style="margin-top: 50px">
+        <label for="ent">Entidade a remover:</label>
+        <select class="form-select" multiple name="ent" id="ent" style="margin-top: 5px">
+        <% entidades |> List.iter begin fun x -> %>
+          <option value='<%s x<|"id" %>'><%s x<|"nome" %></option>
+        <% end; %>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
+    </form>
 % begin match message with 
 %   | None -> () 
 %   | Some message -> 

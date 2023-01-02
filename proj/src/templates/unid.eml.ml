@@ -107,7 +107,7 @@ let unid_delete request unid message =
     <form method="POST" action='/unidades/0/remover'>
       <%s! Dream.csrf_tag request %>
       <div class="forms" style="margin-top: 50px">
-        <label for="unid">Unidades:</label>
+        <label for="unid">Unidade a remover:</label>
         <select class="form-select" multiple name="unid" id="unid" style="margin-top: 5px">
         <% unid |> List.iter begin fun x -> %>
           <option value='<%s x<|"id" %>'><%s x<|"nome" %></option>

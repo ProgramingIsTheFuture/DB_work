@@ -142,7 +142,7 @@ let area_delete request areas message =
     <form method="POST" action='/areas/0/remover'>
       <%s! Dream.csrf_tag request %>
       <div class="forms" style="margin-top: 50px">
-        <label for="area">Area a remover:</label>
+        <label for="area">Área a remover:</label>
         <select class="form-select" multiple name="area" id="area" style="margin-top: 5px">
         <% areas |> List.iter begin fun x -> %>
           <option value='<%s x<|"id" %>'><%s x<|"designacao" %></option>

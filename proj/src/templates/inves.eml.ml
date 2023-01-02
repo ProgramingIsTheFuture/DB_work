@@ -97,7 +97,7 @@ let investigador (invs: data) unidades projetos =
 
 let investigador_form request (inves: data) (inst: data list) (unidades: data list) (unidade_investigador: data list) message =
   General.navbar_inpage "Modificar investigador" ^
-  <div>
+  <div style="width: 750px; margin: 0 auto; text-align: left">
     <form method="POST" action='/investigadores/<%s inves <| "id" %>/modificar'>
       <%s! Dream.csrf_tag request %>
       <div class="mb-3">
@@ -129,7 +129,7 @@ let investigador_form request (inves: data) (inst: data list) (unidades: data li
       <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
     </form>
 
-    UnidadeInvestigador
+    <h2 style="margin-top:50px;">UnidadeInvestigador</h2>
     <form method="POST" action='/investigadores/<%s inves<|"id" %>/unidade/modificar'>
       <%s! Dream.csrf_tag request %>
       <% unidades |> List.iter begin fun x -> %> 
@@ -145,7 +145,7 @@ let investigador_form request (inves: data) (inst: data list) (unidades: data li
       <%s x <| "id" %> - <%s x<|"nome" %>
       <% end; %>
       </div>
-      <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
+      <button type="submit" class="btn btn-primary" style="margin-top: 25px; margin-bottom: 5px;">Submeter</button>
     </form>
 % begin match message with 
 %   | None -> () 

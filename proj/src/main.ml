@@ -84,7 +84,17 @@ let () =
          Dream.get "/entidades/:id" @@ Handlers.entity_id;
          ( Dream.get "/entidades/:id/modificar" @@ fun a ->
            Handlers.modify_entity a None );
-         Dream.post "/entidades/:id/modificar" @@ Handlers.modify_entity_form;
+         Dream.post "/entidades/:id/modificar"
+         @@ Handlers.modify_entity_form;
+         ( Dream.get "/entidades/0/adicionar" @@ fun a ->
+           Handlers.add_entity a None );
+         Dream.post "/entidades/0/adicionar"
+         @@ Handlers.add_entity_form;
+         ( Dream.get "/entidades/0/remover" @@ fun a ->
+           Handlers.delete_entity a None );
+         Dream.post "/entidades/0/remover"
+         @@ Handlers.delete_entity_form;
+
          (* Programas *)
          Dream.get "/programas" @@ Handlers.programs;
          Dream.get "/programas/:id" @@ Handlers.program_id;
