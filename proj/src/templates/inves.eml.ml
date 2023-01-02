@@ -95,7 +95,7 @@ let investigador (invs: data) unidades projetos =
     </a>
   </div>
 
-let investigador_form request (inves: data) (inst: data list) =
+let investigador_form request (inves: data) (inst: data list) message =
   General.navbar_inpage "Modificar investigador" ^
   <div style="width: 750px; margin: 0 auto; text-align: left">
     <form method="POST" action='/investigadores/<%s inves <| "id" %>/modificar'>
@@ -128,4 +128,9 @@ let investigador_form request (inves: data) (inst: data list) =
       </div>
       <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
     </form>
+% begin match message with 
+%   | None -> () 
+%   | Some message -> 
+      <p><b><%s message %></b></p>
+%   end;
   </div>

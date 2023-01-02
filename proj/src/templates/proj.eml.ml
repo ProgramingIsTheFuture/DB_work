@@ -113,7 +113,7 @@ let projeto (_proj: data) (id : int) keywords publicacoes investigadores areas_d
               <tr>
                 <th scope="row"><%s x<|"id" %></th>
                 <td><%s x<|"nomeJornal" %></td>
-                <td><%s x<|"url" %></td>
+                <td><a href='/publicacoes/<%s x<|"id" %>'><%s x<|"url" %></a></td>
                 <td><%s x<|"doi" %></td>
               </tr>
               <% end; %>
@@ -283,7 +283,7 @@ let proj_entities (_proj : data) contrato entidades programas =
     </div>
   </div>
 
-let projeto_id_modificar request message project status programs projama =
+let projeto_id_modificar request message project status programs projama areas areaprojeto =
   General.navbar_inpage "Modificar Projeto" ^ 
   <div style="width: 750px; margin: 0 auto; text-align: left">
     <form method="POST" action='/projetos/<%s project<|"id" %>/modificar'>
@@ -348,6 +348,22 @@ let projeto_id_modificar request message project status programs projama =
             <label class="form-check-label" for="flexCheckChecked"> 
 %   | false -> 
             <input value='<%s x<|"id" %>' name="progs" class="form-check-input" type="checkbox" id="flexCheckDefault">
+            <label class="form-check-label" for="flexCheckDefault">
+% end;
+            <%s x <| "id" %> - <%s x<|"designacao" %>
+          </div>
+        <% end; %>
+      </div>
+      <div style="width: 750px; margin: 0 auto; margin-top: 50px; text-align: left">
+        <p>Areas:</p>
+        <% areas |> List.iter begin fun x -> %> 
+          <div class="form-check">
+% begin match (areaprojeto |> List.exists (fun i -> String.equal (i <| "id") (x <| "id"))) with
+%   | true -> 
+            <input value='<%s x<|"id" %>' name="areas" class="form-check-input" type="checkbox" id="flexCheckChecked" checked>
+            <label class="form-check-label" for="flexCheckChecked"> 
+%   | false -> 
+            <input value='<%s x<|"id" %>' name="areas" class="form-check-input" type="checkbox" id="flexCheckDefault">
             <label class="form-check-label" for="flexCheckDefault">
 % end;
             <%s x <| "id" %> - <%s x<|"designacao" %>

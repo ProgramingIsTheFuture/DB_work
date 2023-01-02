@@ -13,6 +13,11 @@ let () =
          Dream.get "/projetos/:id/financiamento" @@ Handlers.project_id_entities;
          (* Contratos *)
          Dream.get "/contratos/:id" @@ Handlers.contract_id;
+         (* Publicações *)
+         Dream.get "/publicacoes/:id" @@ Handlers.publication_id;
+         ( Dream.get "/publicacoes/:id/modificar" @@ fun a ->
+           Handlers.modify_publication a None );
+         Dream.post "/publicacoes/:id/modificar" @@ Handlers.modify_publication_form;
          (* Dominios *)
          Dream.get "/dominios" Handlers.domains;
          Dream.get "/dominios/:id" Handlers.domain_id;
@@ -28,8 +33,8 @@ let () =
          (* Investigador *)
          Dream.get "/investigadores" @@ Handlers.investigators;
          Dream.get "/investigadores/:id" @@ Handlers.investigator_id;
-         Dream.get "/investigadores/:id/modificar"
-         @@ Handlers.investigator_id_modificar;
+         ( Dream.get "/investigadores/:id/modificar" @@ fun a ->
+           Handlers.investigator_id_modificar a None );
          Dream.post "/investigadores/:id/modificar"
          @@ Handlers.investigator_id_modificar_post;
          (* Unidades *)

@@ -57,3 +57,8 @@
  (targets area.ml)
  (deps area.eml.ml)
  (action (run dream_eml %{deps} --workspace %{workspace_root})))
+
+(rule
+ (targets pub.ml)
+ (deps pub.eml.ml)
+ (action (run dream_eml %{deps} --workspace %{workspace_root})))

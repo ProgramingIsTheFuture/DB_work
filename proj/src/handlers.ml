@@ -190,23 +190,34 @@ let project_id_entities req =
   serve (project_entities proj contrato entidades programas) "Projetos"
 
 let project_id_modify req message =
+  let id = Dream.param req "id" |> int_of_string in
   let status = query "SELECT * FROM status;" in
   let projeto =
     query
-      ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
+      ~params:[ Mssql.Param.Int id ]
       "SELECT * FROM Projeto WHERE id = $1;"
     |> List.hd
   in
   let programas = query "SELECT * FROM Programa P" in
   let projama = 
     query 
-      ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
+      ~params:[ Mssql.Param.Int id ]
       "SELECT Pr.id, Pr.designacao as Pdes FROM Projeto P 
        INNER JOIN Projama PP ON P.id = PP.projetoId
        INNER JOIN Programa Pr ON Pr.id = PP.programaId
        WHERE P.id = $1"
   in
-  serve (project_modify req message projeto status programas projama) "Projeto"
+  let areas = query "SELECT * FROM AreaCientifica"
+  in
+  let areaprojeto = 
+    query
+      ~params:[ Mssql.Param.Int id ]
+      "SELECT A.id, A.designacao FROM Projeto P
+       INNER JOIN AreaProjeto AP ON P.id = AP.projetoId
+       INNER JOIN AreaCientifica A ON AP.areaCientificaId = A.id
+       WHERE P.id = $1"
+  in
+  serve (project_modify req message projeto status programas projama areas areaprojeto) "Projeto"
 
 let project_id_modify_post req =
   let id = Dream.param req "id" |> int_of_string in
@@ -216,6 +227,15 @@ let project_id_modify_post req =
       "SELECT Pr.id, Pr.designacao as Pdes FROM Projeto P 
        INNER JOIN Projama PP ON P.id = PP.projetoId
        INNER JOIN Programa Pr ON Pr.id = PP.programaId
+       WHERE P.id = $1"
+    |> List.map (fun a -> Types.find "id" a) 
+  in
+  let areas_antes = 
+    query
+      ~params:[ Mssql.Param.Int id ]
+      "SELECT A.id, A.designacao FROM Projeto P
+       INNER JOIN AreaProjeto AP ON P.id = AP.projetoId
+       INNER JOIN AreaCientifica A ON AP.areaCientificaId = A.id
        WHERE P.id = $1"
     |> List.map (fun a -> Types.find "id" a) 
   in
@@ -233,6 +253,8 @@ let project_id_modify_post req =
       let status = find_field tl "status" in 
       let progs = List.filter_map (fun a -> a) (get_str "progs" tl) |> List.filter (fun b -> not (List.mem b programas_antes)) in 
       let del_progs =  programas_antes |> List.filter (fun a -> not (List.mem a (List.filter_map (fun a -> a) (get_str "progs" tl)))) in
+      let areas = List.filter_map (fun a -> a) (get_str "areas" tl) |> List.filter (fun b -> not (List.mem b areas_antes)) in 
+      let del_areas =  areas_antes |> List.filter (fun a -> not (List.mem a (List.filter_map (fun a -> a) (get_str "areas" tl)))) in
       query
         ~params:
           [
@@ -254,6 +276,8 @@ let project_id_modify_post req =
       |> ignore;
       add_record req progs "projetoId" "programaId" "Projama" "Programa";
       remove_record req del_progs "projetoId" "programaId" "Projama";
+      add_record req areas "projetoId" "areaCientificaId" "AreaProjeto" "AreaCientifica";
+      remove_record req del_areas "projetoId" "AreaCientificaId" "AreaProjeto";
       Dream.log "Atualizou!";
       project_id_modify req (Some "Sucesso!")
   | _ -> project_id_modify req (Some "Erro!")
@@ -274,6 +298,57 @@ let contract_id req =
       \       WHERE C.id = $1"
   in
   serve (contract cont projeto) "Contratos"
+
+(* PUBLICAÇÕES *)
+let publication_id req =
+  let id = Dream.param req "id" |> int_of_string in
+  let pub =
+    query ~params:[ Mssql.Param.Int id ]
+      "SELECT * FROM Publicacao P WHERE P.id = $1"
+    |> List.hd
+  in
+  let projeto =
+    query ~params:[ Mssql.Param.Int id ]
+      "SELECT P.id, P.nome FROM Projeto P \n\
+      \       INNER JOIN Contrato C ON P.id = C.projetoId \n\
+      \       WHERE C.id = $1"
+  in
+  serve (publication pub projeto) "Publicação"
+
+let modify_publication req message =
+  let publicacao =
+    query
+      ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
+      "SELECT * FROM Publicacao WHERE id = $1;"
+    |> List.hd
+  in
+  let projetos = query "SELECT * FROM Projeto;" in
+  serve (publication_modify req publicacao projetos message) "Modificar Investigador"
+
+let modify_publication_form req =
+  match%lwt Dream.form req with
+  | `Ok tl ->
+      let url = find_field tl "url" in
+      let jornal = find_field tl "jornal" in 
+      let indicador = find_field tl "indicador" |> int_of_string in
+      let doi = find_field tl "doi" in
+      let projectId = find_field tl "projectId" |> int_of_string in
+      let id = Dream.param req "id" |> int_of_string in
+      query
+        ~params:
+          [
+            Mssql.Param.String url;
+            Mssql.Param.String jornal;
+            Mssql.Param.Int indicador;
+            Mssql.Param.String doi;
+            Mssql.Param.Int projectId;
+            Mssql.Param.Int id;
+          ]
+        "UPDATE Publicacao SET url = $1, nomeJornal = $2, indicador = $3, \
+         doi = $4, projetoId = $5 WHERE id = $6"
+      |> ignore;
+      modify_publication req (Some "Sucesso!")
+  | _ -> modify_publication req (Some "Erro!")
 
 (* DOMINIOS *)
 let domains _req = serve (domains (query "SELECT * FROM Dominio")) "Domínios"
@@ -407,7 +482,7 @@ let investigator_id req =
   in
   serve (investigador invest unidades projetos) "Investigador"
 
-let investigator_id_modificar req =
+let investigator_id_modificar req message =
   let investigador =
     query
       ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
@@ -415,7 +490,7 @@ let investigator_id_modificar req =
     |> List.hd
   in
   let institutes = query "SELECT * FROM Instituto;" in
-  serve (investigador_form req investigador institutes) "Modificar Investigador"
+  serve (investigador_form req investigador institutes message) "Modificar Investigador"
 
 let investigator_id_modificar_post req =
   match%lwt Dream.form req with
@@ -437,8 +512,8 @@ let investigator_id_modificar_post req =
         "UPDATE Investigador SET nome = $1, idade = $2, morada = $3, \
          institutoId = $4 WHERE id = $5"
       |> ignore;
-      investigator_id_modificar req
-  | _ -> investigator_id_modificar req
+      investigator_id_modificar req (Some "Sucesso!")
+  | _ -> investigator_id_modificar req (Some "Erro!")
 
 (* UNIDADES DE INVESTIGACAO *)
 let unids _req =
