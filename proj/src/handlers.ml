@@ -103,17 +103,8 @@ let search_projects_kw request =
           \           INNER JOIN Keyword K ON P.id = K.projetoId\n\
           \           WHERE K.designacao LIKE CONCAT('%', $1, '%')"
       in
-      serve (search_projects projetos keyword) "Projetos"
-  | _ ->
-      (*Change to a "error message"*)
-      let projetos =
-        query
-          ~params:[ Mssql.Param.String "Fields" ]
-          "SELECT P.id, P.nome, K.designacao FROM Projeto P\n\
-          \           INNER JOIN Keyword K ON P.id = K.projetoId\n\
-          \           WHERE K.designacao LIKE $1"
-      in
-      serve (search_projects projetos "Fields") "Projetos"
+      serve (search_projects None projetos keyword) "Projetos"
+  | _ -> serve (search_projects (Some "Ocorreu um erro!") [] "") "Projetos"
 
 let project_id req =
   let id = Dream.param req "id" |> int_of_string in
@@ -293,9 +284,9 @@ let project_id_modify_post req =
             Mssql.Param.Int (status |> int_of_string);
             Mssql.Param.Int id;
           ]
-        "UPDATE projeto SET nome = $1, titulo = $2, descricao = $3, portugues \
-         = $4, ingles = $5, data_ini = $6, data_fim = $7, url = $8, doi = $9, \
-         statusId = $10 WHERE id=$11;"
+        ("UPDATE Projeto SET nome = $1, titulo = $2, descricao = $3, portugues \
+          = $4, ingles = $5, data_ini = $6, data_fim = " ^ data_fim
+       ^ ", url = $8, doi = $9, statusId = $10 WHERE id = $11;")
       |> ignore;
       add_record req progs "projetoId" "programaId" "Projama" "Programa";
       remove_record req del_progs "projetoId" "programaId" "Projama";
@@ -425,7 +416,8 @@ let domain_id req =
   in
   serve (domain dominio area) "Dominio"
 
-let add_domain req _message = serve (domain_add req _message) "Programa"
+let add_domain req _message =
+  serve (domain_add req _message) "Adicionar Domínio"
 
 let add_domain_form request =
   match%lwt Dream.form request with
@@ -455,13 +447,12 @@ let modify_domain_form request =
         ~params:[ Mssql.Param.String des; Mssql.Param.Int id ]
         "UPDATE Dominio SET designacao = $1 WHERE id = $2"
       |> ignore;
-      (* List.map (fun (s, v) -> Dream.log "%s: %s\n\n" s v) tl |> ignore; *)
       modify_domain request (Some "Sucesso!")
   | _ -> modify_domain request (Some "Erro!")
 
 let delete_domain req _message =
   let dominios = query "SELECT * FROM Dominio" in
-  serve (domain_delete req dominios _message) "Institutos"
+  serve (domain_delete req dominios _message) "Remover Domínio"
 
 let delete_domain_form request =
   match%lwt Dream.form request with
@@ -474,7 +465,6 @@ let delete_domain_form request =
       |> ignore;
       query ~params:[ Mssql.Param.Int dom ] "DELETE FROM Dominio WHERE id = $1"
       |> ignore;
-      (* List.map (fun (s, v) -> Dream.log "%s: %s\n\n" s v) tl |> ignore; *)
       Dream.log "Removeu!";
       delete_domain request (Some "Sucesso!")
   | _ -> delete_domain request (Some "Erro!")
@@ -515,6 +505,23 @@ let area_id req =
   in
   serve (area area_c dominio projetos) "Áreas Científica"
 
+let add_area req _message =
+  let dominios = query "SELECT * FROM Dominio" in
+  serve (area_add req dominios _message) "Área Científica"
+
+let add_area_form request =
+  match%lwt Dream.form request with
+  | `Ok tl ->
+      let des = find_field tl "designacao" in
+      let dom = find_field tl "dom" in
+      query
+        ~params:[ Mssql.Param.String des; Mssql.Param.String dom ]
+        "INSERT INTO AreaCientifica (designacao, dominioId) VALUES ($1, $2)"
+      |> ignore;
+      Dream.log "Inseriu!";
+      add_area request (Some "Sucesso!")
+  | _ -> add_area request (Some "Erro!")
+
 let modify_area req _message =
   let domains = query "SELECT * FROM Dominio" in
   let institute =
@@ -544,6 +551,24 @@ let modify_area_form request =
       Dream.log "Atualizou!";
       modify_area request (Some "Sucesso!")
   | _ -> modify_area request (Some "Erro!")
+
+let delete_area req _message =
+  let areas = query "SELECT * FROM AreaCientifica" in
+  serve (area_delete req areas _message) "Remover Domínio"
+
+let delete_area_form request =
+  match%lwt Dream.form request with
+  | `Ok tl ->
+      let area = find_field tl "area" |> int_of_string in
+      query ~params:[ Mssql.Param.Int area ]
+        "DELETE FROM AreaProjeto WHERE areaCientificaId = $1"
+      |> ignore;
+      query ~params:[ Mssql.Param.Int area ]
+        "DELETE FROM AreaCientifica WHERE id = $1"
+      |> ignore;
+      Dream.log "Removeu!";
+      delete_area request (Some "Sucesso!")
+  | _ -> delete_area request (Some "Erro!")
 
 (* INVESTIGADORES *)
 let investigators _req =

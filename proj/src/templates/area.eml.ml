@@ -82,8 +82,6 @@ let area_add request dominios message =
           <input name="designacao" type="designacao" class="form-control" id="designacaoDom" aria-describedby="emailHelp" required>
           <div id="emailHelp" class="form-text">Introduza aqui a designação.</div>
         </div>
-        <button type="submit" class="btn btn-primary">Submeter</button>
-      </div>
       <div class="forms">
         <label for="dom">Domínio:</label>
         <select class="form-select" multiple name="dom" id="dom" style="margin-top: 5px" required>
@@ -91,6 +89,8 @@ let area_add request dominios message =
           <option value='<%s x<|"id" %>'><%s x<|"designacao" %></option>
         <% end; %>
         </select>
+      </div>
+        <button type="submit" class="btn btn-primary" style="margin-top: 50px">Submeter</button>
       </div>
     </form>
 % begin match message with 
@@ -128,6 +128,28 @@ let area_form request area domains message =
         </select>
         <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
       </div>
+    </form>
+% begin match message with 
+%   | None -> () 
+%   | Some message -> 
+      <p><b><%s message %></b></p>
+%   end;
+  </div>
+
+let area_delete request areas message =
+  General.navbar_inpage "Remover Programa" ^
+  <div style="width: 750px; margin: 0 auto; text-align: left">
+    <form method="POST" action='/areas/0/remover'>
+      <%s! Dream.csrf_tag request %>
+      <div class="forms" style="margin-top: 50px">
+        <label for="area">Area a remover:</label>
+        <select class="form-select" multiple name="area" id="area" style="margin-top: 5px">
+        <% areas |> List.iter begin fun x -> %>
+          <option value='<%s x<|"id" %>'><%s x<|"designacao" %></option>
+        <% end; %>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
     </form>
 % begin match message with 
 %   | None -> () 
