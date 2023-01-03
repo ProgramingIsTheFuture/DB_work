@@ -14,9 +14,6 @@ let navbar_home place name =
           <li class="nav-item">
             <a class="nav-link" href='/<%s place %>/0/adicionar'>Adicionar</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href='/<%s place %>/0/remover'>Remover</a>
-          </li>
         </ul>
         <span class="navbar-text">
           Gestão de Projetos UBI / Francisco Santos e Leonardo Santos

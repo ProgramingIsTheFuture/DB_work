@@ -54,8 +54,8 @@ let () =
          (Dream.get "/areas/:id/remover" @@ fun a -> Handlers.delete_area a);
          (* Investigador *)
          Dream.get "/investigadores" @@ Handlers.investigators;
-         Dream.get "/investigadores/create" @@ Handlers.create_investigators;
-         Dream.post "/investigadores/create"
+         Dream.get "/investigadores/0/adicionar" @@ Handlers.create_investigators;
+         Dream.post "/investigadores/0/adicionar"
          @@ Handlers.create_investigators_post;
          Dream.get "/investigadores/:id" @@ Handlers.investigator_id;
          ( Dream.get "/investigadores/:id/modificar" @@ fun a ->

@@ -2,12 +2,6 @@ open Types
 
 let investigadores (invs: data list) = 
   General.navbar_home "investigadores" "Investigadores" ^
-
-  <div class="d-grid gap-2 col-1 mx-auto" style="width: 3rem; position: absolute; top: 5em; right: 6em">
-    <a href='/investigadores/create' class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
-      Criar
-    </a>
-  </div>
   <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
     <table class="table table-dark table-hover">
       <thead class="table-dark">
@@ -105,6 +99,7 @@ let investigador (invs: data) unidades projetos =
   </div>
 
 let create_inves request inves inst subm = 
+  <div style="width: 750px; margin: 0 auto; text-align: left">
   <form method="POST" action='<%s subm %>'>
     <%s! Dream.csrf_tag request %>
     <div class="mb-3">
@@ -135,6 +130,7 @@ let create_inves request inves inst subm =
     </div>
     <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
   </form>
+  </div>
 
 
 let investigador_create request inves inst =
@@ -186,13 +182,7 @@ let investigador_form request (inves: data) (inst: data list) (unidades: data li
       <% end; %>
 
       <% participa |> List.iter begin fun x -> %>
-        <h2 style="margin-top:50px;">Participa no projeto: <%s let proj = projetos |> List.filter (fun a -> (x<|"projetoId") = (a<|"id")) |> List.hd in proj<|"nome" %></h2>
-        <div class="mb-2">
-          <label for="input4" class="form-label">Tempo</label>
-          <input type="number" name="tempoPerc" placeholder="0" value='<%s x<|"tempoPerc" %>' class="form-control" id="input4" aria-describedby="input4Help"/>
-          <div id="input4Help" class="form-text">Novo tempo de dedicacao.</div>
-        </div>
-
+        <h2 style="margin-top:50px; margin-bottom:10px;">Participa no projeto: <%s let proj = projetos |> List.filter (fun a -> (x<|"projetoId") = (a<|"id")) |> List.hd in proj<|"nome" %></h2>
         <select class="form-select" multiple name="papelId" id="papel" style="margin-top: 5px">
           <% papel |> List.iter begin fun pp -> %>
 % begin match (pp<|"id") = (x<|"papelId") with
@@ -203,7 +193,7 @@ let investigador_form request (inves: data) (inst: data list) (unidades: data li
 % end;
           <% end; %>
         </select>         
-        <div class="mb-2">
+        <div class="mb-2" style="margin-top:25px;">
           <label for="input5" class="form-label">Tempo</label>
           <input type="text" name="tempoPerc" placeholder="0" value='<%s x<|"tempoPerc" %>' class="form-control" id="input5" aria-describedby="input5Help"/>
           <div id="input5Help" class="form-text">Novo tempo de dedicacao.</div>
