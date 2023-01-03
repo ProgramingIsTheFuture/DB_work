@@ -213,11 +213,6 @@ let projeto (_proj: data) (id : int) keywords publicacoes investigadores areas_d
           </table>
         </div>
         <p style="margin-bottom: 2rem;"></p>
-
-        <h2>Classificação</h2>
-        <p style="margin-bottom: 2rem;">
-        PLACEHOLDER
-        </p>
       </div>
     </div>
   <div/>
