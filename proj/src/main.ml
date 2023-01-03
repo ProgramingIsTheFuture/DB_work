@@ -46,15 +46,24 @@ let () =
          Dream.post "/areas/0/remover" @@ Handlers.delete_area_form;
          (* Investigador *)
          Dream.get "/investigadores" @@ Handlers.investigators;
+         Dream.get "/investigadores/create" @@ Handlers.create_investigators;
+         Dream.post "/investigadores/create"
+         @@ Handlers.create_investigators_post;
          Dream.get "/investigadores/:id" @@ Handlers.investigator_id;
          ( Dream.get "/investigadores/:id/modificar" @@ fun a ->
            Handlers.investigator_id_modificar a None );
          Dream.post "/investigadores/:id/modificar"
          @@ Handlers.investigator_id_modificar_post;
+         Dream.get "/investigadores/:id/remover"
+         @@ Handlers.investigador_id_delete;
          ( Dream.get "/investigadores/:id/unidade/modificar" @@ fun req ->
            Handlers.investigator_id_modificar req None );
          Dream.post "/investigadores/:id/unidade/modificar"
          @@ Handlers.unidade_investigador_id_modificar_post;
+         ( Dream.get "/investigadores/:id/participa/modificar" @@ fun req ->
+           Handlers.investigator_id_modificar req None );
+         Dream.post "/investigadores/:id/participa/modificar"
+         @@ Handlers.participa_investigador_id_post;
          (* Unidades *)
          Dream.get "/unidades" Handlers.unids;
          Dream.get "/unidades/:id" Handlers.unid_id;
@@ -84,17 +93,13 @@ let () =
          Dream.get "/entidades/:id" @@ Handlers.entity_id;
          ( Dream.get "/entidades/:id/modificar" @@ fun a ->
            Handlers.modify_entity a None );
-         Dream.post "/entidades/:id/modificar"
-         @@ Handlers.modify_entity_form;
+         Dream.post "/entidades/:id/modificar" @@ Handlers.modify_entity_form;
          ( Dream.get "/entidades/0/adicionar" @@ fun a ->
            Handlers.add_entity a None );
-         Dream.post "/entidades/0/adicionar"
-         @@ Handlers.add_entity_form;
+         Dream.post "/entidades/0/adicionar" @@ Handlers.add_entity_form;
          ( Dream.get "/entidades/0/remover" @@ fun a ->
            Handlers.delete_entity a None );
-         Dream.post "/entidades/0/remover"
-         @@ Handlers.delete_entity_form;
-
+         Dream.post "/entidades/0/remover" @@ Handlers.delete_entity_form;
          (* Programas *)
          Dream.get "/programas" @@ Handlers.programs;
          Dream.get "/programas/:id" @@ Handlers.program_id;

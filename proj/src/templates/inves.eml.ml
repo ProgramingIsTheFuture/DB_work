@@ -2,6 +2,12 @@ open Types
 
 let investigadores (invs: data list) = 
   General.navbar_home "investigadores" "Investigadores" ^
+
+  <div class="d-grid gap-2 col-1 mx-auto" style="width: 3rem; position: absolute; top: 5em; right: 6em">
+    <a href='/investigadores/create' class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
+      Criar
+    </a>
+  </div>
   <div style="text-align: center; width: 1000px; margin: 0 auto; border-style: none; margin-top: 30px;">
     <table class="table table-dark table-hover">
       <thead class="table-dark">
@@ -93,42 +99,56 @@ let investigador (invs: data) unidades projetos =
     <a href='/investigadores/<%s invs <| "id" %>/modificar' class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
       Modificar
     </a>
+    <a href='/investigadores/<%s invs <| "id" %>/remover' class="btn btn-danger" tabindex="-1" role="button" aria-disabled="true">
+      Apagar
+    </a>
   </div>
 
-let investigador_form request (inves: data) (inst: data list) (unidades: data list) (unidade_investigador: data list) message =
-  General.navbar_inpage "Modificar investigador" ^
-  <div style="width: 750px; margin: 0 auto; text-align: left">
-    <form method="POST" action='/investigadores/<%s inves <| "id" %>/modificar'>
-      <%s! Dream.csrf_tag request %>
-      <div class="mb-3">
-        <label for="input1" class="form-label">Nome</label>
-        <input name="nome" placeholder="nome" value='<%s inves<|"nome" %>' type="text" class="form-control" id="input1" aria-describedby="input1Help" />
-        <div id="input1Help" class="form-text">Novo nome do investigador.</div>
+let create_inves request inves inst subm = 
+  <form method="POST" action='<%s subm %>'>
+    <%s! Dream.csrf_tag request %>
+    <div class="mb-3">
+      <label for="input1" class="form-label">Nome</label>
+      <input name="nome" placeholder="nome" value='<%s inves<|"nome" %>' type="text" class="form-control" id="input1" aria-describedby="input1Help" />
+      <div id="input1Help" class="form-text">Novo nome do investigador.</div>
 
-        <label for="input2" class="form-label">Título</label>
-        <input name="idade" placeholder="idade" value='<%s inves<|"idade" %>' type="number" class="form-control" id="input2" aria-describedby="input2Help" />
-        <div id="input2Help" class="form-text">Nova idade do investigador.</div>
+      <label for="input2" class="form-label">Idade</label>
+      <input name="idade" placeholder="idade" value='<%s inves<|"idade" %>' type="number" class="form-control" id="input2" aria-describedby="input2Help" />
+      <div id="input2Help" class="form-text">Nova idade do investigador.</div>
 
-        <label for="input3" class="form-label">Descrição</label>
-        <input name="morada" placeholder="morada" value='<%s inves<|"morada" %>' type="text" class="form-control" id="input3" aria-describedby="input3Help" />
-        <div id="input3Help" class="form-text">Nova morada do investigador.</div>
-      </div>
-      <div class="forms">
-        <label for="institutoId">Instituto</label>
-        <select class="form-select" multiple name="institutoId" id="status" style="margin-top: 5px">
-        <% inst |> List.iter begin fun x -> %>
+      <label for="input3" class="form-label">Morada</label>
+      <input name="morada" placeholder="morada" value='<%s inves<|"morada" %>' type="text" class="form-control" id="input3" aria-describedby="input3Help" />
+      <div id="input3Help" class="form-text">Nova morada do investigador.</div>
+    </div>
+    <div class="forms">
+      <label for="institutoId" class="form-label">Instituto</label>
+      <select class="form-select" multiple name="institutoId" id="status" style="margin-top: 5px">
+      <% inst |> List.iter begin fun x -> %>
 % begin match (x<|"id") = (inves<|"institutoId") with
 % | true -> 
-  <option selected value='<%s x<|"id" %>'><%s x<|"designacao" %></option>
+    <option selected value='<%s x<|"id" %>'><%s x<|"designacao" %></option>
 % | false -> 
-  <option value='<%s x<|"id" %>'><%s x<|"designacao" %></option>
+    <option value='<%s x<|"id" %>'><%s x<|"designacao" %></option>
 % end;
-        <% end; %>
-        </select>
-      </div>
-      <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
-    </form>
+      <% end; %>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
+  </form>
 
+
+let investigador_create request inves inst =
+  General.navbar_inpage "Criar investigador" ^
+  create_inves request inves inst "/investigadores/create"
+
+let investigador_form request (inves: data) (inst: data list) (unidades: data list) (unidade_investigador: data list) projetos participa papel message =
+  General.navbar_inpage "Modificar investigador" ^ create_inves request inves inst ("/investigadores/"^ (inves<|"id") ^"/modificar") ^ 
+  <div style="width: 750px; margin: 0 auto; text-align: left">
+% begin match message with 
+%   | None -> () 
+%   | Some message -> 
+      <p><b><%s message %></b></p>
+%   end;
     <h2 style="margin-top:50px;">UnidadeInvestigador</h2>
     <form method="POST" action='/investigadores/<%s inves<|"id" %>/unidade/modificar'>
       <%s! Dream.csrf_tag request %>
@@ -143,13 +163,52 @@ let investigador_form request (inves: data) (inst: data list) (unidades: data li
   <label class="form-check-label" for="flexCheckDefault"></label> 
 % end;
       <%s x <| "id" %> - <%s x<|"nome" %>
-      <% end; %>
       </div>
+      <% end; %>
       <button type="submit" class="btn btn-primary" style="margin-top: 25px; margin-bottom: 5px;">Submeter</button>
     </form>
-% begin match message with 
-%   | None -> () 
-%   | Some message -> 
-      <p><b><%s message %></b></p>
-%   end;
+
+    <h2 style="margin-top:50px;">Participa em projetos</h2>
+    <form method="POST" action='/investigadores/<%s inves<|"id" %>/participa/modificar'>
+      <%s! Dream.csrf_tag request %>
+      <% projetos |> List.iter begin fun x -> %>
+      <div class="mb-2">
+% begin match participa |> List.exists (fun p -> (x<|"id") = (p<|"projetoId")) with
+% | true ->
+  <input value='<%s x<|"id" %>' name="unidade" class="form-check-input" type="checkbox" id="flexCheckChecked"  checked/>
+  <label class="form-check-label" for="flexCheckChecked"></label> 
+% | false ->
+  <input value='<%s x<|"id" %>' name="unidade" class="form-check-input" type="checkbox" id="flexCheckChecked" />
+  <label class="form-check-label" for="flexCheckChecked"></label> 
+% end;
+      <%s x <| "id" %> - <%s x<|"nome" %>
+      </div>
+      <% end; %>
+
+      <% participa |> List.iter begin fun x -> %>
+        <h2 style="margin-top:50px;">Participa no projeto: <%s let proj = projetos |> List.filter (fun a -> (x<|"projetoId") = (a<|"id")) |> List.hd in proj<|"nome" %></h2>
+        <div class="mb-2">
+          <label for="input4" class="form-label">Tempo</label>
+          <input type="number" name="tempoPerc" placeholder="0" value='<%s x<|"tempoPerc" %>' class="form-control" id="input4" aria-describedby="input4Help"/>
+          <div id="input4Help" class="form-text">Novo tempo de dedicacao.</div>
+        </div>
+
+        <select class="form-select" multiple name="papelId" id="papel" style="margin-top: 5px">
+          <% papel |> List.iter begin fun pp -> %>
+% begin match (pp<|"id") = (x<|"papelId") with
+% | true -> 
+  <option selected value='<%s pp<|"id" %>'><%s pp<|"designacao" %></option>
+% | false -> 
+  <option value='<%s pp<|"id" %>'><%s pp<|"designacao" %></option>
+% end;
+          <% end; %>
+        </select>         
+        <div class="mb-2">
+          <label for="input5" class="form-label">Tempo</label>
+          <input type="text" name="tempoPerc" placeholder="0" value='<%s x<|"tempoPerc" %>' class="form-control" id="input5" aria-describedby="input5Help"/>
+          <div id="input5Help" class="form-text">Novo tempo de dedicacao.</div>
+        </div>
+      <% end; %>
+      <button type="submit" class="btn btn-primary" style="margin-top: 25px; margin-bottom: 5px;">Submeter</button>
+    </form>
   </div>

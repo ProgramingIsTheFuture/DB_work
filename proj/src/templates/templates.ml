@@ -30,6 +30,7 @@ let institute_form = Inst.inst_form
 let institute_delete = Inst.inst_delete
 let investigadores = Inves.investigadores
 let investigador = Inves.investigador
+let investigador_create = Inves.investigador_create
 let investigador_form = Inves.investigador_form
 let unidades = Unid.unidades
 let unidade = Unid.unidade
