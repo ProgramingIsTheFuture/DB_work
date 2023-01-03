@@ -20,12 +20,12 @@
 
 ## Funcionalidade
 
-- [ ] Inserir projetos com todos os dados necessarios
-- [ ] Alterar projeto
-- [ ] Inserir entidades financiadoras e programas de financiamento
+- [x] Inserir projetos com todos os dados necessarios
+- [x] Alterar projeto
+- [x] Inserir entidades financiadoras e programas de financiamento
 - [x] Mostrar os dados do projeto
 - [x] Mostrar os dados do investigador
-- [ ] CRUD de tudo o resto
+- [x] CRUD de tudo o resto
 
 # Scripts
 
