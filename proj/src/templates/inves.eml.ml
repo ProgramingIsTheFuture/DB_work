@@ -197,10 +197,14 @@ let investigador_form request (inves: data) (inst: data list) (unidades: data li
       <button type="submit" class="btn btn-primary" style="margin-top: 25px; margin-bottom: 5px;">Submeter</button>
     </form>
 
-    <h2 style="margin-top:50px;">Participa em projetos</h2>
-    <a href='/investigadores/<%s inves<|"id"%>/participa/adicionar' class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
-      Adicionar
-    </a>
+    <div class="mt-5 mb-4 d-flex align-items-center text-center">
+      <h2>Participa em projetos</h2>
+      <div style="margin-left: 15px">
+        <a href='/investigadores/<%s inves<|"id"%>/participa/adicionar' class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
+          Adicionar
+        </a>
+      </div>
+    </div>
     <table class="table table-dark table-hover">
       <thead class="table-dark">
         <tr>
