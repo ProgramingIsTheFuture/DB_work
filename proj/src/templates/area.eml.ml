@@ -67,6 +67,9 @@ let area (area: data list) dom projs =
     <a href='/areas/<%s area |> List.hd <| "id" %>/modificar' class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
     Modificar
     </a>
+    <a href='/areas/<%s area |> List.hd <| "id" %>/remover' class="btn btn-danger" tabindex="-1" role="button" aria-disabled="true">
+      Apagar
+    </a>
   </div>
 
 let area_add request dominios message =

@@ -45,6 +45,9 @@ let contrato (_cont : data) projeto =
     <a href='/contratos/<%s _cont <| "id" %>/modificar' class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
       Modificar
     </a>
+    <a href='/contratos/<%s _cont <| "id" %>/remover' class="btn btn-danger" tabindex="-1" role="button" aria-disabled="true">
+      Apagar
+    </a>
   </div>
 
 let contrato_form request (cont: data) status message =

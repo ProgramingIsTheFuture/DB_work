@@ -47,9 +47,45 @@ let publicacao (_pub : data) projeto =
     <a href='/publicacoes/<%s _pub <| "id" %>/modificar' class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
       Modificar
     </a>
+    <a href='/publicacoes/<%s _pub <| "id" %>/remover' class="btn btn-danger" tabindex="-1" role="button" aria-disabled="true">
+      Apagar
+    </a>
   </div>
 
-let publicacao_form request (pub: data) (proj: data list) message =
+let pub_add request message =
+  let id = Dream.param request "id" in
+  General.navbar_inpage "Criar Publicação" ^
+  <div style="width: 750px; margin: 0 auto; text-align: left">
+    <form method="POST" action='/projetos/<%s id %>/novapublicacao'>
+      <%s! Dream.csrf_tag request %>
+      <h5 style="margin-top: 50px">Publicação para o Projeto <%s id %></h5>
+      <div class="mb-3">
+        <label for="input1" class="form-label">URL</label>
+        <input name="url" placeholder="url" type="text" class="form-control" id="input1" aria-describedby="input1Help" />
+        <div id="input1Help" class="form-text">URL da publicação.</div>
+
+        <label for="input4" class="form-label">Jornal</label>
+        <input name="jornal" placeholder="jornal" type="text" class="form-control" id="input4" aria-describedby="input4Help" />
+        <div id="input4Help" class="form-text">Jornal da publicação.</div>
+
+        <label for="input2" class="form-label">Indicador de Sucesso</label>
+        <input name="indicador" placeholder="indicador" type="number" class="form-control" id="input2" aria-describedby="input2Help" />
+        <div id="input2Help" class="form-text">Indicador de sucesso (1 ou 0).</div>
+
+        <label for="input3" class="form-label">DOI</label>
+        <input name="doi" placeholder="doi" type="text" class="form-control" id="input3" aria-describedby="input3Help" />
+        <div id="input3Help" class="form-text">DOI da publicação.</div>
+      </div>
+      <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
+    </form>
+% begin match message with 
+%   | None -> () 
+%   | Some message -> 
+      <p><b><%s message %></b></p>
+%   end;
+  </div>
+
+let publicacao_form request (pub: data) message =
   General.navbar_inpage "Modificar Publicação" ^
   <div style="width: 750px; margin: 0 auto; text-align: left">
     <form method="POST" action='/publicacoes/<%s pub <| "id" %>/modificar'>
@@ -70,19 +106,6 @@ let publicacao_form request (pub: data) (proj: data list) message =
         <label for="input3" class="form-label">DOI</label>
         <input name="doi" placeholder="doi" value='<%s pub<|"doi" %>' type="text" class="form-control" id="input3" aria-describedby="input3Help" />
         <div id="input3Help" class="form-text">Novo DOI da publicação.</div>
-      </div>
-      <div class="forms">
-        <label for="projectId">Instituto</label>
-        <select class="form-select" multiple name="projectId" id="projectid" style="margin-top: 5px">
-        <% proj |> List.iter begin fun x -> %>
-% begin match (x<|"id") = (pub<|"projetoId") with
-% | true -> 
-  <option selected value='<%s x<|"id" %>'><%s x<|"nome" %></option>
-% | false -> 
-  <option value='<%s x<|"id" %>'><%s x<|"nome" %></option>
-% end;
-        <% end; %>
-        </select>
       </div>
       <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
     </form>

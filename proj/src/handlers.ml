@@ -93,8 +93,8 @@ let projects req =
            Contrato C WHERE P.id = C.projetoId;"))
     "Projetos / Contratos"
 
-let search_projects_kw request =
-  match%lwt Dream.form request with
+let search_projects_kw req =
+  match%lwt Dream.form req with
   | `Ok [ ("keyword", keyword) ] ->
       let projetos =
         query
@@ -189,6 +189,107 @@ let project_id_entities req =
   in
   serve (project_entities proj contrato entidades programas) "Projetos"
 
+let add_project req _message =
+  let programas = query "SELECT * FROM Programa" in
+  let status = query "SELECT * FROM Status" in
+  let areas = query "SELECT * FROM AreaCientifica"
+  in
+  serve (project_add req programas status areas _message) "Entidade"
+
+let add_project_form req =
+  match%lwt Dream.form req with
+  | `Ok tl ->
+      let nome = find_field tl "nome" in
+      let titulo = find_field tl "titulo" in
+      let descricao = find_field tl "descricao" in
+      let portugues = find_field tl "portugues" in
+      let ingles = find_field tl "ingles" in
+      let data_ini = find_field tl "data_ini" in
+      let data_fim = find_field tl "data_fim" in
+      let url = find_field tl "url" in
+      let doi = find_field tl "doi" in
+      let status = find_field tl "status" in
+      let nomeCont = find_field tl "nomeCont" in
+      let tituloCont = find_field tl "tituloCont" in
+      let descricaoCont = find_field tl "descricaoCont" in
+      let statusCont = find_field tl "statusCont" |> int_of_string in
+      let kw1 = find_field tl "keyword1" in
+      let kw2 = find_field tl "keyword2" in
+      let kw3 = find_field tl "keyword3" in
+      let progs = List.filter_map (fun a -> a) (get_str "progs" tl)
+      in
+      let areas = List.filter_map (fun a -> a) (get_str "areas" tl)
+      in
+      query
+        ~params:
+          [ 
+            Mssql.Param.String nome;
+            Mssql.Param.String titulo;
+            Mssql.Param.String descricao;
+            Mssql.Param.String portugues;
+            Mssql.Param.String ingles;
+            Mssql.Param.String data_ini;
+            Mssql.Param.String data_fim;
+            Mssql.Param.String url;
+            Mssql.Param.String doi;
+            Mssql.Param.Int (status |> int_of_string);
+          ]
+        ("INSERT INTO Projeto 
+        (nome, titulo, descricao, portugues, ingles, data_ini, data_fim, url, doi, statusId) 
+        VALUES ($1, $2, $3, $4, $5, $6, "^ data_fim ^ ", $8, $9, $10)")
+      |> ignore;
+      query
+        ~params:
+          [
+            Mssql.Param.String kw1;
+            Mssql.Param.String kw2;
+            Mssql.Param.String kw3;
+            Mssql.Param.String url;
+          ]
+          "INSERT INTO Keyword (projetoId, designacao)
+          SELECT P.id, $1 FROM Projeto P WHERE P.url = $4
+          UNION ALL
+          SELECT P.id, $2 FROM Projeto P WHERE P.url = $4
+          UNION ALL
+          SELECT P.id, $3 FROM Projeto P WHERE P.url = $4"
+      |> ignore;
+      query
+        ~params:
+          [
+            Mssql.Param.String nomeCont;
+            Mssql.Param.String tituloCont;
+            Mssql.Param.String descricaoCont;
+            Mssql.Param.Int statusCont;
+            Mssql.Param.String url;
+          ]
+          "INSERT INTO Contrato
+          (nome, titulo, descricao, statusId, projetoId)
+          SELECT $1, $2, $3, $4, P.id FROM Projeto P WHERE P.url = $5"
+      |> ignore;
+      query
+        ~params:
+          [
+            Mssql.Param.String url; 
+            Mssql.Param.Array (progs |> List.map (fun a -> Mssql.Param.Int (a |> int_of_string)))
+          ]
+        "INSERT INTO Projama (projetoId, programaId)
+         SELECT P.id, Pr.id FROM Projeto P, Programa Pr
+         WHERE P.url = $1 AND Pr.id IN ($2)"
+      |> ignore;
+      query
+        ~params:
+          [
+            Mssql.Param.String url; 
+            Mssql.Param.Array (areas |> List.map (fun a -> Mssql.Param.Int (a |> int_of_string)))
+          ]
+        "INSERT INTO AreaProjeto (projetoId, areaCientificaId)
+         SELECT P.id, A.id FROM Projeto P, AreaCientifica A
+         WHERE P.url = $1 AND A.id IN ($2)"
+      |> ignore;
+      Dream.log "Inseriu!";
+      add_project req (Some "Sucesso!")
+  | _ -> add_project req (Some "Erro!")
+
 let project_id_modify req message =
   let id = Dream.param req "id" |> int_of_string in
   let status = query "SELECT * FROM status;" in
@@ -212,9 +313,13 @@ let project_id_modify req message =
       \       INNER JOIN AreaCientifica A ON AP.areaCientificaId = A.id\n\
       \       WHERE P.id = $1"
   in
+  let keywords = 
+    query ~params:[ Mssql.Param.Int id ]
+      "SELECT K.id, K.designacao FROM Keyword K WHERE K.projetoId = $1 "
+  in
   serve
     (project_modify req message projeto status programas projama areas
-       areaprojeto)
+       areaprojeto keywords)
     "Projeto"
 
 let project_id_modify_post req =
@@ -235,6 +340,13 @@ let project_id_modify_post req =
       \       WHERE P.id = $1"
     |> List.map (fun a -> Types.find "id" a)
   in
+  let keywords_antes =
+    query ~params:[ Mssql.Param.Int id ]
+    "SELECT K.id, K.designacao FROM Projeto P
+     INNER JOIN Keyword K ON K.projetoId = P.id
+     WHERE P.id = $1"
+    |> List.map (fun a -> Types.find "designacao" a)
+  in
   match%lwt Dream.form req with
   | `Ok tl ->
       let nome = find_field tl "nome" in
@@ -247,6 +359,9 @@ let project_id_modify_post req =
       let url = find_field tl "url" in
       let doi = find_field tl "doi" in
       let status = find_field tl "status" in
+      let keywords = List.filter_map (fun a -> a) (get_str "keyword" tl) 
+        |> List.filter (fun b -> not (List.mem b keywords_antes))
+      in
       let progs =
         List.filter_map (fun a -> a) (get_str "progs" tl)
         |> List.filter (fun b -> not (List.mem b programas_antes))
@@ -284,9 +399,23 @@ let project_id_modify_post req =
             Mssql.Param.Int (status |> int_of_string);
             Mssql.Param.Int id;
           ]
-        ("UPDATE Projeto SET nome = $1, titulo = $2, descricao = $3, portugues \
-          = $4, ingles = $5, data_ini = $6, data_fim = " ^ data_fim
-       ^ ", url = $8, doi = $9, statusId = $10 WHERE id = $11;")
+        begin match data_fim with
+          | "NULL" -> "UPDATE Projeto SET nome = $1, titulo = $2, descricao = $3, portugues \
+                      = $4, ingles = $5, data_ini = $6, data_fim = " ^ data_fim
+                      ^ ", url = $8, doi = $9, statusId = $10 WHERE id = $11;"
+          | _ -> "UPDATE Projeto SET nome = $1, titulo = $2, descricao = $3, portugues \
+                  = $4, ingles = $5, data_ini = $6, data_fim = $7
+                  , url = $8, doi = $9, statusId = $10 WHERE id = $11;"
+        end 
+      |> ignore;
+      query 
+        ~params:
+          [
+            Mssql.Param.Array (keywords |> List.map (fun a -> Mssql.Param.String a));
+            Mssql.Param.Int id;
+          ]
+          "INSERT INTO Keyword (projetoId, designacao) 
+           SELECT $2, a FROM (VALUES ($1)) as t(a)"
       |> ignore;
       add_record req progs "projetoId" "programaId" "Projama" "Programa";
       remove_record req del_progs "projetoId" "programaId" "Projama";
@@ -296,6 +425,37 @@ let project_id_modify_post req =
       Dream.log "Atualizou!";
       project_id_modify req (Some "Sucesso!")
   | _ -> project_id_modify req (Some "Erro!")
+
+let delete_project req =
+  let id = Dream.param req "id" |> int_of_string in
+  query ~params:[ Mssql.Param.Int id ]
+    "DELETE FROM Contrato WHERE projetoId = $1"
+  |> ignore;
+  query ~params:[ Mssql.Param.Int id ]
+    "DELETE FROM AreaProjeto WHERE projetoId = $1"
+  |> ignore;
+  query ~params:[ Mssql.Param.Int id ]
+    "DELETE FROM Projama WHERE projetoId = $1"
+  |> ignore;
+  query ~params:[ Mssql.Param.Int id ]
+    "DELETE FROM Participa WHERE projetoId = $1"
+  |> ignore;
+  query ~params:[ Mssql.Param.Int id ]
+    "DELETE FROM Participa WHERE projetoId = $1"
+  |> ignore;
+  query ~params:[ Mssql.Param.Int id ]
+    "DELETE FROM Keyword WHERE projetoId = $1"
+  |> ignore;
+  query ~params:[ Mssql.Param.Int id ]
+    "DELETE FROM Publicacao WHERE projetoId = $1"
+  |> ignore;
+  query ~params:[ Mssql.Param.Int id ]
+    "DELETE FROM HistoricoStatus WHERE projetoId = $1"
+  |> ignore;
+  query ~params:[ Mssql.Param.Int id ]
+    "DELETE FROM Projeto WHERE id = $1"
+  |> ignore;
+  Dream.redirect req "/projetos"
 
 (* CONTRATOS *)
 let contract_id req =
@@ -363,6 +523,32 @@ let publication_id req =
   in
   serve (publication pub projeto) "Publicação"
 
+let add_publication req _message =
+  serve (publication_add req _message) "Adicionar Publicação"
+
+let add_publication_form req =
+  match%lwt Dream.form req with
+  | `Ok tl ->
+      let url = find_field tl "url" in
+      let jornal = find_field tl "jornal" in
+      let indicador = find_field tl "indicador" |> int_of_string in
+      let doi = find_field tl "doi" in
+      let id = Dream.param req "id" |> int_of_string in
+      query ~params:
+        [ 
+            Mssql.Param.String url;
+            Mssql.Param.String jornal;
+            Mssql.Param.Int indicador;
+            Mssql.Param.String doi;
+            Mssql.Param.Int id;
+        ]
+        "INSERT INTO Publicacao (url, nomeJornal, indicador, doi, projetoId)
+        VALUES ($1, $2, $3, $4, $5)"
+      |> ignore;
+      Dream.log "Inseriu!";
+      add_publication req (Some "Sucesso!")
+  | _ -> add_publication req (Some "Erro!")
+
 let modify_publication req message =
   let publicacao =
     query
@@ -370,9 +556,8 @@ let modify_publication req message =
       "SELECT * FROM Publicacao WHERE id = $1;"
     |> List.hd
   in
-  let projetos = query "SELECT * FROM Projeto;" in
   serve
-    (publication_modify req publicacao projetos message)
+    (publication_modify req publicacao message)
     "Modificar Investigador"
 
 let modify_publication_form req =
@@ -382,7 +567,6 @@ let modify_publication_form req =
       let jornal = find_field tl "jornal" in
       let indicador = find_field tl "indicador" |> int_of_string in
       let doi = find_field tl "doi" in
-      let projectId = find_field tl "projectId" |> int_of_string in
       let id = Dream.param req "id" |> int_of_string in
       query
         ~params:
@@ -391,14 +575,20 @@ let modify_publication_form req =
             Mssql.Param.String jornal;
             Mssql.Param.Int indicador;
             Mssql.Param.String doi;
-            Mssql.Param.Int projectId;
             Mssql.Param.Int id;
           ]
         "UPDATE Publicacao SET url = $1, nomeJornal = $2, indicador = $3, doi \
-         = $4, projetoId = $5 WHERE id = $6"
+         = $4 WHERE id = $6"
       |> ignore;
       modify_publication req (Some "Sucesso!")
   | _ -> modify_publication req (Some "Erro!")
+
+let delete_publication req =
+  let id = Dream.param req "id" |> int_of_string in
+  query ~params:[ Mssql.Param.Int id ]
+    "DELETE FROM Publicacao WHERE id = $1"
+  |> ignore;
+  Dream.redirect req "/projetos"
 
 (* DOMINIOS *)
 let domains _req = serve (domains (query "SELECT * FROM Dominio")) "Domínios"
@@ -419,16 +609,16 @@ let domain_id req =
 let add_domain req _message =
   serve (domain_add req _message) "Adicionar Domínio"
 
-let add_domain_form request =
-  match%lwt Dream.form request with
+let add_domain_form req =
+  match%lwt Dream.form req with
   | `Ok tl ->
       let des = find_field tl "designacao" in
       query ~params:[ Mssql.Param.String des ]
         "INSERT INTO Dominio (designacao) VALUES ($1)"
       |> ignore;
       Dream.log "Inseriu!";
-      add_domain request (Some "Sucesso!")
-  | _ -> add_domain request (Some "Erro!")
+      add_domain req (Some "Sucesso!")
+  | _ -> add_domain req (Some "Erro!")
 
 let modify_domain req _message =
   let institute =
@@ -439,25 +629,25 @@ let modify_domain req _message =
   in
   serve (domain_form req institute _message) "Domínio"
 
-let modify_domain_form request =
-  let id = Dream.param request "id" |> int_of_string in
-  match%lwt Dream.form request with
+let modify_domain_form req =
+  let id = Dream.param req "id" |> int_of_string in
+  match%lwt Dream.form req with
   | `Ok [ ("designacao", des) ] ->
       query
         ~params:[ Mssql.Param.String des; Mssql.Param.Int id ]
         "UPDATE Dominio SET designacao = $1 WHERE id = $2"
       |> ignore;
-      modify_domain request (Some "Sucesso!")
-  | _ -> modify_domain request (Some "Erro!")
+      modify_domain req (Some "Sucesso!")
+  | _ -> modify_domain req (Some "Erro!")
 
-let delete_domain req _message =
+let delete_domain req message =
   let dominios = query "SELECT * FROM Dominio" in
-  serve (domain_delete req dominios _message) "Remover Domínio"
+  serve (domain_delete req dominios message) "Remover Domínio"
 
-let delete_domain_form request =
-  match%lwt Dream.form request with
+let delete_domain_form req =
+  match%lwt Dream.form req with
   | `Ok tl ->
-      let dom = find_field tl "dom" |> int_of_string in
+      let dom = Dream.param req "id" |> int_of_string in
       let dom_novo = find_field tl "dom2" |> int_of_string in
       query
         ~params:[ Mssql.Param.Int dom_novo; Mssql.Param.Int dom ]
@@ -465,9 +655,8 @@ let delete_domain_form request =
       |> ignore;
       query ~params:[ Mssql.Param.Int dom ] "DELETE FROM Dominio WHERE id = $1"
       |> ignore;
-      Dream.log "Removeu!";
-      delete_domain request (Some "Sucesso!")
-  | _ -> delete_domain request (Some "Erro!")
+      Dream.redirect req "/dominios"
+  | _ -> delete_domain req (Some "Erro!") 
 
 (* AREAS CIENTIFICAS *)
 let areas _req =
@@ -509,8 +698,8 @@ let add_area req _message =
   let dominios = query "SELECT * FROM Dominio" in
   serve (area_add req dominios _message) "Área Científica"
 
-let add_area_form request =
-  match%lwt Dream.form request with
+let add_area_form req =
+  match%lwt Dream.form req with
   | `Ok tl ->
       let des = find_field tl "designacao" in
       let dom = find_field tl "dom" in
@@ -519,8 +708,8 @@ let add_area_form request =
         "INSERT INTO AreaCientifica (designacao, dominioId) VALUES ($1, $2)"
       |> ignore;
       Dream.log "Inseriu!";
-      add_area request (Some "Sucesso!")
-  | _ -> add_area request (Some "Erro!")
+      add_area req (Some "Sucesso!")
+  | _ -> add_area req (Some "Erro!")
 
 let modify_area req _message =
   let domains = query "SELECT * FROM Dominio" in
@@ -530,11 +719,11 @@ let modify_area req _message =
       "SELECT * FROM AreaCientifica WHERE id = $1"
     |> List.hd
   in
-  serve (area_form req institute domains _message) "Domínio"
+  serve (area_form req institute domains _message) "Area Cientifica"
 
-let modify_area_form request =
-  let id = Dream.param request "id" |> int_of_string in
-  match%lwt Dream.form request with
+let modify_area_form req =
+  let id = Dream.param req "id" |> int_of_string in
+  match%lwt Dream.form req with
   | `Ok tl ->
       let designacao = find_field tl "designacao" in
       let dominioId = find_field tl "dominioId" in
@@ -549,26 +738,18 @@ let modify_area_form request =
         \         WHERE id = $3;"
       |> ignore;
       Dream.log "Atualizou!";
-      modify_area request (Some "Sucesso!")
-  | _ -> modify_area request (Some "Erro!")
+      modify_area req (Some "Sucesso!")
+  | _ -> modify_area req (Some "Erro!")
 
-let delete_area req _message =
-  let areas = query "SELECT * FROM AreaCientifica" in
-  serve (area_delete req areas _message) "Remover Domínio"
-
-let delete_area_form request =
-  match%lwt Dream.form request with
-  | `Ok tl ->
-      let area = find_field tl "area" |> int_of_string in
-      query ~params:[ Mssql.Param.Int area ]
-        "DELETE FROM AreaProjeto WHERE areaCientificaId = $1"
-      |> ignore;
-      query ~params:[ Mssql.Param.Int area ]
-        "DELETE FROM AreaCientifica WHERE id = $1"
-      |> ignore;
-      Dream.log "Removeu!";
-      delete_area request (Some "Sucesso!")
-  | _ -> delete_area request (Some "Erro!")
+let delete_area req =
+  let id = Dream.param req "id" |> int_of_string in
+  query ~params:[ Mssql.Param.Int id ]
+    "DELETE FROM AreaProjeto WHERE areaCientificaId = $1"
+  |> ignore;
+  query ~params:[ Mssql.Param.Int id ]
+    "DELETE FROM AreaCientifica WHERE id = $1"
+  |> ignore;
+  Dream.redirect req "/areas"
 
 (* INVESTIGADORES *)
 let investigators _req =
@@ -768,8 +949,8 @@ let unid_id req =
 
 let add_unid req _message = serve (unidade_add req _message) "Unidades"
 
-let add_unid_form request =
-  match%lwt Dream.form request with
+let add_unid_form req =
+  match%lwt Dream.form req with
   | `Ok tl ->
       let nome = find_field tl "nome" in
       query
@@ -777,8 +958,8 @@ let add_unid_form request =
         "INSERT INTO UnidadeInvestigacao (nome) VALUES ($1)"
       |> ignore;
       Dream.log "Inseriu!";
-      add_unid request (Some "Sucesso!")
-  | _ -> add_unid request (Some "Erro!")
+      add_unid req (Some "Sucesso!")
+  | _ -> add_unid req (Some "Erro!")
 
 let modify_unid req _message =
   let unit =
@@ -789,36 +970,27 @@ let modify_unid req _message =
   in
   serve (unidade_form req unit _message) "Unidade"
 
-let modify_unid_form request =
-  let id = Dream.param request "id" |> int_of_string in
-  match%lwt Dream.form request with
+let modify_unid_form req =
+  let id = Dream.param req "id" |> int_of_string in
+  match%lwt Dream.form req with
   | `Ok [ ("nome", nome) ] ->
       query
         ~params:[ Mssql.Param.String nome; Mssql.Param.Int id ]
         "UPDATE UnidadeInvestigacao SET nome = $1 WHERE id = $2"
       |> ignore;
       (* List.map (fun (s, v) -> Dream.log "%s: %s\n\n" s v) tl |> ignore; *)
-      modify_unid request (Some "Sucesso!")
-  | _ -> modify_unid request (Some "Erro!")
+      modify_unid req (Some "Sucesso!")
+  | _ -> modify_unid req (Some "Erro!")
 
-let delete_unid req _message =
-  let unidades = query "SELECT * FROM UnidadeInvestigacao" in
-  serve (unidade_delete req unidades _message) "Unidades"
-
-let delete_unid_form request =
-  match%lwt Dream.form request with
-  | `Ok tl ->
-      let inst = find_field tl "unid" |> int_of_string in
-      query ~params:[ Mssql.Param.Int inst ]
-        "DELETE FROM UnidadeInvestigador WHERE unidadeInvestigacaoId = $1"
-      |> ignore;
-      query ~params:[ Mssql.Param.Int inst ]
-        "DELETE FROM UnidadeInvestigacao WHERE id = $1"
-      |> ignore;
-      (* List.map (fun (s, v) -> Dream.log "%s: %s\n\n" s v) tl |> ignore; *)
-      Dream.log "Inseriu!";
-      delete_unid request (Some "Sucesso!")
-  | _ -> delete_unid request (Some "Erro!")
+let delete_unid req =
+  let id = Dream.param req "id" |> int_of_string in
+  let _ =query ~params:[ Mssql.Param.Int id ]
+    "DELETE FROM UnidadeInvestigador WHERE unidadeInvestigacaoId = $1"
+  in
+  let _ = query ~params:[ Mssql.Param.Int id ]
+    "DELETE FROM UnidadeInvestigacao WHERE id = $1"
+  in
+  Dream.redirect req "/unidades"
 
 (* INSTITUTOS *)
 let institutes _req =
@@ -842,8 +1014,8 @@ let institute_id req =
 
 let add_institute req _message = serve (institute_add req _message) "Institutos"
 
-let add_institute_form request =
-  match%lwt Dream.form request with
+let add_institute_form req =
+  match%lwt Dream.form req with
   | `Ok tl ->
       let des = find_field tl "designacao" in
       query ~params:[ Mssql.Param.String des ]
@@ -851,8 +1023,8 @@ let add_institute_form request =
       |> ignore;
       (* List.map (fun (s, v) -> Dream.log "%s: %s\n\n" s v) tl |> ignore; *)
       Dream.log "Inseriu!";
-      add_institute request (Some "Sucesso!")
-  | _ -> add_institute request (Some "Erro!")
+      add_institute req (Some "Sucesso!")
+  | _ -> add_institute req (Some "Erro!")
 
 let modify_institute req _message =
   let institute =
@@ -863,9 +1035,9 @@ let modify_institute req _message =
   in
   serve (institute_form req institute _message) "Institutos"
 
-let modify_institute_form request =
-  let id = Dream.param request "id" |> int_of_string in
-  match%lwt Dream.form request with
+let modify_institute_form req =
+  let id = Dream.param req "id" |> int_of_string in
+  match%lwt Dream.form req with
   | `Ok [ ("designacao", des) ] ->
       query
         ~params:[ Mssql.Param.String des; Mssql.Param.Int id ]
@@ -873,27 +1045,18 @@ let modify_institute_form request =
       |> ignore;
       (* List.map (fun (s, v) -> Dream.log "%s: %s\n\n" s v) tl |> ignore; *)
       Dream.log "Atualizou!";
-      modify_institute request (Some "Sucesso!")
-  | _ -> modify_institute request (Some "Erro!")
+      modify_institute req (Some "Sucesso!")
+  | _ -> modify_institute req (Some "Erro!")
 
-let delete_institute req _message =
-  let institutos = query "SELECT * FROM Instituto" in
-  serve (institute_delete req institutos _message) "Institutos"
-
-let delete_institute_form request =
-  match%lwt Dream.form request with
-  | `Ok tl ->
-      let inst = find_field tl "inst" |> int_of_string in
-      query ~params:[ Mssql.Param.Int inst ]
-        "UPDATE Investigador SET institutoId = NULL WHERE institutoId = $1"
-      |> ignore;
-      query ~params:[ Mssql.Param.Int inst ]
-        "DELETE FROM Instituto WHERE id = ($1)"
-      |> ignore;
-      (* List.map (fun (s, v) -> Dream.log "%s: %s\n\n" s v) tl |> ignore; *)
-      Dream.log "Removeu!";
-      delete_institute request (Some "Sucesso!")
-  | _ -> delete_institute request (Some "Erro!")
+let delete_institute req =
+  let id = Dream.param req "id" |> int_of_string in
+  query ~params:[ Mssql.Param.Int id ]
+    "UPDATE Investigador SET institutoId = NULL WHERE institutoId = $1"
+  |> ignore;
+  query ~params:[ Mssql.Param.Int id ]
+    "DELETE FROM Instituto WHERE id = ($1)"
+  |> ignore;
+  Dream.redirect req "/institutos"
 
 (* ENTIDADES *)
 let entities _req =
@@ -946,8 +1109,8 @@ let entity_id req =
 
 let add_entity req _message = serve (entity_add req _message) "Entidade"
 
-let add_entity_form request =
-  match%lwt Dream.form request with
+let add_entity_form req =
+  match%lwt Dream.form req with
   | `Ok tl ->
       let nome = find_field tl "nome" in
       let descricao = find_field tl "descricao" in
@@ -977,8 +1140,8 @@ let add_entity_form request =
         \        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)"
       |> ignore;
       Dream.log "Inseriu!";
-      add_entity request (Some "Sucesso!")
-  | _ -> add_entity request (Some "Erro!")
+      add_entity req (Some "Sucesso!")
+  | _ -> add_entity req (Some "Erro!")
 
 let modify_entity req _message =
   let id = Dream.param req "id" |> int_of_string in
@@ -995,53 +1158,6 @@ let modify_entity req _message =
       \       WHERE E.id = $1"
   in
   serve (entity_form req entity programas entigrama _message) "Entidade"
-
-let add_progs req progs =
-  match progs with
-  | [] -> ()
-  | _ ->
-      query
-        ~params:
-          [
-            Mssql.Param.Array
-              (progs |> List.map (fun a -> Mssql.Param.Int (a |> int_of_string)));
-            Mssql.Param.Int (Dream.param req "id" |> int_of_string);
-          ]
-        "INSERT INTO Entigrama (entidadeId, programaId)\n\
-        \           SELECT $2, P.id FROM Programa P WHERE P.id IN ($1)"
-      |> ignore
-
-let rec update_progs req prog_val =
-  match prog_val with
-  | [] -> ()
-  | (p, v) :: xs ->
-      query
-        ~params:
-          [
-            Mssql.Param.Int p;
-            Mssql.Param.Int v;
-            Mssql.Param.Int (Dream.param req "id" |> int_of_string);
-          ]
-        "UPDATE Entigrama SET valor = $2 \n\
-        \         WHERE entidadeId = $3 AND programaId = $1"
-      |> ignore;
-      update_progs req xs
-
-let remove_progs req del_progs =
-  match del_progs with
-  | [] -> ()
-  | _ ->
-      query
-        ~params:
-          [
-            Mssql.Param.Array
-              (del_progs
-              |> List.map (fun a -> Mssql.Param.Int (a |> int_of_string)));
-            Mssql.Param.Int (Dream.param req "id" |> int_of_string);
-          ]
-        "DELETE FROM Entigrama WHERE\n\
-        \         entidadeId = $2 AND programaId IN ($1)"
-      |> ignore
 
 let modify_entity_form req =
   let programas_antes =
@@ -1111,23 +1227,14 @@ let modify_entity_form req =
       modify_entity req (Some "Sucesso!")
   | _ -> modify_entity req (Some "Erro!")
 
-let delete_entity req _message =
-  let entidade = query "SELECT * FROM Entidade" in
-  serve (entity_delete req entidade _message) "Institutos"
-
-let delete_entity_form request =
-  match%lwt Dream.form request with
-  | `Ok tl ->
-      let ent = find_field tl "ent" |> int_of_string in
-      query ~params:[ Mssql.Param.Int ent ]
-        "DELETE FROM Entigrama WHERE entidadeId = $1"
-      |> ignore;
-      query ~params:[ Mssql.Param.Int ent ] "DELETE FROM Entidade WHERE id = $1"
-      |> ignore;
-      (* List.map (fun (s, v) -> Dream.log "%s: %s\n\n" s v) tl |> ignore; *)
-      Dream.log "Inseriu!";
-      delete_entity request (Some "Sucesso!")
-  | _ -> delete_entity request (Some "Erro!")
+let delete_entity req =
+  let id = Dream.param req "id" |> int_of_string in
+  query ~params:[ Mssql.Param.Int id ]
+    "DELETE FROM Entigrama WHERE entidadeId = $1"
+  |> ignore;
+  query ~params:[ Mssql.Param.Int id ] "DELETE FROM Entidade WHERE id = $1"
+  |> ignore;
+  Dream.redirect req "/entidades"
 
 (* PROGRAMAS *)
 let programs _req =
@@ -1157,16 +1264,16 @@ let program_id req =
 
 let add_program req _message = serve (program_add req _message) "Programa"
 
-let add_program_form request =
-  match%lwt Dream.form request with
+let add_program_form req =
+  match%lwt Dream.form req with
   | `Ok tl ->
       let des = find_field tl "designacao" in
       query ~params:[ Mssql.Param.String des ]
         "INSERT INTO Programa (designacao) VALUES ($1)"
       |> ignore;
       Dream.log "Inseriu!";
-      add_program request (Some "Sucesso!")
-  | _ -> add_program request (Some "Erro!")
+      add_program req (Some "Sucesso!")
+  | _ -> add_program req (Some "Erro!")
 
 let modify_program req _message =
   let programa =
@@ -1177,9 +1284,9 @@ let modify_program req _message =
   in
   serve (program_form req programa _message) "Domínio"
 
-let modify_program_form request =
-  let id = Dream.param request "id" |> int_of_string in
-  match%lwt Dream.form request with
+let modify_program_form req =
+  let id = Dream.param req "id" |> int_of_string in
+  match%lwt Dream.form req with
   | `Ok [ ("designacao", des) ] ->
       query
         ~params:[ Mssql.Param.String des; Mssql.Param.Int id ]
@@ -1187,27 +1294,18 @@ let modify_program_form request =
       |> ignore;
       (* List.map (fun (s, v) -> Dream.log "%s: %s\n\n" s v) tl |> ignore; *)
       Dream.log "Atualizou!";
-      modify_program request (Some "Sucesso!")
-  | _ -> modify_program request (Some "Erro!")
+      modify_program req (Some "Sucesso!")
+  | _ -> modify_program req (Some "Erro!")
 
-let delete_program req _message =
-  let programas = query "SELECT * FROM Programa" in
-  serve (program_delete req programas _message) "Institutos"
-
-let delete_program_form request =
-  match%lwt Dream.form request with
-  | `Ok tl ->
-      let prog = find_field tl "prog" |> int_of_string in
-      query ~params:[ Mssql.Param.Int prog ]
-        "DELETE FROM Entigrama WHERE programaId = $1"
-      |> ignore;
-      query ~params:[ Mssql.Param.Int prog ]
-        "DELETE FROM Projama WHERE programaId = $1"
-      |> ignore;
-      query ~params:[ Mssql.Param.Int prog ]
-        "DELETE FROM Programa WHERE id = $1"
-      |> ignore;
-      (* List.map (fun (s, v) -> Dream.log "%s: %s\n\n" s v) tl |> ignore; *)
-      Dream.log "Inseriu!";
-      delete_program request (Some "Sucesso!")
-  | _ -> delete_program request (Some "Erro!")
+let delete_program req =
+  let id = Dream.param req "id" |> int_of_string in
+  query ~params:[ Mssql.Param.Int id ]
+    "DELETE FROM Entigrama WHERE programaId = $1"
+  |> ignore;
+  query ~params:[ Mssql.Param.Int id ]
+    "DELETE FROM Projama WHERE programaId = $1"
+  |> ignore;
+  query ~params:[ Mssql.Param.Int id ]
+    "DELETE FROM Programa WHERE id = $1"
+  |> ignore;
+  Dream.redirect req "/programas" 

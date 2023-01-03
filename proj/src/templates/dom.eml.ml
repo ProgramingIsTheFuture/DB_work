@@ -53,6 +53,9 @@ let dominio (dom: data list) area =
     <a href='/dominios/<%s dom |> List.hd <| "id" %>/modificar' class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
       Modificar
     </a>
+    <a href='/dominios/<%s dom |> List.hd <| "id" %>/remover' class="btn btn-danger" tabindex="-1" role="button" aria-disabled="true">
+     Apagar 
+    </a>
   </div>
 
 let dom_add request message =
@@ -102,18 +105,11 @@ let dom_form request dominio message =
   </div>
 
 let dom_delete request dom message =
+  let id = Dream.param request "id" in
   General.navbar_inpage "Remover Domínio" ^
   <div style="width: 750px; margin: 0 auto; text-align: left">
-    <form method="POST" action='/dominios/0/remover'>
+    <form method="POST" action='/dominios/<%s id %>/remover'>
       <%s! Dream.csrf_tag request %>
-      <div class="forms" style="margin-top: 50px">
-        <label for="dom">Domínio a Remover:</label>
-        <select class="form-select" multiple name="dom" id="dom" style="margin-top: 5px" required>
-        <% dom |> List.iter begin fun x -> %>
-          <option value='<%s x<|"id" %>'><%s x<|"designacao" %></option>
-        <% end; %>
-        </select>
-      </div>
       <div class="forms" style="margin-top: 50px">
         <label for="dom2">Novo domínio das àreas pertencentes ao domínio a remover:</label>
         <select class="form-select" multiple name="dom2" id="dom2" style="margin-top: 5px" required>

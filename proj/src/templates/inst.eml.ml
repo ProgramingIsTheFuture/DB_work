@@ -53,6 +53,9 @@ let instituto (inst: data list) inves =
     <a href='/institutos/<%s inst |> List.hd <| "InstId" %>/modificar' class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
       Modificar
     </a>
+    <a href='/institutos/<%s inst |> List.hd <| "id" %>/remover' class="btn btn-danger" tabindex="-1" role="button" aria-disabled="true">
+      Apagar
+    </a>
   </div>
 
 let inst_add request message =

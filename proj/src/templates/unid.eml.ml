@@ -53,6 +53,9 @@ let unidade (unid : data list) investigadores =
     <a href='/unidades/<%s unid |> List.hd <| "id" %>/modificar' class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
       Modificar
     </a>
+    <a href='/unidades/<%s unid |> List.hd <| "id" %>/remover' class="btn btn-danger" tabindex="-1" role="button" aria-disabled="true">
+      Apagar
+    </a>
   </div>
 
 let unid_add request message =

@@ -50,6 +50,10 @@ let entidade (ent: data list) prog (projs: data list) =
       <a href='/entidades/<%s ent |> List.hd <| "id" %>/modificar' class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
       Modificar
       </a>
+    <div class="d-grid gap-2 col-1 mx-auto" style="width: 3rem; position: absolute; top: 5em; right: 6em">
+    <a href='/entidades/<%s ent |> List.hd <| "id" %>/remover' class="btn btn-danger" tabindex="-1" role="button" aria-disabled="true">
+      Apagar
+    </a>
     </div>
   </div>
   <div class="container">

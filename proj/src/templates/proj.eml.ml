@@ -70,6 +70,12 @@ let projeto (_proj: data) (id : int) keywords publicacoes investigadores areas_d
       <a href='/projetos/<%s _proj <| "id" %>/modificar' class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
         Modificar
       </a>
+      <a href='/projetos/<%s _proj <| "id" %>/novapublicacao' class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
+        Criar Publicação 
+      </a>
+      <a href='/projetos/<%s _proj <| "id" %>/remover' class="btn btn-danger" tabindex="-1" role="button" aria-disabled="true">
+        Apagar
+      </a>
     </div>
     <div class="parent-container">
       <div class="esq">
@@ -288,7 +294,116 @@ let proj_entities (_proj : data) contrato entidades programas =
     </div>
   </div>
 
-let projeto_id_modificar request message project status programs projama areas areaprojeto =
+let proj_add request programs status areas message =
+  General.navbar_inpage "Adicionar Projeto" ^
+  <div style="width: 750px; margin: 0 auto; text-align: left">
+    <form method="POST" action='/projetos/0/adicionar'>
+      <%s! Dream.csrf_tag request %>
+      <div class="mb-3">
+        <label for="input1" class="form-label">Nome</label>
+        <input name="nome" placeholder="nome" type="text" class="form-control" id="input1" aria-describedby="input1Help" required>
+        <div id="input1Help" class="form-text">Nome do projeto.</div>
+
+        <label for="input2" class="form-label">Título</label>
+        <input name="titulo" placeholder="titulo" type="text" class="form-control" id="input2" aria-describedby="input2Help" required>
+        <div id="input2Help" class="form-text">Título do projeto.</div>
+
+        <label for="input3" class="form-label">Descrição</label>
+        <input name="descricao" placeholder="descricao" type="text" class="form-control" id="input3" aria-describedby="input3Help" required>
+        <div id="input3Help" class="form-text">Descrição do projeto.</div>
+
+        <label for="input4" class="form-label">Português</label>
+        <input name="portugues" placeholder="portugues" type="text" class="form-control" id="input4" aria-describedby="input4Help" required>
+        <div id="input4Help" class="form-text">Nome do projeto em português (NULL se o título normal for em português)</div>
+
+        <label for="input5" class="form-label">Inglês</label>
+        <input name="ingles" placeholder="ingles" type="text" class="form-control" id="input5" aria-describedby="input5Help" required>
+        <div id="input5Help" class="form-text">Nome do projeto em inglês (NULL se o título normal for em inglês)</div>
+
+        <label for="input6" class="form-label">Data de Início</label>
+        <input name="data_ini" placeholder="data_ini" type="text" class="form-control" id="input6" aria-describedby="input6Help" required>
+        <div id="input6Help" class="form-text">Data de início do projeto (yyyy-mm-dd)</div>
+
+        <label for="input7" class="form-label">Data de Fim</label>
+        <input name="data_fim" placeholder="data_fim" type="text" class="form-control" id="input7" aria-describedby="input7Help" required>
+        <div id="input7Help" class="form-text">Data de fim do projeto (yyyy-mm-dd, NULL se ainda não estiver acabado)</div>
+
+        <label for="input8" class="form-label">URL</label>
+        <input name="url" placeholder="url" type="text" class="form-control" id="input8" aria-describedby="input8Help" required>
+        <div id="input8Help" class="form-text">URL do projeto</div>
+
+        <label for="input9" class="form-label">DOI</label>
+        <input name="doi" placeholder="doi" type="text" class="form-control" id="input9" aria-describedby="input9Help">
+        <div id="input9Help" class="form-text">DOI do projeto</div>
+
+        <label for="kw" class="form-label">Keyword 1:</label>
+        <input name="keyword1" placeholder="keyword1" type="text" class="form-control" id="kw">
+
+        <label for="kw2" class="form-label">Keyword 2:</label>
+        <input name="keyword2" placeholder="keyword2" type="text" class="form-control" id="kw2">
+
+        <label for="kw3" class="form-label">Keyword 3:</label>
+        <input name="keyword3" placeholder="keyword3" type="text" class="form-control" id="kw3">
+      </div>
+      <div class="forms">
+        <label for="status">Status</label>
+        <select class="form-select" multiple name="status" id="status" style="margin-top: 5px">
+        <% status |> List.iter begin fun x -> %>
+          <option value='<%s x<|"id" %>'><%s x<|"designacao" %></option>
+        <% end; %>
+        </select>
+      </div>
+      <div style="width: 750px; margin: 0 auto; margin-top: 50px; text-align: left">
+        <p>Programas:</p>
+        <% programs |> List.iter begin fun x -> %> 
+          <div class="form-check">
+            <input value='<%s x<|"id" %>' name="progs" class="form-check-input" type="checkbox" id="flexCheckDefault">
+            <label class="form-check-label" for="flexCheckDefault">
+            <%s x <| "id" %> - <%s x<|"designacao" %>
+          </div>
+        <% end; %>
+      </div>
+      <div style="width: 750px; margin: 0 auto; margin-top: 50px; text-align: left">
+        <p>Areas:</p>
+        <% areas |> List.iter begin fun x -> %> 
+          <div class="form-check">
+            <input value='<%s x<|"id" %>' name="areas" class="form-check-input" type="checkbox" id="flexCheckDefault">
+            <label class="form-check-label" for="flexCheckDefault">
+            <%s x <| "id" %> - <%s x<|"designacao" %>
+          </div>
+        <% end; %>
+      </div>
+      <h3 style="margin-top:50px; margin-bottom:50px">Contrato Associado</h3>
+      <div class="mb-3">
+        <label for="input10" class="form-label">Nome</label>
+        <input name="nomeCont" placeholder="nomeCont" type="text" class="form-control" id="input10" aria-describedby="input10Help" />
+        <div id="input10Help" class="form-text">Nome do contrato.</div>
+
+        <label for="input11" class="form-label">Título</label>
+        <input name="tituloCont" placeholder="tituloCont" type="text" class="form-control" id="input4" aria-describedby="input4Help" />
+        <div id="input11Help" class="form-text">Título do contrato.</div>
+
+        <label for="input12" class="form-label">Descrição</label>
+        <input name="descricaoCont" placeholder="descricaoCont" type="text" class="form-control" id="input12" aria-describedby="input12Help" />
+        <div id="input12Help" class="form-text">Descrição do contrato.</div>
+      </div>
+      <div class="forms">
+        <label for="statusCont">Status</label>
+        <select class="form-select" multiple name="statusCont" id="statusCont" style="margin-top: 5px">
+        <% status |> List.iter begin fun x -> %>
+          <option value='<%s x<|"id" %>'><%s x<|"designacao" %></option>
+        <% end; %>
+        </select>
+      <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
+    </form> 
+% begin match message with 
+%   | None -> () 
+%   | Some message -> 
+      <p><b><%s message %></b></p>
+%   end;
+  </div>
+
+let projeto_id_modificar request message project status programs projama areas areaprojeto keywords =
   General.navbar_inpage "Modificar Projeto" ^ 
   <div style="width: 750px; margin: 0 auto; text-align: left">
     <form method="POST" action='/projetos/<%s project<|"id" %>/modificar'>
@@ -329,6 +444,16 @@ let projeto_id_modificar request message project status programs projama areas a
         <label for="input9" class="form-label">DOI</label>
         <input name="doi" placeholder="doi" value='<%s project<|"doi" %>' type="text" class="form-control" id="input9" aria-describedby="input9Help">
         <div id="input9Help" class="form-text">Novo DOI do projeto</div>
+      </div>
+      <div class="mb-3">
+        <% keywords |> List.iter begin fun x -> %> 
+          <label for="kw" class="form-label">Keyword <%s x<| "id" %>:</label>
+          <input name="keyword" placeholder="keyword" value='<%s x<|"designacao" %>' type="text" class="form-control" id="kw">
+          <div id="valorHelp" class="form-text">Mude a Keyword se desejar</div>
+        <% end; %>
+        <p = style="margin-top:5px;">Nova keyword:</p>
+        <input name="keyword" placeholder="keyword" type="text" class="form-control" id="kw" aria-describedby="valorHelp">
+        <div id="valorHelp" class="form-text">Introduza uma keyword, submita para inserir mais.</div>
       </div>
       <div class="forms">
         <label for="status">Status</label>
@@ -384,3 +509,24 @@ let projeto_id_modificar request message project status programs projama areas a
 %   end;
   </div>
 
+let proj_delete request projects message =
+  General.navbar_inpage "Remover Projeto" ^
+  <div style="width: 750px; margin: 0 auto; text-align: left">
+    <form method="POST" action='/projetos/0/remover'>
+      <%s! Dream.csrf_tag request %>
+      <div class="forms" style="margin-top: 50px">
+        <label for="proj">Projeto a remover:</label>
+        <select class="form-select" multiple name="proj" id="proj" style="margin-top: 5px">
+        <% projects |> List.iter begin fun x -> %>
+          <option value='<%s x<|"id" %>'><%s x<|"nome" %></option>
+        <% end; %>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
+    </form>
+% begin match message with 
+%   | None -> () 
+%   | Some message -> 
+      <p><b><%s message %></b></p>
+%   end;
+  </div>

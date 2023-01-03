@@ -82,6 +82,9 @@ let programa (prog: data list) ents projs =
     <a href='/programas/<%s prog |> List.hd <| "id" %>/modificar' class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
     Modificar
     </a>
+    <a href='/programas/<%s prog |> List.hd <| "id" %>/remover' class="btn btn-danger" tabindex="-1" role="button" aria-disabled="true">
+      Apagar
+    </a>
   </div>
 
 let prog_add request message =
