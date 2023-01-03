@@ -54,7 +54,7 @@ let publicacao (_pub : data) projeto =
 
 let pub_add request message =
   let id = Dream.param request "id" in
-  General.navbar_inpage "Criar Publicação" ^
+  General.navbar_crud "projetos" "Criar Publicação" ^
   <div style="width: 750px; margin: 0 auto; text-align: left">
     <form method="POST" action='/projetos/<%s id %>/novapublicacao'>
       <%s! Dream.csrf_tag request %>
@@ -86,7 +86,7 @@ let pub_add request message =
   </div>
 
 let publicacao_form request (pub: data) message =
-  General.navbar_inpage "Modificar Publicação" ^
+  General.navbar_crud "projetos" "Modificar Publicação" ^
   <div style="width: 750px; margin: 0 auto; text-align: left">
     <form method="POST" action='/publicacoes/<%s pub <| "id" %>/modificar'>
       <%s! Dream.csrf_tag request %>

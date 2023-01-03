@@ -134,11 +134,11 @@ let create_inves request inves inst subm =
 
 
 let investigador_create request inves inst =
-  General.navbar_inpage "Criar investigador" ^
+  General.navbar_crud "investigadores" "Criar Investigador" ^
   create_inves request inves inst "/investigadores/create"
 
 let investigador_form request (inves: data) (inst: data list) (unidades: data list) (unidade_investigador: data list) projetos participa papel message =
-  General.navbar_inpage "Modificar investigador" ^ create_inves request inves inst ("/investigadores/"^ (inves<|"id") ^"/modificar") ^ 
+  General.navbar_crud "investigadores" "Modificar Investigador" ^ create_inves request inves inst ("/investigadores/"^ (inves<|"id") ^"/modificar") ^ 
   <div style="width: 750px; margin: 0 auto; text-align: left">
 % begin match message with 
 %   | None -> () 

@@ -59,7 +59,7 @@ let unidade (unid : data list) investigadores =
   </div>
 
 let unid_add request message =
-  General.navbar_inpage "Adicionar Unidade" ^
+  General.navbar_crud "unidades" "Adicionar Unidade" ^
   <div style="width: 750px; margin: 0 auto; text-align: left">
     <p style="margin-bottom: 2rem;"></p>
 
@@ -82,7 +82,7 @@ let unid_add request message =
   </div>
 
 let unid_form request unidade message =
-  General.navbar_inpage "Modificar Unidade" ^
+  General.navbar_crud "unidades" "Modificar Unidade" ^
   <div style="width: 750px; margin: 0 auto; text-align: left">
     <p style="margin-bottom: 2rem;"></p>
 
@@ -104,25 +104,4 @@ let unid_form request unidade message =
 %   end;
   </div>
 
-let unid_delete request unid message =
-  General.navbar_inpage "Remover Unidade" ^
-  <div style="width: 750px; margin: 0 auto; text-align: left">
-    <form method="POST" action='/unidades/0/remover'>
-      <%s! Dream.csrf_tag request %>
-      <div class="forms" style="margin-top: 50px">
-        <label for="unid">Unidade a remover:</label>
-        <select class="form-select" multiple name="unid" id="unid" style="margin-top: 5px">
-        <% unid |> List.iter begin fun x -> %>
-          <option value='<%s x<|"id" %>'><%s x<|"nome" %></option>
-        <% end; %>
-        </select>
-      </div>
-      <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
-    </form>
-% begin match message with 
-%   | None -> () 
-%   | Some message -> 
-      <p><b><%s message %></b></p>
-%   end;
-  </div>
 

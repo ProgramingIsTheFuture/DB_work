@@ -59,7 +59,7 @@ let dominio (dom: data list) area =
   </div>
 
 let dom_add request message =
-  General.navbar_inpage "Adicionar Domínio" ^
+  General.navbar_crud "dominios" "Adicionar Domínio" ^
   <div style="width: 750px; margin: 0 auto; text-align: left">
     <p style="margin-bottom: 2rem;"></p>
 
@@ -82,7 +82,7 @@ let dom_add request message =
   </div>
 
 let dom_form request dominio message =
-  General.navbar_inpage "Modificar Domínio" ^
+  General.navbar_crud "dominios" "Modificar Domínio" ^
   <div style="width: 750px; margin: 0 auto; text-align: left">
     <p style="margin-bottom: 2rem;"></p>
 
@@ -106,7 +106,7 @@ let dom_form request dominio message =
 
 let dom_delete request dom message =
   let id = Dream.param request "id" in
-  General.navbar_inpage "Remover Domínio" ^
+  General.navbar_crud "dominios" "Remover Domínio" ^
   <div style="width: 750px; margin: 0 auto; text-align: left">
     <form method="POST" action='/dominios/<%s id %>/remover'>
       <%s! Dream.csrf_tag request %>
@@ -126,4 +126,3 @@ let dom_delete request dom message =
       <p><b><%s message %></b></p>
 %   end;
   </div>
-

@@ -295,7 +295,7 @@ let proj_entities (_proj : data) contrato entidades programas =
   </div>
 
 let proj_add request programs status areas message =
-  General.navbar_inpage "Adicionar Projeto" ^
+  General.navbar_crud "projetos" "Adicionar Publicação" ^
   <div style="width: 750px; margin: 0 auto; text-align: left">
     <form method="POST" action='/projetos/0/adicionar'>
       <%s! Dream.csrf_tag request %>
@@ -404,7 +404,7 @@ let proj_add request programs status areas message =
   </div>
 
 let projeto_id_modificar request message project status programs projama areas areaprojeto keywords =
-  General.navbar_inpage "Modificar Projeto" ^ 
+  General.navbar_crud "projetos" "Modificar Publicação" ^
   <div style="width: 750px; margin: 0 auto; text-align: left">
     <form method="POST" action='/projetos/<%s project<|"id" %>/modificar'>
       <%s! Dream.csrf_tag request %>
@@ -509,24 +509,3 @@ let projeto_id_modificar request message project status programs projama areas a
 %   end;
   </div>
 
-let proj_delete request projects message =
-  General.navbar_inpage "Remover Projeto" ^
-  <div style="width: 750px; margin: 0 auto; text-align: left">
-    <form method="POST" action='/projetos/0/remover'>
-      <%s! Dream.csrf_tag request %>
-      <div class="forms" style="margin-top: 50px">
-        <label for="proj">Projeto a remover:</label>
-        <select class="form-select" multiple name="proj" id="proj" style="margin-top: 5px">
-        <% projects |> List.iter begin fun x -> %>
-          <option value='<%s x<|"id" %>'><%s x<|"nome" %></option>
-        <% end; %>
-        </select>
-      </div>
-      <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
-    </form>
-% begin match message with 
-%   | None -> () 
-%   | Some message -> 
-      <p><b><%s message %></b></p>
-%   end;
-  </div>

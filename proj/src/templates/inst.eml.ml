@@ -59,7 +59,7 @@ let instituto (inst: data list) inves =
   </div>
 
 let inst_add request message =
-  General.navbar_inpage "Adicionar Instituto" ^
+  General.navbar_crud "instituto" "Adicionar Instituto" ^
   <div style="width: 750px; margin: 0 auto; text-align: left">
     <p style="margin-bottom: 2rem;"></p>
 
@@ -82,7 +82,7 @@ let inst_add request message =
   </div>
 
 let inst_form request instituto message =
-  General.navbar_inpage "Modificar Instituto" ^
+  General.navbar_crud "institutos" "Modificar Instituto" ^
   <div style="width: 750px; margin: 0 auto; text-align: left">
     <p style="margin-bottom: 2rem;"></p>
 
@@ -104,25 +104,4 @@ let inst_form request instituto message =
 %   end;
   </div>
 
-let inst_delete request inst message =
-  General.navbar_inpage "Remover Instituto" ^
-  <div style="width: 750px; margin: 0 auto; text-align: left">
-    <form method="POST" action='/institutos/0/remover'>
-      <%s! Dream.csrf_tag request %>
-      <div class="forms" style="margin-top: 50px">
-        <label for="inst">Instituto a remover:</label>
-        <select class="form-select" multiple name="inst" id="inst" style="margin-top: 5px">
-        <% inst |> List.iter begin fun x -> %>
-          <option value='<%s x<|"id" %>'><%s x<|"designacao" %></option>
-        <% end; %>
-        </select>
-      </div>
-      <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
-    </form>
-% begin match message with 
-%   | None -> () 
-%   | Some message -> 
-      <p><b><%s message %></b></p>
-%   end;
-  </div>
 

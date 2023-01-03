@@ -88,7 +88,7 @@ let programa (prog: data list) ents projs =
   </div>
 
 let prog_add request message =
-  General.navbar_inpage "Adicionar Programa" ^
+  General.navbar_crud "programas" "Acidionar Programa" ^
   <div style="width: 750px; margin: 0 auto; text-align: left">
     <p style="margin-bottom: 2rem;"></p>
 
@@ -111,7 +111,7 @@ let prog_add request message =
   </div>
 
 let prog_form request programa message =
-  General.navbar_inpage "Modificar Programa" ^
+  General.navbar_crud "programas" "Modificar Programa" ^
   <div style="width: 750px; margin: 0 auto; text-align: left">
     <p style="margin-bottom: 2rem;"></p>
 
@@ -133,24 +133,3 @@ let prog_form request programa message =
 %   end;
   </div>
 
-let prog_delete request programas message =
-  General.navbar_inpage "Remover Programa" ^
-  <div style="width: 750px; margin: 0 auto; text-align: left">
-    <form method="POST" action='/programas/0/remover'>
-      <%s! Dream.csrf_tag request %>
-      <div class="forms" style="margin-top: 50px">
-        <label for="prog">Programa a remover:</label>
-        <select class="form-select" multiple name="prog" id="prog" style="margin-top: 5px">
-        <% programas |> List.iter begin fun x -> %>
-          <option value='<%s x<|"id" %>'><%s x<|"designacao" %></option>
-        <% end; %>
-        </select>
-      </div>
-      <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
-    </form>
-% begin match message with 
-%   | None -> () 
-%   | Some message -> 
-      <p><b><%s message %></b></p>
-%   end;
-  </div>

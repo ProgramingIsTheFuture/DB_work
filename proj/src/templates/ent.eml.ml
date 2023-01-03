@@ -140,7 +140,7 @@ let entidade (ent: data list) prog (projs: data list) =
   </div>
 
 let ent_add request message =
-  General.navbar_inpage "Adicionar Entidades" ^
+  General.navbar_crud "entidades" "Adicionar Entidades" ^
   <div style="width: 750px; margin: 0 auto; text-align: left">
     <p style="margin-bottom: 2rem;"></p>
 
@@ -191,7 +191,7 @@ let ent_add request message =
   </div>
 
 let ent_form request entidade programas entigrama message=
-  General.navbar_inpage "Modificar Entidade" ^ 
+  General.navbar_crud "entidades" "Modificar Entidade" ^ 
   <div style="width: 750px; margin: 0 auto; text-align: left">
     <form method="POST" action='/entidades/<%s entidade<|"id" %>/modificar'>
       <%s! Dream.csrf_tag request %>
@@ -264,24 +264,3 @@ let ent_form request entidade programas entigrama message=
 %   end;
   </div>
 
-let ent_delete request entidades message =
-  General.navbar_inpage "Remover Entidade" ^
-  <div style="width: 750px; margin: 0 auto; text-align: left">
-    <form method="POST" action='/entidades/0/remover'>
-      <%s! Dream.csrf_tag request %>
-      <div class="forms" style="margin-top: 50px">
-        <label for="ent">Entidade a remover:</label>
-        <select class="form-select" multiple name="ent" id="ent" style="margin-top: 5px">
-        <% entidades |> List.iter begin fun x -> %>
-          <option value='<%s x<|"id" %>'><%s x<|"nome" %></option>
-        <% end; %>
-        </select>
-      </div>
-      <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Submeter</button>
-    </form>
-% begin match message with 
-%   | None -> () 
-%   | Some message -> 
-      <p><b><%s message %></b></p>
-%   end;
-  </div>
