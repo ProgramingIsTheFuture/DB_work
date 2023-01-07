@@ -992,9 +992,9 @@ let participa_investigador_id_post req =
         | x -> x |> int_of_string
       in
       if tempo + tempo_perc > 100 then
-        participa_investigador_id req (Some "Demasiado tempo nos projetos!")
-      else if papel_id == 4 && tempo_perc < 35 then
-        participa_investigador_id req (Some "Para ser partipante tem de ter pelo menos 35% do tempo ocupado.")
+        participa_investigador_id req (Some "Demasiado tempo ocupados projetos!")
+      else if papel_id == 3 && tempo_perc < 35 then
+        participa_investigador_id req (Some "Para ser líder do projeto tem de ter pelo menos 35% do tempo ocupado.")
       else
         let _ =
           query
