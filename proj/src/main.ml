@@ -77,6 +77,10 @@ let () =
            Handlers.participa_investigador_id req None);
          Dream.post "/investigadores/:id/participa/adicionar"
          @@ Handlers.participa_investigador_id_post;
+         (Dream.get "/investigadores/:idi/participa/:idp/modificar" @@ fun req ->
+           Handlers.modify_participa_investigador_id req None);
+         Dream.post "/investigadores/:idi/participa/:idp/modificar"
+         @@ Handlers.modify_participa_investigador_id_post;
          (* Unidades *)
          Dream.get "/unidades" Handlers.unids;
          Dream.get "/unidades/:id" Handlers.unid_id;

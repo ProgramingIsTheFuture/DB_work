@@ -32,6 +32,7 @@ let investigador = Inves.investigador
 let investigador_create = Inves.investigador_create
 let investigador_form = Inves.investigador_form
 let investigador_add_participa = Inves.investigador_add_participa
+let investigador_modify_participa = Inves.investigador_modify_participa
 let unidades = Unid.unidades
 let unidade = Unid.unidade
 let unidade_add = Unid.unid_add

@@ -992,7 +992,7 @@ let participa_investigador_id_post req =
         | x -> x |> int_of_string
       in
       if tempo + tempo_perc > 100 then
-        participa_investigador_id req (Some "Demasiado tempo ocupados projetos!")
+        participa_investigador_id req (Some "Demasiado tempo ocupado para os projetos!")
       else if papel_id == 3 && tempo_perc < 35 then
         participa_investigador_id req (Some "Para ser líder do projeto tem de ter pelo menos 35% do tempo ocupado.")
       else
@@ -1011,6 +1011,73 @@ let participa_investigador_id_post req =
 
         participa_investigador_id req (Some "Sucesso!")
   | _ -> participa_investigador_id req (Some "Erro!")
+
+let modify_participa_investigador_id req message =
+  let inves_id = Dream.param req "idi" |> int_of_string in
+  let proj_id = Dream.param req "idp" |> int_of_string in
+  let investigador =
+    query
+      ~params:[ Mssql.Param.Int inves_id ]
+      "SELECT * FROM Investigador WHERE id = $1;"
+    |> List.hd
+  in
+  let projeto =
+    query
+      ~params:[ Mssql.Param.Int proj_id ]
+      "SELECT id, nome FROM Projeto WHERE id = $1"
+  |> List.hd
+  in
+  let papel = query "SELECT * FROM papel;" in
+  let tempo =
+    query
+      ~params:[ Mssql.Param.Int inves_id; Mssql.Param.Int proj_id ]
+      "SELECT tempoPerc FROM Participa PI WHERE \
+       investigadorId = $1 AND projetoId = $2"
+  |> List.hd
+  in
+  serve
+    (investigador_modify_participa req investigador projeto papel tempo message)
+    "Modificar Participacão"
+
+let modify_participa_investigador_id_post req =
+  match%lwt Dream.form req with
+  | `Ok tl ->
+      let inves_id = Dream.param req "idi" |> int_of_string in
+      let proj_id = Dream.param req "idp" |> int_of_string in
+      let papel_id = find_field tl "papelId" |> int_of_string in
+      let tempo_perc = find_field tl "tempoPerc" |> int_of_string in
+      let tempo =
+        let tem_wasted =
+          query
+            ~params:[ Mssql.Param.Int inves_id ]
+            "SELECT SUM(tempoPerc) as tempoPerc FROM participa WHERE \
+             investigadorId = $1"
+          |> List.hd
+        in
+        match Types.find "tempoPerc" tem_wasted with
+        | "NULL" -> 0
+        | x -> x |> int_of_string
+      in
+      if tempo + tempo_perc > 100 then
+        modify_participa_investigador_id req (Some "Demasiado tempo ocupado para os projetos!")
+      else if papel_id == 3 && tempo_perc < 35 then
+        modify_participa_investigador_id req (Some "Para ser líder do projeto tem de ter pelo menos 35% do tempo ocupado.")
+      else
+        let _ =
+          query
+            ~params:
+              [
+                Mssql.Param.Int inves_id;
+                Mssql.Param.Int proj_id;
+                Mssql.Param.Int papel_id;
+                Mssql.Param.Int tempo_perc;
+              ]
+            "UPDATE Participa SET papelId = $3,tempoPerc = $4 
+             WHERE investigadorId = $1 AND projetoId = $2"
+        in
+
+        modify_participa_investigador_id req (Some "Sucesso!")
+  | _ -> modify_participa_investigador_id req (Some "Erro!")
 
 let participa_investigador_remove req =
   let id_inves = Dream.param req "idi" |> int_of_string in

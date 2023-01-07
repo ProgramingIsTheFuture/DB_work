@@ -164,6 +164,32 @@ let investigador_add_participa request inves projetos papel message =
       <div class="mb-2" style="margin-top:25px;">
         <label for="input5" class="form-label">Tempo (%)</label>
         <input type="text" name="tempoPerc" placeholder="0" class="form-control" id="input5" aria-describedby="input5Help" required />
+        <div id="input5Help" class="form-text">Tempo de dedicacao.</div>
+      </div>
+      <button type="submit" class="btn btn-primary" style="margin-top: 25px; margin-bottom: 5px;">Submeter</button>
+    </form>
+% begin match message with 
+%   | None -> () 
+%   | Some message -> 
+      <p><b><%s message %></b></p>
+%   end;
+  </div>
+
+let investigador_modify_participa request inves projeto papel tempo message = 
+  General.navbar_inpage "Participa" ^
+  <div style="width: 750px; margin: 0 auto; text-align: left">
+    <h1 style="margin-top: 50px;"><%s projeto <| "nome" %></h1>
+    <form method="POST" action='/investigadores/<%s inves<|"id" %>/participa/<%s projeto <| "id" %>/modificar'>
+      <%s! Dream.csrf_tag request %>
+      <h2 style="margin-top:50px; margin-bottom:10px;">Papel</h2>
+      <select class="form-select" multiple name="papelId" id="papel" style="margin-top: 5px" required>
+        <% papel |> List.iter begin fun pp -> %>
+          <option value='<%s pp<|"id" %>'><%s pp<|"designacao" %></option>
+        <% end; %>
+      </select>
+      <div class="mb-2" style="margin-top:25px;">
+        <label for="input5" class="form-label">Tempo (%)</label>
+        <input type="text" name="tempoPerc" value='<%i tempo <| "tempoPerc" |> int_of_string %>' class="form-control" id="input5" aria-describedby="input5Help" required />
         <div id="input5Help" class="form-text">Novo tempo de dedicacao.</div>
       </div>
       <button type="submit" class="btn btn-primary" style="margin-top: 25px; margin-bottom: 5px;">Submeter</button>
@@ -215,8 +241,9 @@ let investigador_form request (inves: data) (inst: data list) (unidades: data li
         <tr>
           <th scope="col">#</th>
           <th scope="col">Projeto</th>
-          <th scope="col">Tempo</th>
+          <th scope="col">Tempo (%)</th>
           <th scope="col">Apagar</th>
+          <th scope="col">Modificar</th>
         </tr>
       </thead>
       <tbody class="table-group-divider"> 
@@ -228,6 +255,7 @@ let investigador_form request (inves: data) (inst: data list) (unidades: data li
             <td><a href='/projetos/<%s x<|"id" %>'><%s x<|"nome" %></a></td>
             <td><%s x <| "tempoPerc" %></td>
             <td><a href='/investigadores/<%s inves<|"id" %>/participa/<%s x<|"id" %>/remover'>Remover</a></td>
+            <td><a href='/investigadores/<%s inves<|"id" %>/participa/<%s x<|"id" %>/modificar'>Modificar</a></td>
           </tr>
 % | false -> ()
 % end;
