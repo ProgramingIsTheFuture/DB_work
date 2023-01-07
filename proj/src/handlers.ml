@@ -3,10 +3,10 @@ open Async_unix
 open Templates
 
 let conn =
-  let host = "localhost" in
-  let db = "bd" in
-  let user = "sa" in
-  let password = "yourStrong(#)Password" in
+  let host = "192.168.100.14" in
+  let db = "BD_PL2_01" in
+  let user = "User_BD_PL2_01" in
+  let password = "diubi:2022!BD!PL2_01" in
   let port = Some 1433 in
   Mssql.with_conn ~host ~db ~user ~password ?port
 
@@ -193,7 +193,7 @@ let add_project req _message =
   let programas = query "SELECT * FROM Programa" in
   let status = query "SELECT * FROM Status" in
   let areas = query "SELECT * FROM AreaCientifica" in
-  serve (project_add req programas status areas _message) "Entidade"
+  serve (project_add req programas status areas _message) "Projeto"
 
 let add_project_form req =
   match%lwt Dream.form req with
@@ -359,10 +359,11 @@ let project_id_modify_post req =
       let data_fim = find_field tl "data_fim" in
       let url = find_field tl "url" in
       let doi = find_field tl "doi" in
-      let status = find_field tl "status" in
+      let status = find_field tl "status" |> int_of_string in
       let keywords =
         List.filter_map (fun a -> a) (get_str "keyword" tl)
         |> List.filter (fun b -> not (List.mem b keywords_antes))
+        |> List.filter (fun k -> k <> "")
       in
       let progs =
         List.filter_map (fun a -> a) (get_str "progs" tl)
@@ -390,17 +391,15 @@ let project_id_modify_post req =
         query ~params:[ Mssql.Param.Int id ]
           "SELECT TOP 1 statusId FROM HistoricoStatus WHERE projetoId = $1 \
            ORDER BY data DESC;"
-        |> List.hd
       in
       let _ =
         let open Types in
-        if prev_status <| "statusId" = status then ()
-        else
+        if List.length prev_status == 0 || prev_status |> List.hd <| "statusId" |> int_of_string <> status then 
           query
             ~params:
               [
                 Mssql.Param.Int id;
-                Mssql.Param.Int (prev_status <| "statusId" |> int_of_string);
+                Mssql.Param.Int status;
               ]
             "INSERT INTO HistoricoStatus (projetoId, statusId, data) VALUES \
              ($1, $2, GETDATE());"
@@ -418,7 +417,7 @@ let project_id_modify_post req =
             Mssql.Param.String data_fim;
             Mssql.Param.String url;
             Mssql.Param.String doi;
-            Mssql.Param.Int (status |> int_of_string);
+            Mssql.Param.Int status;
             Mssql.Param.Int id;
           ]
         (match data_fim with
@@ -509,7 +508,7 @@ let modify_contract req message =
     |> List.hd
   in
   let status = query "SELECT * FROM Status;" in
-  serve (contract_modify req contrato status message) "Modificar Investigador"
+  serve (contract_modify req contrato status message) "Modificar Contrato"
 
 let modify_contract_form req =
   match%lwt Dream.form req with
@@ -558,7 +557,11 @@ let add_publication_form req =
   | `Ok tl ->
       let url = find_field tl "url" in
       let jornal = find_field tl "jornal" in
-      let indicador = find_field tl "indicador" |> int_of_string in
+      let indicador = 
+        let ind =
+          find_field tl "indicador" |> int_of_string in
+        if ind <> 1 then 0 else 1
+      in
       let doi = find_field tl "doi" in
       let id = Dream.param req "id" |> int_of_string in
       query
@@ -584,7 +587,7 @@ let modify_publication req message =
       "SELECT * FROM Publicacao WHERE id = $1;"
     |> List.hd
   in
-  serve (publication_modify req publicacao message) "Modificar Investigador"
+  serve (publication_modify req publicacao message) "Modificar Publicação"
 
 let modify_publication_form req =
   match%lwt Dream.form req with
@@ -604,7 +607,7 @@ let modify_publication_form req =
             Mssql.Param.Int id;
           ]
         "UPDATE Publicacao SET url = $1, nomeJornal = $2, indicador = $3, doi \
-         = $4 WHERE id = $6"
+         = $4 WHERE id = $5"
       |> ignore;
       modify_publication req (Some "Sucesso!")
   | _ -> modify_publication req (Some "Erro!")
@@ -666,7 +669,12 @@ let modify_domain_form req =
   | _ -> modify_domain req (Some "Erro!")
 
 let delete_domain req message =
-  let dominios = query "SELECT * FROM Dominio" in
+  let dominios = 
+    query 
+      ~params:[ Mssql.Param.Int (Dream.param req "id" |> int_of_string) ]
+      "SELECT * FROM Dominio
+       WHERE id != $1" 
+  in
   serve (domain_delete req dominios message) "Remover Domínio"
 
 let delete_domain_form req =
@@ -717,7 +725,7 @@ let area_id req =
       \      INNER JOIN Projeto P ON AP.projetoId = P.id\n\
       \      WHERE AC.id = $1"
   in
-  serve (area area_c dominio projetos) "Áreas Científica"
+  serve (area area_c dominio projetos) "Área Científica"
 
 let add_area req _message =
   let dominios = query "SELECT * FROM Dominio" in
@@ -744,7 +752,7 @@ let modify_area req _message =
       "SELECT * FROM AreaCientifica WHERE id = $1"
     |> List.hd
   in
-  serve (area_form req institute domains _message) "Area Cientifica"
+  serve (area_form req institute domains _message) "Modificar Área Científica"
 
 let modify_area_form req =
   let id = Dream.param req "id" |> int_of_string in
@@ -854,7 +862,12 @@ let investigator_id_modificar req message =
       "SELECT * FROM UnidadeInvestigacao UI INNER JOIN UnidadeInvestigador UIR \
        ON UI.id = UIR.unidadeInvestigacaoId WHERE UIR.investigadorId = $1"
   in
-  let projeto = query "SELECT * FROM Projeto;" in
+  let projeto = query 
+      ~params:[ Mssql.Param.Int inves_id ]
+        "SELECT PI.tempoPerc, P.* FROM Projeto P
+         INNER JOIN Participa PI ON P.id = PI.projetoId
+         WHERE PI.investigadorId = $1"
+  in
   let participa =
     query
       ~params:[ Mssql.Param.Int inves_id ]
@@ -921,6 +934,21 @@ let unidade_investigador_id_modificar_post req =
       let q =
         List.map (fun a -> "($1," ^ a ^ ")") unidade_id |> String.concat ", "
       in
+      let tempo =
+        let tem_wasted =
+          query
+            ~params:[ Mssql.Param.Int inves_id ]
+            "SELECT SUM(tempoPerc) as tempoPerc FROM participa WHERE \
+             investigadorId = $1"
+          |> List.hd
+        in
+        match Types.find "tempoPerc" tem_wasted with
+        | "NULL" -> 0
+        | x -> x |> int_of_string
+      in 
+      if tempo < 15 then
+        investigator_id_modificar req (Some "O investigador precisa de ter mais do que 15% de tempo dedicado em projetos!")
+      else
       let _ =
         query
           ~params:[ Mssql.Param.Int inves_id ]
@@ -930,7 +958,7 @@ let unidade_investigador_id_modificar_post req =
       investigator_id_modificar req (Some "Sucesso!")
   | _ -> investigator_id_modificar req (Some "Erro!")
 
-let participa_investigador_id req =
+let participa_investigador_id req message =
   let inves_id = Dream.param req "id" |> int_of_string in
   let investigador =
     query
@@ -941,28 +969,32 @@ let participa_investigador_id req =
   let projeto = query "SELECT * FROM Projeto;" in
   let papel = query "SELECT * FROM papel;" in
   serve
-    (investigador_add_participa req investigador projeto papel)
-    "Adicionar participacao"
+    (investigador_add_participa req investigador projeto papel message)
+    "Adicionar Participacão"
 
 let participa_investigador_id_post req =
   match%lwt Dream.form req with
   | `Ok tl ->
       let id = Dream.param req "id" |> int_of_string in
       let proj_id = find_field tl "projectId" |> int_of_string in
-      let papel_id = find_field tl "projectId" |> int_of_string in
+      let papel_id = find_field tl "papelId" |> int_of_string in
       let tempo_perc = find_field tl "tempoPerc" |> int_of_string in
       let tempo =
         let tem_wasted =
           query
-            ~params:[ Mssql.Param.Int proj_id ]
+            ~params:[ Mssql.Param.Int id ]
             "SELECT SUM(tempoPerc) as tempoPerc FROM participa WHERE \
              investigadorId = $1"
           |> List.hd
         in
-        Types.find "tempoPerc" tem_wasted |> int_of_string
+        match Types.find "tempoPerc" tem_wasted with
+        | "NULL" -> 0
+        | x -> x |> int_of_string
       in
       if tempo + tempo_perc > 100 then
-        investigator_id_modificar req (Some "Demasiado tempo nos projetos!")
+        participa_investigador_id req (Some "Demasiado tempo nos projetos!")
+      else if papel_id == 4 && tempo_perc < 35 then
+        participa_investigador_id req (Some "Para ser partipante tem de ter pelo menos 35% do tempo ocupado.")
       else
         let _ =
           query
@@ -977,8 +1009,8 @@ let participa_investigador_id_post req =
              tempoPerc) VALUES ($1, $2, $3, $4);"
         in
 
-        investigator_id_modificar req (Some "Sucesso!")
-  | _ -> investigator_id_modificar req (Some "Erro!")
+        participa_investigador_id req (Some "Sucesso!")
+  | _ -> participa_investigador_id req (Some "Erro!")
 
 let participa_investigador_remove req =
   let id_inves = Dream.param req "idi" |> int_of_string in
@@ -1014,7 +1046,7 @@ let unid_id req =
   in
   serve (unidade unid investigadores) "Unidade"
 
-let add_unid req _message = serve (unidade_add req _message) "Unidades"
+let add_unid req _message = serve (unidade_add req _message) "Adicionar Unidades"
 
 let add_unid_form req =
   match%lwt Dream.form req with
@@ -1035,7 +1067,7 @@ let modify_unid req _message =
       "SELECT id, nome FROM UnidadeInvestigacao WHERE id = $1"
     |> List.hd
   in
-  serve (unidade_form req unit _message) "Unidade"
+  serve (unidade_form req unit _message) "Modificar Unidade"
 
 let modify_unid_form req =
   let id = Dream.param req "id" |> int_of_string in
@@ -1081,7 +1113,7 @@ let institute_id req =
   in
   serve (institute instituto investigadores) "Instituto"
 
-let add_institute req _message = serve (institute_add req _message) "Institutos"
+let add_institute req _message = serve (institute_add req _message) "Adicionar Instituto"
 
 let add_institute_form req =
   match%lwt Dream.form req with
@@ -1102,7 +1134,7 @@ let modify_institute req _message =
       "SELECT id, designacao FROM Instituto WHERE id = $1"
     |> List.hd
   in
-  serve (institute_form req institute _message) "Institutos"
+  serve (institute_form req institute _message) "Modificar Instituto"
 
 let modify_institute_form req =
   let id = Dream.param req "id" |> int_of_string in
@@ -1175,7 +1207,7 @@ let entity_id req =
   in
   serve (entity entidade programas projects) "Entidades"
 
-let add_entity req _message = serve (entity_add req _message) "Entidade"
+let add_entity req _message = serve (entity_add req _message) "Adicionar Entidade"
 
 let add_entity_form req =
   match%lwt Dream.form req with
@@ -1225,7 +1257,7 @@ let modify_entity req _message =
       \       INNER JOIN Programa P ON P.id = EP.programaId\n\
       \       WHERE E.id = $1"
   in
-  serve (entity_form req entity programas entigrama _message) "Entidade"
+  serve (entity_form req entity programas entigrama _message) "Modificar Entidade"
 
 let modify_entity_form req =
   let programas_antes =
@@ -1330,7 +1362,7 @@ let program_id req =
   in
   serve (program programa entidades projetos) "Programas"
 
-let add_program req _message = serve (program_add req _message) "Programa"
+let add_program req _message = serve (program_add req _message) "Adicionar Programa"
 
 let add_program_form req =
   match%lwt Dream.form req with
@@ -1350,7 +1382,7 @@ let modify_program req _message =
       "SELECT * FROM Programa WHERE id = $1"
     |> List.hd
   in
-  serve (program_form req programa _message) "Domínio"
+  serve (program_form req programa _message) "Modificar Programa"
 
 let modify_program_form req =
   let id = Dream.param req "id" |> int_of_string in

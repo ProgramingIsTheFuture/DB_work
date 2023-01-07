@@ -61,15 +61,15 @@ let pub_add request message =
       <h5 style="margin-top: 50px">Publicação para o Projeto <%s id %></h5>
       <div class="mb-3">
         <label for="input1" class="form-label">URL</label>
-        <input name="url" placeholder="url" type="text" class="form-control" id="input1" aria-describedby="input1Help" />
+        <input name="url" placeholder="url" type="text" class="form-control" id="input1" aria-describedby="input1Help" required/>
         <div id="input1Help" class="form-text">URL da publicação.</div>
 
         <label for="input4" class="form-label">Jornal</label>
-        <input name="jornal" placeholder="jornal" type="text" class="form-control" id="input4" aria-describedby="input4Help" />
+        <input name="jornal" placeholder="jornal" type="text" class="form-control" id="input4" aria-describedby="input4Help" required/>
         <div id="input4Help" class="form-text">Jornal da publicação.</div>
 
         <label for="input2" class="form-label">Indicador de Sucesso</label>
-        <input name="indicador" placeholder="indicador" type="number" class="form-control" id="input2" aria-describedby="input2Help" />
+        <input name="indicador" placeholder="indicador" type="number" class="form-control" id="input2" aria-describedby="input2Help" required/>
         <div id="input2Help" class="form-text">Indicador de sucesso (1 ou 0).</div>
 
         <label for="input3" class="form-label">DOI</label>

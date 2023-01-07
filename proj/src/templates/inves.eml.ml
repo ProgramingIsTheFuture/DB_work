@@ -104,20 +104,20 @@ let create_inves request inves inst subm =
     <%s! Dream.csrf_tag request %>
     <div class="mb-3">
       <label for="input1" class="form-label">Nome</label>
-      <input name="nome" placeholder="nome" value='<%s inves<|"nome" %>' type="text" class="form-control" id="input1" aria-describedby="input1Help" />
+      <input name="nome" placeholder="nome" value='<%s inves<|"nome" %>' type="text" class="form-control" id="input1" aria-describedby="input1Help" required />
       <div id="input1Help" class="form-text">Novo nome do investigador.</div>
 
       <label for="input2" class="form-label">Idade</label>
-      <input name="idade" placeholder="idade" value='<%s inves<|"idade" %>' type="number" class="form-control" id="input2" aria-describedby="input2Help" />
+      <input name="idade" placeholder="idade" value='<%s inves<|"idade" %>' type="number" class="form-control" id="input2" aria-describedby="input2Help" required />
       <div id="input2Help" class="form-text">Nova idade do investigador.</div>
 
       <label for="input3" class="form-label">Morada</label>
-      <input name="morada" placeholder="morada" value='<%s inves<|"morada" %>' type="text" class="form-control" id="input3" aria-describedby="input3Help" />
+      <input name="morada" placeholder="morada" value='<%s inves<|"morada" %>' type="text" class="form-control" id="input3" aria-describedby="input3Help" required />
       <div id="input3Help" class="form-text">Nova morada do investigador.</div>
     </div>
     <div class="forms">
       <label for="institutoId" class="form-label">Instituto</label>
-      <select class="form-select" multiple name="institutoId" id="status" style="margin-top: 5px">
+      <select class="form-select" multiple name="institutoId" id="status" style="margin-top: 5px" required>
       <% inst |> List.iter begin fun x -> %>
 % begin match (x<|"id") = (inves<|"institutoId") with
 % | true -> 
@@ -135,16 +135,16 @@ let create_inves request inves inst subm =
 
 let investigador_create request inves inst =
   General.navbar_crud "investigadores" "Criar Investigador" ^
-  create_inves request inves inst "/investigadores/create"
+  create_inves request inves inst "/investigadores/0/adicionar"
 
-let investigador_add_participa request inves projetos papel = 
+let investigador_add_participa request inves projetos papel message = 
   General.navbar_inpage "Participa" ^
   <div style="width: 750px; margin: 0 auto; text-align: left">
     <form method="POST" action='/investigadores/<%s inves<|"id" %>/participa/adicionar'>
       <%s! Dream.csrf_tag request %>
       <div class="mb-2">
       <h2 style="margin-top:50px; margin-bottom:10px;">Projeto</h2>
-      <select class="form-select" multiple name="projectId" id="papel" style="margin-top: 5px">
+      <select class="form-select" multiple name="projectId" id="papel" style="margin-top: 5px" required>
       <% projetos |> List.iter begin fun x -> %>
   % begin match participa |> List.exists (fun p -> (x<|"id") = (p<|"projetoId")) with
   % | true -> ()
@@ -156,29 +156,29 @@ let investigador_add_participa request inves projetos papel =
       </div>
 
       <h2 style="margin-top:50px; margin-bottom:10px;">Papel</h2>
-      <select class="form-select" multiple name="papelId" id="papel" style="margin-top: 5px">
+      <select class="form-select" multiple name="papelId" id="papel" style="margin-top: 5px" required>
         <% papel |> List.iter begin fun pp -> %>
           <option value='<%s pp<|"id" %>'><%s pp<|"designacao" %></option>
         <% end; %>
       </select>
       <div class="mb-2" style="margin-top:25px;">
         <label for="input5" class="form-label">Tempo (%)</label>
-        <input type="text" name="tempoPerc" placeholder="0" class="form-control" id="input5" aria-describedby="input5Help"/>
+        <input type="text" name="tempoPerc" placeholder="0" class="form-control" id="input5" aria-describedby="input5Help" required />
         <div id="input5Help" class="form-text">Novo tempo de dedicacao.</div>
       </div>
       <button type="submit" class="btn btn-primary" style="margin-top: 25px; margin-bottom: 5px;">Submeter</button>
     </form>
-  </div>
-
-let investigador_form request (inves: data) (inst: data list) (unidades: data list) (unidade_investigador: data list) projetos participa message =
-  General.navbar_crud "investigadores" "Modificar Investigador" ^ create_inves request inves inst ("/investigadores/"^ (inves<|"id") ^"/modificar") ^ 
-  <div style="width: 750px; margin: 0 auto; text-align: left">
 % begin match message with 
 %   | None -> () 
 %   | Some message -> 
       <p><b><%s message %></b></p>
 %   end;
-    <h2 style="margin-top:50px;">UnidadeInvestigador</h2>
+  </div>
+
+let investigador_form request (inves: data) (inst: data list) (unidades: data list) (unidade_investigador: data list) projetos participa message =
+  General.navbar_crud "investigadores" "Modificar Investigador" ^ create_inves request inves inst ("/investigadores/"^ (inves<|"id") ^"/modificar") ^ 
+  <div style="width: 750px; margin: 0 auto; text-align: left">
+    <h2 style="margin-top:50px;">Unidades de Investigação</h2>
     <form method="POST" action='/investigadores/<%s inves<|"id" %>/unidade/modificar'>
       <%s! Dream.csrf_tag request %>
       <% unidades |> List.iter begin fun x -> %> 
@@ -196,6 +196,11 @@ let investigador_form request (inves: data) (inst: data list) (unidades: data li
       <% end; %>
       <button type="submit" class="btn btn-primary" style="margin-top: 25px; margin-bottom: 5px;">Submeter</button>
     </form>
+% begin match message with 
+%   | None -> () 
+%   | Some message -> 
+      <p><b><%s message %></b></p>
+%   end;
 
     <div class="mt-5 mb-4 d-flex align-items-center text-center">
       <h2>Participa em projetos</h2>
@@ -210,6 +215,7 @@ let investigador_form request (inves: data) (inst: data list) (unidades: data li
         <tr>
           <th scope="col">#</th>
           <th scope="col">Projeto</th>
+          <th scope="col">Tempo</th>
           <th scope="col">Apagar</th>
         </tr>
       </thead>
@@ -220,6 +226,7 @@ let investigador_form request (inves: data) (inst: data list) (unidades: data li
           <tr>
             <th scope="row"><%s x<|"id" %></th>
             <td><a href='/projetos/<%s x<|"id" %>'><%s x<|"nome" %></a></td>
+            <td><%s x <| "tempoPerc" %></td>
             <td><a href='/investigadores/<%s inves<|"id" %>/participa/<%s x<|"id" %>/remover'>Remover</a></td>
           </tr>
 % | false -> ()

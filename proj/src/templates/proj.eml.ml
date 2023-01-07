@@ -332,17 +332,17 @@ let proj_add request programs status areas message =
         <div id="input9Help" class="form-text">DOI do projeto</div>
 
         <label for="kw" class="form-label">Keyword 1:</label>
-        <input name="keyword1" placeholder="keyword1" type="text" class="form-control" id="kw">
+        <input name="keyword1" placeholder="keyword1" type="text" class="form-control" id="kw" required>
 
         <label for="kw2" class="form-label">Keyword 2:</label>
-        <input name="keyword2" placeholder="keyword2" type="text" class="form-control" id="kw2">
+        <input name="keyword2" placeholder="keyword2" type="text" class="form-control" id="kw2" required>
 
         <label for="kw3" class="form-label">Keyword 3:</label>
-        <input name="keyword3" placeholder="keyword3" type="text" class="form-control" id="kw3">
+        <input name="keyword3" placeholder="keyword3" type="text" class="form-control" id="kw3" required>
       </div>
       <div class="forms">
         <label for="status">Status</label>
-        <select class="form-select" multiple name="status" id="status" style="margin-top: 5px">
+        <select class="form-select" multiple name="status" id="status" style="margin-top: 5px" required>
         <% status |> List.iter begin fun x -> %>
           <option value='<%s x<|"id" %>'><%s x<|"designacao" %></option>
         <% end; %>
@@ -362,7 +362,7 @@ let proj_add request programs status areas message =
         <p>Areas:</p>
         <% areas |> List.iter begin fun x -> %> 
           <div class="form-check">
-            <input value='<%s x<|"id" %>' name="areas" class="form-check-input" type="checkbox" id="flexCheckDefault">
+            <input value='<%s x<|"id" %>' name="areas" class="form-check-input" type="checkbox" id="flexCheckDefault" required>
             <label class="form-check-label" for="flexCheckDefault">
             <%s x <| "id" %> - <%s x<|"designacao" %>
           </div>
@@ -371,20 +371,20 @@ let proj_add request programs status areas message =
       <h3 style="margin-top:50px; margin-bottom:50px">Contrato Associado</h3>
       <div class="mb-3">
         <label for="input10" class="form-label">Nome</label>
-        <input name="nomeCont" placeholder="nomeCont" type="text" class="form-control" id="input10" aria-describedby="input10Help" />
+        <input name="nomeCont" placeholder="nomeCont" type="text" class="form-control" id="input10" aria-describedby="input10Help" required/>
         <div id="input10Help" class="form-text">Nome do contrato.</div>
 
         <label for="input11" class="form-label">Título</label>
-        <input name="tituloCont" placeholder="tituloCont" type="text" class="form-control" id="input4" aria-describedby="input4Help" />
+        <input name="tituloCont" placeholder="tituloCont" type="text" class="form-control" id="input4" aria-describedby="input4Help" required/>
         <div id="input11Help" class="form-text">Título do contrato.</div>
 
         <label for="input12" class="form-label">Descrição</label>
-        <input name="descricaoCont" placeholder="descricaoCont" type="text" class="form-control" id="input12" aria-describedby="input12Help" />
+        <input name="descricaoCont" placeholder="descricaoCont" type="text" class="form-control" id="input12" aria-describedby="input12Help" required/>
         <div id="input12Help" class="form-text">Descrição do contrato.</div>
       </div>
       <div class="forms">
         <label for="statusCont">Status</label>
-        <select class="form-select" multiple name="statusCont" id="statusCont" style="margin-top: 5px">
+        <select class="form-select" multiple name="statusCont" id="statusCont" style="margin-top: 5px" required>
         <% status |> List.iter begin fun x -> %>
           <option value='<%s x<|"id" %>'><%s x<|"designacao" %></option>
         <% end; %>

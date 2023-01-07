@@ -39,8 +39,8 @@ let entidades (ents: data list) maior extmaior =
     <p><a href='/entidades/<%s extmaior |> List.hd <| "id" %>'><%s maior |> List.hd <| "nome" %></a> que investe <%s maior |> List.hd <| "total" %> euros</p>
     
     <p style="margin-bottom: 2rem;"></p>
-    <h5 style="color: #2895bd">Entidade exterior com mais entidades financiados:</h5>
-    <p><a href='/entidades/<%s extmaior |> List.hd <| "id" %>'><%s extmaior |> List.hd <| "nome" %></a> com <%s extmaior |> List.hd <| "numero" %> entidades financiados</p>
+    <h5 style="color: #2895bd">Entidade exterior com mais projetos financiados:</h5>
+    <p><a href='/entidades/<%s extmaior |> List.hd <| "id" %>'><%s extmaior |> List.hd <| "nome" %></a> com <%s extmaior |> List.hd <| "numero" %> projetos financiados</p>
   </div>
 
 let entidade (ent: data list) prog (projs: data list) =
@@ -148,35 +148,35 @@ let ent_add request message =
       <%s! Dream.csrf_tag request %>
         <div class="mb-3">
         <label for="input1" class="form-label">Nome</label>
-        <input name="nome" placeholder="nome"  type="text" class="form-control" id="input1" aria-describedby="input1Help">
+        <input name="nome" placeholder="nome"  type="text" class="form-control" id="input1" aria-describedby="input1Help" required>
         <div id="input1Help" class="form-text">Nome da entidade.</div>
 
         <label for="input3" class="form-label">Descrição</label>
-        <input name="descricao" placeholder="descricao" type="text" class="form-control" id="input3" aria-describedby="input3Help">
+        <input name="descricao" placeholder="descricao" type="text" class="form-control" id="input3" aria-describedby="input3Help" required>
         <div id="input3Help" class="form-text">Descrição da entidade.</div>
         
         <label for="input2" class="form-label">Designacao</label>
-        <input name="designacao" placeholder="designacao" type="text" class="form-control" id="input2" aria-describedby="input2Help">
+        <input name="designacao" placeholder="designacao" type="text" class="form-control" id="input2" aria-describedby="input2Help" required>
         <div id="input2Help" class="form-text">Designação da entidade.</div>
 
         <label for="input4" class="form-label">Email</label>
-        <input name="email" placeholder="email" type="text" class="form-control" id="input4" aria-describedby="input4Help">
+        <input name="email" placeholder="email" type="text" class="form-control" id="input4" aria-describedby="input4Help" required>
         <div id="input4Help" class="form-text">Email da entidade</div>
 
         <label for="input5" class="form-label">Telemóvel</label>
-        <input name="telemovel" placeholder="telemovel" type="text" class="form-control" id="input5" aria-describedby="input5Help">
+        <input name="telemovel" placeholder="telemovel" type="text" class="form-control" id="input5" aria-describedby="input5Help" required>
         <div id="input5Help" class="form-text">Telemóvel da entidade em inglês</div>
 
         <label for="input6" class="form-label">Morada</label>
-        <input name="morada" placeholder="morada" type="text" class="form-control" id="input6" aria-describedby="input6Help">
+        <input name="morada" placeholder="morada" type="text" class="form-control" id="input6" aria-describedby="input6Help" required>
         <div id="input6Help" class="form-text">Morada da entidade</div>
 
         <label for="input7" class="form-label">País</label>
-        <input name="pais" placeholder="pais"  type="text" class="form-control" id="input7" aria-describedby="input7Help">
+        <input name="pais" placeholder="pais"  type="text" class="form-control" id="input7" aria-describedby="input7Help" required>
         <div id="input7Help" class="form-text">País da entidade</div>
 
         <label for="input8" class="form-label">URL</label>
-        <input name="url" placeholder="url" type="text" class="form-control" id="input8" aria-describedby="input8Help">
+        <input name="url" placeholder="url" type="text" class="form-control" id="input8" aria-describedby="input8Help" required>
         <div id="input8Help" class="form-text">URL da entidade</div>
         </div>
         <button type="submit" class="btn btn-primary">Submeter</button>

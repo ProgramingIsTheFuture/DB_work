@@ -50,7 +50,7 @@ let instituto (inst: data list) inves =
   </div>
 
   <div class="d-grid gap-2 col-1 mx-auto" style="width: 3rem; position: absolute; top: 5em; right: 6em">
-    <a href='/institutos/<%s inst |> List.hd <| "InstId" %>/modificar' class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
+    <a href='/institutos/<%s inst |> List.hd <| "id" %>/modificar' class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">
       Modificar
     </a>
     <a href='/institutos/<%s inst |> List.hd <| "id" %>/remover' class="btn btn-danger" tabindex="-1" role="button" aria-disabled="true">
@@ -59,7 +59,7 @@ let instituto (inst: data list) inves =
   </div>
 
 let inst_add request message =
-  General.navbar_crud "instituto" "Adicionar Instituto" ^
+  General.navbar_crud "institutos" "Adicionar Instituto" ^
   <div style="width: 750px; margin: 0 auto; text-align: left">
     <p style="margin-bottom: 2rem;"></p>
 

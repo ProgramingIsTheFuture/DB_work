@@ -73,8 +73,8 @@ let () =
          @@ Handlers.unidade_investigador_id_modificar_post;
          Dream.get "/investigadores/:idi/participa/:idp/remover"
          @@ Handlers.participa_investigador_remove;
-         Dream.get "/investigadores/:id/participa/adicionar"
-         @@ Handlers.participa_investigador_id;
+         (Dream.get "/investigadores/:id/participa/adicionar" @@ fun req ->
+           Handlers.participa_investigador_id req None);
          Dream.post "/investigadores/:id/participa/adicionar"
          @@ Handlers.participa_investigador_id_post;
          (* Unidades *)
