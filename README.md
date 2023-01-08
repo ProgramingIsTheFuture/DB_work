@@ -16,7 +16,7 @@
   - [x] Mostrar a área em que mais investigações são feitas.
 - [x] Mostrar o financiador que paga mais.
 - [x] Procurar as entidades externas com mais financiamentos
-- [ ] Validar para não exceder o tempo maximo permitido, etc...
+- [x] Validar para não exceder o tempo maximo permitido, etc...
 
 ## Funcionalidade
 
