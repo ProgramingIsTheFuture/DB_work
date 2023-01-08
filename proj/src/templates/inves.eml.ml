@@ -175,7 +175,7 @@ let investigador_add_participa request inves projetos papel message =
 %   end;
   </div>
 
-let investigador_modify_participa request inves projeto papel tempo message = 
+let investigador_modify_participa request inves projeto papeis papel tempo message = 
   General.navbar_inpage "Participa" ^
   <div style="width: 750px; margin: 0 auto; text-align: left">
     <h1 style="margin-top: 50px;"><%s projeto <| "nome" %></h1>
@@ -183,8 +183,13 @@ let investigador_modify_participa request inves projeto papel tempo message =
       <%s! Dream.csrf_tag request %>
       <h2 style="margin-top:50px; margin-bottom:10px;">Papel</h2>
       <select class="form-select" multiple name="papelId" id="papel" style="margin-top: 5px" required>
-        <% papel |> List.iter begin fun pp -> %>
-          <option value='<%s pp<|"id" %>'><%s pp<|"designacao" %></option>
+        <% papeis |> List.iter begin fun pp -> %>
+% begin match (pp <| "id" |> int_of_string) == (papel <| "id" |> int_of_string) with 
+% | true -> 
+  <option selected value='<%s pp<|"id" %>'><%s pp<|"designacao" %></option>
+% | false -> 
+  <option value='<%s pp<|"id" %>'><%s pp<|"designacao" %></option>
+% end;
         <% end; %>
       </select>
       <div class="mb-2" style="margin-top:25px;">

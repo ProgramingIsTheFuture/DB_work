@@ -1019,8 +1019,8 @@ let modify_participa_investigador_id req message =
   let proj_id = Dream.param req "idp" |> int_of_string in
   let investigador =
     query
-      ~params:[ Mssql.Param.Int inves_id ]
-      "SELECT * FROM Investigador WHERE id = $1;"
+      ~params:[ Mssql.Param.Int inves_id; Mssql.Param.Int proj_id ]
+      "SELECT * FROM Investigador I WHERE I.id = $1"
     |> List.hd
   in
   let projeto =
@@ -1029,7 +1029,16 @@ let modify_participa_investigador_id req message =
       "SELECT id, nome FROM Projeto WHERE id = $1"
   |> List.hd
   in
-  let papel = query "SELECT * FROM papel;" in
+  let papeis = query "SELECT * FROM papel;" in
+  let papel =
+    query
+      ~params:[ Mssql.Param.Int inves_id; Mssql.Param.Int proj_id ]
+      "SELECT Pap.id FROM Investigador I 
+       INNER JOIN Participa PI ON I.id = PI.investigadorId
+       INNER JOIN Papel Pap ON PI.papelId = Pap.id
+       WHERE I.id = $1 AND PI.projetoId = $2"
+    |> List.hd
+  in
   let tempo =
     query
       ~params:[ Mssql.Param.Int inves_id; Mssql.Param.Int proj_id ]
@@ -1038,7 +1047,7 @@ let modify_participa_investigador_id req message =
   |> List.hd
   in
   serve
-    (investigador_modify_participa req investigador projeto papel tempo message)
+    (investigador_modify_participa req investigador projeto papeis papel tempo message)
     "Modificar Participacão"
 
 let modify_participa_investigador_id_post req =
