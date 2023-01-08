@@ -947,7 +947,7 @@ let unidade_investigador_id_modificar_post req =
         | x -> x |> int_of_string
       in 
       if tempo < 15 then
-        investigator_id_modificar req (Some "O investigador precisa de ter mais do que 15% de tempo dedicado em projetos!")
+        investigator_id_modificar req (Some "O investigador tem de participar em pelo menos um projeto!")
       else
       let _ =
         query
@@ -993,8 +993,10 @@ let participa_investigador_id_post req =
       in
       if tempo + tempo_perc > 100 then
         participa_investigador_id req (Some "Demasiado tempo ocupado para os projetos!")
+      else if tempo_perc < 15 then 
+        participa_investigador_id req (Some "Para participar o tempo de ocupação deve ser pelo menos 15%")
       else if papel_id == 3 && tempo_perc < 35 then
-        participa_investigador_id req (Some "Para ser líder do projeto tem de ter pelo menos 35% do tempo ocupado.")
+        participa_investigador_id req (Some "Para ser líder o tempo de ocupação deve ser pelo menos 35%")
       else
         let _ =
           query
