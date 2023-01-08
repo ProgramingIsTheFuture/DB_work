@@ -1,0 +1,122 @@
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "JetBrains Mono", monospace;
+  background-color: #3e4145;
+  color: #fff;
+  font-size: 16px;
+}
+
+.parent-container {
+  margin-top: 40px;
+  height: auto;
+  width: auto;
+}
+
+@media (min-height: 1440px) {
+  .parent-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .esq {
+    width: 40%;
+  }
+
+  .cen {
+    width: 25%;
+    margin-left: -20px;
+    margin-top: 70px;
+  }
+
+  .dir {
+    width: 25%;
+    margin-left: 50px;
+    margin-top: 70px;
+  }
+}
+
+@media (max-height: 1440px) {
+  .parent-container {
+    width: 97%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .esq {
+    width: 100%;
+    order: 1;
+  }
+
+  .cen {
+    width: 35%;
+    position: absolute;
+    right: 40%;
+    left: 60%;
+    top: 0;
+    z-index: 1;
+    order: 2;
+  }
+
+  .dir {
+    width: 100%;
+    z-index: 0;
+    order: 3;
+  }
+
+  .esq, .dir {
+    margin-left: 50px;
+  }
+
+}
+
+.container {
+  width: 80%;
+  margin: 0 auto;
+  text-align: left;
+}
+.title {
+  font-size: 2rem;
+}
+.options title {
+  margin-bottom: 3rem;
+}
+.options {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.options li {
+  margin-top: 30px;
+  text-align: left;
+}
+.options a {
+  color: #fff;
+  text-decoration: none;
+}
+.options a:hover {
+  color: #2895bd;
+}
+.table-hover thead tr {
+  text-align: left;
+}
+.table-hover tbody tr {
+  text-align: left;
+}
+.table-hover tbody td:hover {
+  color: #2895bd;
+}
+.mb-3, .form-select {
+  margin: 0 auto;
+  margin-top: 50px;
+  width: 750px;
+  text-align: left;
+}
+

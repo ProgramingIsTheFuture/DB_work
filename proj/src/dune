@@ -1,9 +1,6 @@
 (executable
  (public_name proj)
  (name main)
- (libraries proj dream mssql))
+ (preprocess (pps lwt_ppx))
+ (libraries proj dream mssql types templates))
 
-(rule
- (targets home.ml)
- (deps home.eml.ml)
- (action (run dream_eml %{deps} --workspace %{workspace_root})))

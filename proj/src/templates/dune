@@ -1,0 +1,64 @@
+(library
+ (name templates)
+ (package proj)
+ (libraries types dream))
+
+(rule
+ (targets proj.ml)
+ (deps proj.eml.ml)
+ (action (run dream_eml %{deps} --workspace %{workspace_root})))
+
+(rule
+ (targets general.ml)
+ (deps general.eml.ml)
+ (action (run dream_eml %{deps} --workspace %{workspace_root})))
+
+(rule
+ (targets cont.ml)
+ (deps cont.eml.ml)
+ (action (run dream_eml %{deps} --workspace %{workspace_root})))
+
+(rule
+ (targets ent.ml)
+ (deps ent.eml.ml)
+ (action (run dream_eml %{deps} --workspace %{workspace_root})))
+
+(rule
+ (targets inst.ml)
+ (deps inst.eml.ml)
+ (action (run dream_eml %{deps} --workspace %{workspace_root})))
+
+(rule
+ (targets home.ml)
+ (deps home.eml.ml)
+ (action (run dream_eml %{deps} --workspace %{workspace_root})))
+
+(rule
+ (targets inves.ml)
+ (deps inves.eml.ml)
+ (action (run dream_eml %{deps} --workspace %{workspace_root})))
+
+(rule
+ (targets prog.ml)
+ (deps prog.eml.ml)
+ (action (run dream_eml %{deps} --workspace %{workspace_root})))
+
+(rule
+ (targets unid.ml)
+ (deps unid.eml.ml)
+ (action (run dream_eml %{deps} --workspace %{workspace_root})))
+
+(rule
+ (targets dom.ml)
+ (deps dom.eml.ml)
+ (action (run dream_eml %{deps} --workspace %{workspace_root})))
+
+(rule
+ (targets area.ml)
+ (deps area.eml.ml)
+ (action (run dream_eml %{deps} --workspace %{workspace_root})))
+
+(rule
+ (targets pub.ml)
+ (deps pub.eml.ml)
+ (action (run dream_eml %{deps} --workspace %{workspace_root})))
