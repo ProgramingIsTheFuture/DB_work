@@ -1,6 +1,4 @@
-CREATE DATABASE bd
-go
-use bd
+use BD_PL2_01
 go
 
 CREATE TABLE [Projeto] (
