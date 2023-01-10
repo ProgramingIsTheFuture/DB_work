@@ -3,10 +3,10 @@ open Async_unix
 open Templates
 
 let conn =
-  let host = "192.168.100.14" in
-  let db = "BD_PL2_01" in
-  let user = "User_BD_PL2_01" in
-  let password = "diubi:2022!BD!PL2_01" in
+  let host = "localhost" in
+  let db = "bd" in
+  let user = "sa" in
+  let password = "yourStrong(#)Password" in
   let port = Some 1433 in
   Mssql.with_conn ~host ~db ~user ~password ?port
 
